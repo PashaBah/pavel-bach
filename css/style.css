@@ -1062,3 +1062,20 @@ a, button { -webkit-tap-highlight-color: transparent; }
 @media (pointer: coarse) {
   .geo-map .route, .geo-map .city.on circle, .geo-map .plane path { filter: none; } /* тени на карте пересчитывались бы на каждом кадре */
 }
+
+/* ── телефон, повёрнутый набок: высоты мало, поэтому остаются только тег и заголовок ── */
+@media (max-height: 480px) and (min-aspect-ratio: 1/1) {
+  .ice { width: min(92vw, 125vh); }
+  .chapter .body, .chapter .facts, .chapter .eyebrow, .chapter .credits li:nth-child(n+3), .scroll-hint { display: none; }
+  .tag { font-size: 34px; margin-bottom: 2px; }
+  .chapter h2 { font-size: 20px; }
+  .chapter.cover .lede { font-size: 22px; }
+  .chapter.left, .chapter.right, .chapter.top { top: auto; bottom: calc(var(--bar) + 2vh); }
+  .play { margin-top: 8px; }
+  .rcard { --h: calc(100vh - 2 * var(--bar) - 56px); --w: calc(var(--h) * .735); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); }
+}
+/* ── планшет в портретной ориентации: заголовок отзывов сверху, как на телефоне ── */
+@media (max-aspect-ratio: 3/4) and (min-width: 761px) {
+  .chapter.reviews-head { top: calc(var(--bar) + 14px); bottom: auto; max-width: none; }
+  .chapter.reviews-head::before { display: none; }
+}

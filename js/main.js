@@ -691,6 +691,7 @@ function frame(now, snap) {
         if (Math.abs(sh.video.currentTime - t) > 0.02) sh.video.currentTime = t;
       }
       if (sh.src) flipbook(sh, p);
+      if (sh.video && !sh.live && sh.video.readyState < 2 && now - (sh.video._kick || 0) > 1500) { sh.video._kick = now; if (!blocked) prime(sh.video); }
       if (sh.mx2 !== null) { // вертикальный экран: кадр едет от героя к тому, на что он показывает
         const m = sh.mx + (sh.mx2 - sh.mx) * smooth((p - sh.pan[0]) / (sh.pan[1] - sh.pan[0]));
         if (Math.abs(m - sh.mxNow) > 0.0005) { sh.mxNow = m; shiftTo(sh, m); if (sh.fit) sh.fit.e = -1; }
@@ -779,12 +780,21 @@ function frame(now, snap) {
     // влёт в глаз: следующая сцена сначала видна в зрачке (центр экрана), растёт вместе с наездом и занимает весь экран
     let mask = '';
     if (sh.tr === 'eye' && cur >= sh.from - EYEW && cur < sh.from) {
-      const q = (cur - (sh.from - EYEW)) / EYEW, z = 0.7 + 0.3 * smooth(q);
-      const R = 9 * Math.pow(Math.hypot(vw, vh) * 0.66 / 9, Math.pow(q, 0.8)) / z;
-      const lx = sh.w / 2 + (vw / 2 - sh.cx) / z, ly = sh.h / 2 + (vh / 2 - sh.cy) / z;
-      mask = `radial-gradient(circle ${R.toFixed(1)}px at ${lx.toFixed(1)}px ${ly.toFixed(1)}px, #000 68%, transparent 100%)`;
-      sh.el.style.setProperty('--z', z.toFixed(4)); sh.eyeZ = true;
-    } else if (sh.eyeZ) { sh.el.style.setProperty('--z', 1); sh.eyeZ = false; }
+      // сцена целиком умещается в зрачке (уменьшенная, по центру экрана) и растёт вместе с кругом; к концу встаёт на своё место
+      const q = (cur - (sh.from - EYEW)) / EYEW;
+      const R = 9 * Math.pow(Math.hypot(vw, vh) * 0.66 / 9, Math.pow(q, 0.8));
+      const z = clamp(R * 2.15 / sh.h, 0.06, 1), e = smooth((q - 0.5) / 0.5); // кадр всегда чуть выше круга: в зрачке не видно его прямых краёв
+      const ax = (vw / 2 - sh.cx) * (1 - e), ay = (vh / 2 - sh.cy) * (1 - e);
+      const lx = sh.w / 2 + (vw / 2 - sh.cx - ax) / z, ly = sh.h / 2 + (vh / 2 - sh.cy - ay) / z;
+      mask = `radial-gradient(circle ${(R / z).toFixed(1)}px at ${lx.toFixed(1)}px ${ly.toFixed(1)}px, #000 68%, transparent 100%)`;
+      const st = sh.el.style;
+      st.setProperty('--z', z.toFixed(4)); st.setProperty('--ax', `${ax.toFixed(1)}px`); st.setProperty('--ay', `${ay.toFixed(1)}px`);
+      sh.eyeZ = true;
+    } else if (sh.eyeZ) {
+      const st = sh.el.style;
+      st.setProperty('--z', 1); st.setProperty('--ax', '0px'); st.setProperty('--ay', '0px');
+      sh.eyeZ = false;
+    }
     if (mask !== (sh.mask || '')) { sh.mask = mask; sh.el.style.webkitMaskImage = mask || 'none'; sh.el.style.maskImage = mask || 'none'; }
 
     if (sh.tr === 'flash') {
@@ -915,16 +925,28 @@ $('#tvClose').addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-// ── заявка (пока никуда не уходит) ──────────────
+// ── заявка: открывает WhatsApp Павла с готовым сообщением (своего сервера у сайта нет) ──
+const WA = '34627084012';
 const NOTE = {
-  bad: { en: 'Please add your name and e-mail.', ru: 'Укажите имя и e-mail.' },
-  ok: { en: 'Draft build: the form is not connected yet, nothing was sent.', ru: 'Это черновик: форма ещё не подключена, заявка никуда не ушла.' },
+  bad: { en: 'Please add your name and the date or city.', ru: 'Укажите имя и дату или город.' },
+  ok: { en: 'Opening WhatsApp with your message ready — just press send. If it did not open, write to +34 627 084 012.',
+        ru: 'Открываю WhatsApp с готовым сообщением — останется нажать «Отправить». Если он не открылся, напишите на +34 627 084 012.' },
 };
 $('#bookForm').addEventListener('submit', (e) => {
   e.preventDefault();
-  const f = e.currentTarget;
-  const valid = f.name.value.trim() && /\S+@\S+\.\S+/.test(f.email.value);
+  const f = e.currentTarget, v = (n) => f[n].value.trim();
+  const valid = v('name') && (v('event') || v('email') || v('phone'));
   $('#formNote').textContent = NOTE[valid ? 'ok' : 'bad'][lang];
+  if (!valid) return;
+  const ru = lang === 'ru';
+  const lines = [
+    ru ? 'Здравствуйте, Павел! Хочу узнать, свободна ли дата.' : 'Hi Pavel! I would like to check if you are free on our date.',
+    `${ru ? 'Имя' : 'Name'}: ${v('name')}`,
+    v('event') && `${ru ? 'Событие' : 'Event'}: ${v('event')}`,
+    v('email') && `E-mail: ${v('email')}`,
+    v('phone') && `${ru ? 'Телефон' : 'Phone'}: ${v('phone')}`,
+  ].filter(Boolean);
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
 });
 
 // для проверки: адрес с #at=stage:0.25 сразу открывает это место фильма
