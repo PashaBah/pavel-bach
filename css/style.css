@@ -1051,3 +1051,14 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
   .chapter[data-scene="stage"] .body, .chapter[data-scene="incog"] .body { display: none; }
   .chapter.titles-head .credits li:nth-child(4) { display: none; }
 }
+
+/* ── мобильный Safari: кнопки без системного оформления, текст не раздувается при повороте ── */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, input { -webkit-appearance: none; appearance: none; border-radius: 0; }
+a, button { -webkit-tap-highlight-color: transparent; }
+.deck-nav button, .tap-video i, .play i, .scr::after { border-radius: 50%; }
+.tap-video, .play.reel { border-radius: 40px; }
+.scr { border-radius: 9% / 12%; }
+@media (pointer: coarse) {
+  .geo-map .route, .geo-map .city.on circle, .geo-map .plane path { filter: none; } /* тени на карте пересчитывались бы на каждом кадре */
+}

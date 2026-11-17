@@ -58,6 +58,7 @@ const byId = Object.fromEntries(SCENES.map((s, i) => [s.id, i]));
 const html = document.documentElement;
 const scrollSpace = $('#scrollSpace');
 const coarse = window.matchMedia('(pointer: coarse)').matches; // телефон: эффекты попроще
+const SAFARI = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent); // Safari плохо применяет SVG-фильтр к целой странице
 
 // ── холст для блика ──
 const fx = $('#glintFx'), fctx = fx.getContext('2d');
@@ -123,6 +124,26 @@ function pump() {
       .then(() => { fetching--; pump(); });
   }
 }
+// Раскадровка: лёгкие кадры клипа (каждые 0,8 с). Пока ролик не показывает картинку — качается, или телефон не дал его запустить, —
+// в кадре листаются они, так что сцена читается в любом случае.
+const FRAMES = {};
+fetch('media/frames/index.json').then((r) => (r.ok ? r.json() : {})).then((d) => Object.assign(FRAMES, d)).catch(() => {});
+function flipbook(sh, p) {
+  const F = FRAMES[sh.name], v = sh.video;
+  if (!F || (v && v._primed && v.readyState >= 2)) return;
+  const k = Math.min(F.n - 1, Math.round(rampAt(sh.ramp, p) * F.dur / F.step));
+  if (!sh.fr) sh.fr = [];
+  for (const n of [k, k + 1]) { // нужный кадр и следующий за ним
+    if (n >= F.n || sh.fr[n]) continue;
+    const im = new Image();
+    im.decoding = 'async'; im.onload = () => { im.ok = true; };
+    im.src = `media/frames/${sh.name}/${n}.jpg`;
+    sh.fr[n] = im;
+  }
+  let n = k;
+  while (n >= 0 && !(sh.fr[n] && sh.fr[n].ok)) n--;
+  if (n >= 0 && sh.frShown !== n) { sh.frShown = n; sh.poster.src = sh.fr[n].src; }
+}
 const posterOf = (src, pre = '') => src.replace(/([^/]+)\.mp4$/, `posters/${pre}$1.jpg`);
 
 // Айфон не подгружает кадры ролика, пока тот хоть раз не запущен, поэтому каждый ролик запускаем без звука и сразу ставим на паузу.
@@ -135,7 +156,7 @@ const stuck = (e) => { // только настоящий запрет авто�
 };
 function prime(v) {
   const p = v.play();
-  if (p) p.then(() => { v._primed = true; if (!v._play) v.pause(); }).catch(stuck);
+  if (p) p.then(() => { v._primed = true; setTimeout(() => { if (!v._play) v.pause(); }, 120); }).catch(stuck); // даём декодеру стартовать и ставим на паузу
 }
 function playV(v) {
   v._play = true;
@@ -201,6 +222,7 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
   const src = el.dataset.src;
   if (src && /\.mp4$/.test(src)) {
     sh.src = src;
+    sh.name = src.replace(/^.*\/|\.mp4$/g, '');
     clipOf(src, sh.from);
     const img = new Image();
     img.alt = ''; img.className = 'poster'; img.decoding = 'async';
@@ -213,9 +235,10 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
   return sh;
 });
 shots.forEach((sh, k) => { sh.next = shots[k + 1]; sh.prev = shots[k - 1]; });
+const NOVIDEO = /[?&]novideo/.test(location.search); // для проверки: сайт без роликов, на одной раскадровке (как на телефоне, который не запустил видео)
 function arm(sh) { // ролик сцены встаёт в кадр поверх постера
   const c = clips[sh.src];
-  if (sh.video || !c || c.state !== 'ready') return;
+  if (NOVIDEO || sh.video || !c || c.state !== 'ready') return;
   const v = makeVideo(sh.src, c.url, sh.live);
   sh.poster.after(v);
   sh.video = v;
@@ -667,6 +690,7 @@ function frame(now, snap) {
         const t = rampAt(sh.ramp, p) * (sh.video.duration - 0.05);
         if (Math.abs(sh.video.currentTime - t) > 0.02) sh.video.currentTime = t;
       }
+      if (sh.src) flipbook(sh, p);
       if (sh.mx2 !== null) { // вертикальный экран: кадр едет от героя к тому, на что он показывает
         const m = sh.mx + (sh.mx2 - sh.mx) * smooth((p - sh.pan[0]) / (sh.pan[1] - sh.pan[0]));
         if (Math.abs(m - sh.mxNow) > 0.0005) { sh.mxNow = m; shiftTo(sh, m); if (sh.fit) sh.fit.e = -1; }
@@ -803,7 +827,7 @@ function frame(now, snap) {
   // смаз всего кадра во время панорамы, пересвет во время блика и засветки
   whipDev.setAttribute('stdDeviation', `${(whipM * 46).toFixed(1)} 0`);
   let filt = '';
-  if (whipM > 0.02) filt = coarse ? `blur(${(whipM * 5).toFixed(1)}px)` : 'url(#whipblur)';
+  if (whipM > 0.02) filt = coarse || SAFARI ? `blur(${(whipM * 5).toFixed(1)}px)` : 'url(#whipblur)';
   const expo = smooth((flashA - 0.35) / 0.65);
   if (expo > 0.01) filt += ` brightness(${(1 + expo * 3.2).toFixed(2)}) saturate(${(1 - expo * 0.5).toFixed(2)}) contrast(${(1 - expo * 0.35).toFixed(2)})`;
   if (burn > 0.02) filt += ` brightness(${(1 + burn * 0.9).toFixed(2)}) saturate(${(1 + burn * 0.6).toFixed(2)})`;
