@@ -6,7 +6,7 @@ const SCENES = [
   { id: 'cover',   len: 1.5, base: '03:33:00.000', span: 70,  name: { en: '',                ru: '' },                  loc: { en: 'After hours',      ru: 'После полуночи' } },
   { id: 'formats', len: 2.4, base: '03:33:07.100', span: 30,  name: { en: 'Three formats',   ru: 'Три формата' },       loc: { en: 'Tracklist',        ru: 'Трек-лист' } },
   { id: 'card',    len: 4.4, base: '03:41:12.400', span: 160, name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' } },
-  { id: 'king',    len: 1.3, base: '03:41:12.560', span: 20,  name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' }, rail: false },
+  { id: 'king',    len: 1.7, base: '03:41:12.560', span: 20,  name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' }, rail: false },
   { id: 'stage',   len: 6.2, base: '03:52:47.120', span: 160, name: { en: '02 — Stage show', ru: '02 — Шоу на сцене' }, loc: { en: 'Main stage',       ru: 'Главная сцена' } },
   { id: 'incog',   len: 2.8, base: '04:05:30.000', span: 90,  name: { en: '03 — Incognito',  ru: '03 — Инкогнито' },    loc: { en: 'The party',        ru: 'Вечеринка' } },
   { id: 'tv',      len: 3.6, base: '04:20:00.000', span: 60,  name: { en: 'Video',           ru: 'Видео' },             loc: { en: 'On air',           ru: 'В эфире' } },
@@ -14,7 +14,7 @@ const SCENES = [
   { id: 'titles',  len: 2.2, base: '04:36:00.000', span: 40,  name: { en: 'Credits',         ru: 'Регалии' },           loc: { en: 'On the record',    ru: 'Для протокола' } },
   { id: 'geo',     len: 2.8, base: '04:38:00.000', span: 60,  name: { en: 'Map',             ru: 'География' },         loc: { en: 'On tour',          ru: 'В дороге' } },
   { id: 'reviews', len: 3.6, base: '04:40:00.000', span: 90,  name: { en: 'Reviews',         ru: 'Отзывы' },            loc: { en: 'Shout-outs',       ru: 'Респект' } },
-  { id: 'wine',    len: 4.0, base: '05:01:00.000', span: 160, name: { en: 'Made for you',    ru: 'Номер под вас' },     loc: { en: 'Last call',        ru: 'Последний тост' } },
+  { id: 'wine',    len: 4.8, base: '05:01:00.000', span: 160, name: { en: 'Made for you',    ru: 'Номер под вас' },     loc: { en: 'Last call',        ru: 'Последний тост' } },
   { id: 'booking', len: 2.2, base: '05:01:11.000', span: 60,  name: { en: 'Your date',       ru: 'Ваша дата' },         loc: { en: 'After the show',   ru: 'После шоу' } },
 ];
 
@@ -24,7 +24,7 @@ const XFADE = 0.5;   // растворение
 const FLASH = 0.26;  // за сколько до склейки разгорается блик с зуба
 const FLASH_OUT = 0.2; // за сколько после склейки он гаснет
 const REVEAL = 0.45; // за сколько раскрывается круг (переход iris)
-const EYEW = 0.5;    // последние полэкрана влёта в карту: в глазу короля проявляется следующая сцена
+const EYEW = 0.45;   // конец влёта в карту: экран уже залит чернотой зрачка, из неё кругом раскрывается следующая сцена
 const ZTAIL = 0.17;  // какую долю конца сцены камера наезжает в точку (data-zoom)
 const WHIP = 0.34;   // ширина смаз-панорамы
 const STROBE = 0.16; // полуширина серии вспышек папарацци
@@ -70,7 +70,8 @@ const probe = document.createElement('div');
 probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100lvh;visibility:hidden;pointer-events:none';
 document.body.appendChild(probe);
 let vh = window.innerHeight || 1, vw = window.innerWidth || 1, SH = 0, lastW = 0, barH = 60;
-const barTop = $('.bar-top');
+const barTop = $('.bar-top'), barBottom = $('.bar-bottom');
+let footH = 34; // высота нижней рейки глав
 let placeAll = () => {};
 function layout() {
   const keep = SH ? window.scrollY / SH : null; // место в фильме при смене высоты сохраняем
@@ -85,6 +86,7 @@ function layout() {
   }
   html.style.setProperty('--vh', `${vh / 100}px`);
   barH = barTop.offsetHeight || clamp(0.09 * vh, 54, 86);
+  footH = barBottom.offsetHeight || 34;
   fxDpr = Math.min(2, window.devicePixelRatio || 1);
   fx.width = Math.round(vw * fxDpr); fx.height = Math.round(vh * fxDpr);
   placeAll();
@@ -207,6 +209,7 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
     const [cx, cy, cw, rot] = el.dataset.card.split(',').map(parseFloat);
     const k = SCENES[byId.king];
     sh.dive = { cx: cx / 100, cy: cy / 100, cw: cw / 100, rot, from: k.start, to: k.start + k.len, d: -1 };
+    sh.dive.pupil = el.querySelector('.pupil');
     const card = el.querySelector('.kcard');
     card.style.left = `${cx}%`; card.style.top = `${cy}%`; card.style.width = `${cw}%`; card.style.rotate = `${rot}deg`;
   }
@@ -261,7 +264,9 @@ function stock() { // что держать наготове: ролики и к
 
 // Кадр 16:9 накрывает экран. На вертикальном экране видна только его часть — data-mx говорит, какую точку держать в центре.
 // На широком экране кадр можно сдвинуть и укрупнить (data-dx, data-bs), чтобы герой не оказался под текстом.
-const EYE = [0.512, 0.24]; // куда на карте влетает камера: глаз короля за стеклом очков (доли ширины и высоты картинки карты)
+const KAR = 1260 / 1726; // пропорции картинки карты (media/king.jpg)
+const PUPIL = 0.0071;   // радиус зрачка короля в долях ширины карты
+const EYE = [0.4988, 0.2222]; // куда на карте влетает камера: глаз короля за стеклом очков (доли ширины и высоты картинки карты)
 function shiftTo(sh, mx) {
   const slack = Math.max(0, (sh.w - vw) / 2);
   sh.shift = clamp((0.5 - mx) * sh.w, -slack, slack);
@@ -284,7 +289,7 @@ function place(sh) {
   el.style.setProperty('--bs', wide ? sh.bs : 1);
   if (sh.dive) {
     // точка между глаз короля в координатах кадра: вокруг неё кадр растёт и поворачивается
-    const D = sh.dive, cwp = D.cw * sh.w, chp = cwp * 4 / 3, a = D.rot * Math.PI / 180;
+    const D = sh.dive, cwp = D.cw * sh.w, chp = cwp / KAR, a = D.rot * Math.PI / 180;
     const ox = (EYE[0] - 0.5) * cwp, oy = (EYE[1] - 0.5) * chp;
     D.ax = D.cx * sh.w + ox * Math.cos(a) - oy * Math.sin(a);
     D.ay = D.cy * sh.h + ox * Math.sin(a) + oy * Math.cos(a);
@@ -292,6 +297,9 @@ function place(sh) {
     D.px = left0 - sh.shift + D.ax; // где эта точка на экране до наезда (без учёта панорамы --shift)
     D.py = top0 + D.ay;
     D.s1 = Math.max(0.75 * vw, 0.75 * vh) / cwp; // к середине влёта карта шире экрана: видно только лицо короля
+    D.pr = PUPIL * cwp;                          // радиус зрачка в кадре до наезда
+    D.pupil.style.left = `${D.ax.toFixed(1)}px`; D.pupil.style.top = `${D.ay.toFixed(1)}px`;
+    D.pupil.style.width = D.pupil.style.height = `${(2 * D.pr).toFixed(2)}px`;
     D.d = -1;
   }
   if (sh.fit) {
@@ -299,12 +307,12 @@ function place(sh) {
     const F = sh.fit, bar = barH, tall = vw / vh < 0.8;
     const bw = (F.x1 - F.x0) * sh.w, bh = (F.y1 - F.y0) * sh.h;
     const sx0 = tall ? 8 : 0.38 * vw, sx1 = vw - (tall ? 8 : 20);
-    const sh_ = tall ? 0.6 * (vh - 2 * bar) : vh - 2 * bar - 20;
+    const sh_ = tall ? 0.6 * (vh - bar - footH) : vh - bar - footH - 20;
     F.k = Math.min((sx1 - sx0) / bw, sh_ / bh, 1.7);
     F.ax = (F.x0 + F.x1) / 2 * sh.w; F.ay = (F.y0 + F.y1) / 2 * sh.h;
     el.style.transformOrigin = `${F.ax.toFixed(1)}px ${F.ay.toFixed(1)}px`;
     F.px = left0 - sh.shift + F.ax; F.py = top0 + F.ay;
-    F.tx = (sx0 + sx1) / 2; F.ty = tall ? bar + 8 + bh * F.k / 2 : vh / 2;
+    F.tx = (sx0 + sx1) / 2; F.ty = tall ? bar + 8 + bh * F.k / 2 : (bar + vh - footH) / 2;
     F.e = -1;
   }
 }
@@ -404,17 +412,66 @@ fetch('media/map.svg').then((r) => (r.ok ? r.text() : Promise.reject(new Error(r
     return { g, t: best / N };
   });
 }).catch(() => { /* карты нет — остаётся текст */ });
+const GEO_LINES = {
+  ru: ['Ваш вечер?', 'Или здесь?', 'Он успеет и туда, и туда.', 'Хватит гонять самолёт — проверьте дату.'],
+  en: ['Your event?', 'Or here?', 'He can do both.', 'Stop flying the plane and check your date.'],
+};
+const SVGNS = 'http://www.w3.org/2000/svg';
+function geoReset() { // ушли со сцены — карта снова ведёт самолёт по маршруту
+  if (!geo.free) return;
+  geo.free = false; geo.q = -1; geo.hops = 0;
+  if (geo.anim) cancelAnimationFrame(geo.anim);
+  geo.path.ownerSVGElement.querySelectorAll('.hop, .pin').forEach((n) => n.remove());
+}
+$('#geoMap').addEventListener('click', (e) => {
+  if (!geo.path || !geoShot || geoShot.shown < 0.6) return;
+  const svg = geo.path.ownerSVGElement, pt = svg.createSVGPoint();
+  pt.x = e.clientX; pt.y = e.clientY;
+  const to = pt.matrixTransform(svg.getScreenCTM().inverse());
+  const from = geo.pos || geo.path.getPointAtLength(clamp(geo.q) * geo.len);
+  const dx = to.x - from.x, dy = to.y - from.y, dist = Math.hypot(dx, dy);
+  if (dist < 12) return;
+  const cx = (from.x + to.x) / 2 + dy * 0.22, cy = (from.y + to.y) / 2 - Math.abs(dx) * 0.22 - 20; // дуга выгнута вверх
+  svg.querySelectorAll('.pin').forEach((n) => n.remove());
+  const trail = document.createElementNS(SVGNS, 'path');
+  trail.setAttribute('class', 'hop');
+  trail.setAttribute('d', `M${from.x.toFixed(1)},${from.y.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${to.x.toFixed(1)},${to.y.toFixed(1)}`);
+  trail.setAttribute('pathLength', '1');
+  svg.insertBefore(trail, geo.plane);
+  geo.free = true;
+  if (geo.anim) cancelAnimationFrame(geo.anim);
+  const t0 = performance.now(), T = clamp(dist * 2.2, 500, 1300);
+  const step = (now) => {
+    const k = inOut(clamp((now - t0) / T)), m = 1 - k;
+    const x = m * m * from.x + 2 * m * k * cx + k * k * to.x, y = m * m * from.y + 2 * m * k * cy + k * k * to.y;
+    const tx = 2 * m * (cx - from.x) + 2 * k * (to.x - cx), ty = 2 * m * (cy - from.y) + 2 * k * (to.y - cy);
+    geo.pos = { x, y };
+    geo.plane.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(Math.atan2(ty, tx) * 180 / Math.PI + 90).toFixed(1)}) scale(1.5)`);
+    trail.style.strokeDashoffset = (1 - k).toFixed(3);
+    if (k < 1) { geo.anim = requestAnimationFrame(step); return; }
+    const lines = GEO_LINES[lang], pin = document.createElementNS(SVGNS, 'g');
+    pin.setAttribute('class', 'pin');
+    const side = to.x > 1150 ? 'end' : to.x < 450 ? 'start' : 'middle';
+    pin.innerHTML = `<circle cx="${to.x.toFixed(1)}" cy="${to.y.toFixed(1)}" r="8"/><text x="${to.x.toFixed(1)}" y="${(to.y + (to.y > 780 ? -22 : 40)).toFixed(1)}" text-anchor="${side}">${lines[Math.min(geo.hops || 0, lines.length - 1)]}</text>`;
+    svg.appendChild(pin);
+    geo.hops = (geo.hops || 0) + 1;
+  };
+  geo.anim = requestAnimationFrame(step);
+});
 function layGeo() {
-  if (!geo.path || !geoShot || geoShot.shown < 0.01) return;
+  if (!geo.path || !geoShot) return;
+  if (geoShot.shown < 0.01) { geoReset(); return; }
   const q = clamp(((cur - geoShot.from) / (geoShot.to - geoShot.from) - 0.1) / 0.72);
   if (Math.abs(q - geo.q) < 0.0004) return;
   geo.q = q;
   geo.path.style.strokeDashoffset = (1 - q).toFixed(4);
+  geo.cities.forEach((c) => c.g.classList.toggle('on', q >= c.t - 0.004));
+  if (geo.free) return; // самолётом сейчас управляет зритель
   const a = geo.path.getPointAtLength(q * geo.len), b = geo.path.getPointAtLength(Math.min(geo.len, q * geo.len + 3));
   const ang = q >= 0.999 ? geo.ang || 0 : Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI + 90;
   geo.ang = ang;
+  geo.pos = a;
   geo.plane.setAttribute('transform', `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) rotate(${ang.toFixed(1)}) scale(1.5)`);
-  geo.cities.forEach((c) => c.g.classList.toggle('on', q >= c.t - 0.004));
 }
 let tvLive = false, tripLive = false;
 function tubesLive(on) { // превью в телевизорах: ролики подключаются, только пока телевизоры на экране
@@ -501,7 +558,7 @@ const railMarks = SCENES.map((s) => {
 });
 
 // ── язык ────────────────────────────────────────
-const chapterName = $('#chapterName'), locationEl = $('#location'), timecode = $('#timecode');
+const chapterName = $('#chapterName');
 let lang = 'en', sceneNow = -1;
 function setLang(l) {
   lang = l;
@@ -547,7 +604,7 @@ function layDeck(local, vis) {
   const pos = k0 + (k0 === N_REV - 1 ? 0 : smooth((q - k0 - 0.62) / 0.38)); // карта стоит, пока её читают, потом улетает
   deckPos = pos;
   const tall = vw / vh < 0.8;
-  const W = vw, H = vh - 2 * barH;  // колода занимает экран между полосами
+  const W = vw, H = vh - barH - footH;  // колода занимает экран между верхней полосой и рейкой
   // F — где стоит карта с отзывом, G — откуда карты вылетают (руки девушек); координаты от центра сцены
   const F = tall ? [0, H * 0.075] : [W * 0.2, -H * 0.02];
   const G = tall ? [W * 0.04, -H * 0.2] : [-W * 0.2, -H * 0.1]; // папка в руках организаторов: оттуда вылетают карты
@@ -711,15 +768,23 @@ function frame(now, snap) {
         const D = sh.dive, d = clamp((cur - D.from) / (D.to - D.from));
         if (Math.abs(d - D.d) > 0.0002) {
           D.d = d;
-          const a = smooth(d / 0.55), b = Math.pow(clamp((d - 0.4) / 0.6), 1.6), m = smooth(d / 0.5);
-          const st = sh.el.style;
-          st.setProperty('--z', Math.exp(Math.log(D.s1) * a + Math.log(2.4) * b).toFixed(4)); // дальше 2,4 не увеличиваем: картинка карты начинает рассыпаться на пиксели
-          st.setProperty('--rot', `${(-D.rot * smooth(d / 0.45)).toFixed(3)}deg`);
+          const a = smooth(d / 0.45), b = Math.pow(clamp((d - 0.3) / 0.45), 1.5), m = smooth(d / 0.4);
+          const t = clamp((d - 0.46) / 0.27);                                         // подлёт к зрачку
+          const st = sh.el.style, z = Math.exp(Math.log(D.s1) * a + Math.log(2.6) * b) * (1 + 2.4 * t * t); // у самого глаза камера ускоряется (картинку там уже закрывает зрачок)
+          st.setProperty('--z', z.toFixed(4));
+          st.setProperty('--out', (t * t * t).toFixed(3)); // размытие — только у самого зрачка
+          st.setProperty('--rot', `${(-D.rot * smooth(d / 0.4)).toFixed(3)}deg`);
           st.setProperty('--ax', `${((vw / 2 - D.px - sh.shift) * m).toFixed(1)}px`);
           st.setProperty('--ay', `${((vh / 2 - D.py) * m).toFixed(1)}px`);
           st.setProperty('--d', d.toFixed(4));
-          st.setProperty('--kick', Math.sin(Math.PI * clamp(d / 0.2)).toFixed(3)); // камера срывается с места: короткий смаз
-          st.setProperty('--ko', smooth((d - 0.07) / 0.06).toFixed(3));              // в смазе поверх карты из клипа встаёт чёткая
+          st.setProperty('--kick', Math.sin(Math.PI * clamp(d / 0.16)).toFixed(3)); // камера срывается с места: короткий смаз
+          st.setProperty('--ko', smooth((d - 0.05) / 0.05).toFixed(3));              // в смазе поверх карты из клипа встаёт чёткая
+          st.setProperty('--th', (1 - smooth((d - 0.1) / 0.16)).toFixed(3));         // вырез под большой палец закрывается, когда палец ушёл из кадра
+          // зрачок короля: камера летит прямо в него, и его чернота заливает экран
+          const full = Math.hypot(vw, vh) * 0.75, r0 = D.pr * z;
+          const rs = r0 * Math.pow(full / r0, Math.pow(t, 1.25));
+          D.pupil.style.transform = `translate(-50%, -50%) scale(${(rs / r0).toFixed(3)})`;
+          D.pupil.style.opacity = smooth(t / 0.12).toFixed(3);
         }
       } else if (sh.zoomer) {
         sh.el.style.setProperty('--q', (p * p).toFixed(4)); // нырок в глаз короля: всё быстрее и быстрее
@@ -782,7 +847,7 @@ function frame(now, snap) {
     if (sh.tr === 'eye' && cur >= sh.from - EYEW && cur < sh.from) {
       // сцена целиком умещается в зрачке (уменьшенная, по центру экрана) и растёт вместе с кругом; к концу встаёт на своё место
       const q = (cur - (sh.from - EYEW)) / EYEW;
-      const R = 9 * Math.pow(Math.hypot(vw, vh) * 0.66 / 9, Math.pow(q, 0.8));
+      const R = Math.hypot(vw, vh) * 0.66 * Math.pow(q, 1.5); // круг раскрывается из черноты зрачка
       const z = clamp(R * 2.15 / sh.h, 0.06, 1), e = smooth((q - 0.5) / 0.5); // кадр всегда чуть выше круга: в зрачке не видно его прямых краёв
       const ax = (vw / 2 - sh.cx) * (1 - e), ay = (vh / 2 - sh.cy) * (1 - e);
       const lx = sh.w / 2 + (vw / 2 - sh.cx - ax) / z, ly = sh.h / 2 + (vh / 2 - sh.cy - ay) / z;
@@ -823,12 +888,8 @@ function frame(now, snap) {
   });
 
   // блик на зубе: сначала маленькая звезда на улыбке, потом полоса через кадр, кадр пересвечивается в белое
-  if (flashXY) {
-    // после склейки блик остаётся там же, где родился, — до самого конца
-    drawGlint(flashA, flashXY[0], flashXY[1], 0.25 + cur * 0.2, false);
-  } else if (glintDrawn) {
-    drawGlint(0, 0, 0, 0);
-  }
+  // Блик-звезду на зубе больше не рисуем (Павлу он казался нарисованным): кадр пересвечивается в белое, как от фотовспышки.
+  if (glintDrawn) drawGlint(0, 0, 0, 0);
   whiteout.style.opacity = smooth((flashA - 0.7) / 0.3).toFixed(3);
   // вспышки папарацци и засветка плёнки
   strobeEl.style.opacity = (strobe * 0.92).toFixed(3);
@@ -864,14 +925,11 @@ function frame(now, snap) {
     tubesLive(tvOn);
   }
 
-  const tc = fmt(s.baseMs + local * s.span);
-  timecode.textContent = vw < 761 ? tc.slice(0, 8) : tc; // на телефоне рядом стоит кнопка меню — таймкод без миллисекунд
   if (i !== sceneNow) {
     sceneNow = i;
     html.dataset.scene = s.id;
     chapterName.textContent = s.name[lang];
     menuBtns.forEach((b) => b.classList.toggle('on', b.dataset.fly === MENU_OF[s.id]));
-    locationEl.textContent = s.loc[lang];
   }
   railMarks.forEach((b, k) => b && b.style.setProperty('--p', clamp((cur - SCENES[k].start) / SCENES[k].len)));
 

@@ -6,6 +6,7 @@
   --gold-hot: #ffe2ae;
   --cold: #7fb4d8;
   --bar: clamp(54px, 9vh, 86px);
+  --foot: 34px; /* низ экрана: только рейка глав на прозрачном фоне */
   --gutter: clamp(20px, 6vw, 96px);
   --display: "Cormorant Garamond", "Times New Roman", serif;
   --sans: "Jost", system-ui, sans-serif;
@@ -112,8 +113,8 @@ html[data-lang="ru"] .lang [data-l="ru"] { color: var(--paper); }
   content: ""; position: absolute; inset: -90px -130px; z-index: -1;
   background: radial-gradient(closest-side, rgba(3, 4, 6, .9), rgba(3, 4, 6, .62) 55%, rgba(3, 4, 6, 0)); pointer-events: none;
 }
-.chapter.left { left: var(--gutter); bottom: calc(var(--bar) + 9vh); }
-.chapter.right { right: var(--gutter); bottom: calc(var(--bar) + 9vh); }
+.chapter.left { left: var(--gutter); bottom: calc(var(--foot) + 9vh); }
+.chapter.right { right: var(--gutter); bottom: calc(var(--foot) + 9vh); }
 .chapter.top { bottom: auto; top: calc(var(--bar) + 5vh); }
 .chapter.center {
   left: 50%; top: 50%; translate: -50% -50%; text-align: center;
@@ -209,7 +210,7 @@ h2 {
 .chapter.tv { max-width: min(360px, 26vw); }
 .chapter.tv h2 { font-size: clamp(26px, 2.6vw, 44px); }
 /* первый экран: текст внизу, чтобы не закрывать лицо в кадре */
-.chapter.hero { top: auto; bottom: calc(var(--bar) + 4vh); translate: -50% 0; }
+.chapter.hero { top: auto; bottom: calc(var(--foot) + 4vh); translate: -50% 0; }
 .chapter.hero h1 { font-size: clamp(28px, 5.2vw, 84px); }
 .chapter.hero .lede { margin-top: 14px; }
 .chapter.hero .hero-actions { margin-top: 22px; }
@@ -245,11 +246,11 @@ h2 {
 
 /* отзывы: игральные карты, застывшие в воздухе; активная стоит перед камерой, остальные уходят в глубину зала */
 .deck {
-  position: fixed; z-index: 5; left: 0; right: 0; top: var(--bar); bottom: var(--bar); opacity: 0; visibility: hidden;
+  position: fixed; z-index: 5; left: 0; right: 0; top: var(--bar); bottom: var(--foot); opacity: 0; visibility: hidden;
   perspective: 1400px; perspective-origin: 62% 50%; pointer-events: none;
 }
 .rcard {
-  --h: min(calc(100vh - 2 * var(--bar) - 56px), 600px); --u: calc(var(--h) * .007); /* 1% ширины карты */
+  --h: min(calc(100vh - (var(--bar) + var(--foot)) - 56px), 600px); --u: calc(var(--h) * .007); /* 1% ширины карты */
   position: absolute; left: 62%; top: 50%; height: var(--h); width: calc(var(--h) * .7); margin: calc(var(--h) / -2) 0 0 calc(var(--h) * -.35);
   display: grid; grid-template-rows: 1fr auto; padding: calc(var(--u) * 13) calc(var(--u) * 11) calc(var(--u) * 12);
   background: linear-gradient(160deg, #fbf7ee, #efe7d6); color: #1c1914; border-radius: calc(var(--u) * 4.5);
@@ -266,7 +267,7 @@ h2 {
 .reviews-head #deckCount { margin-top: 18px; color: var(--gold); }
 
 /* заявка всегда целиком помещается между полосами, на низких экранах прокручивается внутри себя */
-.chapter.booking { max-height: calc(100vh - 2 * var(--bar) - 16px); overflow-y: auto; scrollbar-width: none; width: 100%; }
+.chapter.booking { max-height: calc(100vh - (var(--bar) + var(--foot)) - 16px); overflow-y: auto; scrollbar-width: none; width: 100%; }
 .chapter.booking h2 { font-size: clamp(26px, 3.4vw, 52px); }
 @media (max-width: 1000px), (max-height: 760px) {
   .chapter.booking form { grid-template-columns: 1fr 1fr; gap: 16px 18px; margin-top: 20px; }
@@ -328,11 +329,11 @@ form button:hover { background: var(--gold-hot); }
   .brand { font-size: 11px; letter-spacing: .3em; }
   .cta-top { padding: 9px 12px; }
   .timecode { font-size: 11px; }
-  .chapter.left, .chapter.right { left: var(--gutter); right: var(--gutter); bottom: calc(var(--bar) + 5vh); }
+  .chapter.left, .chapter.right { left: var(--gutter); right: var(--gutter); bottom: calc(var(--foot) + 5vh); }
   .chapter.tv, .chapter.titles, .chapter.slim { max-width: none; }
   .credits li:nth-child(n+4) { display: none; }
   .deck { perspective-origin: 50% 50%; }
-  .rcard { left: 50%; --h: min(calc(100vh - 2 * var(--bar) - 150px), 520px); margin-top: calc(var(--h) / -2 + 46px); }
+  .rcard { left: 50%; --h: min(calc(100vh - (var(--bar) + var(--foot)) - 150px), 520px); margin-top: calc(var(--h) / -2 + 46px); }
   .chapter.reviews-head { bottom: auto; top: calc(var(--bar) + 12px); }
   .chapter.reviews-head h2 { font-size: 20px; }
   .chapter.reviews-head .eyebrow, .chapter.reviews-head .play, .chapter.reviews-head #deckCount { display: none; }
@@ -375,7 +376,7 @@ form button:hover { background: var(--gold-hot); }
 
 /* обложка: бриллиантовый логотип, по камням пробегают звёздочки-блики */
 .chapter.cover {
-  top: calc(var(--bar) + 2vh); bottom: calc(var(--bar) + 3vh); translate: -50% 0; max-width: min(1200px, 96vw); width: 100%;
+  top: calc(var(--bar) + 2vh); bottom: calc(var(--foot) + 3vh); translate: -50% 0; max-width: min(1200px, 96vw); width: 100%;
   display: flex; flex-direction: column; justify-content: space-between; align-items: center;
 }
 .chapter.cover::before { inset: auto -60px -40px; height: 46%; }
@@ -499,7 +500,7 @@ form button:hover { background: var(--gold-hot); }
 
 /* ── три формата: экран делится на три клипа, как в рэп-клипах 90-х ── */
 .shot.trip { left: 0; top: 0; width: 100vw; height: 100vh; transform: none; background: #050307; container-type: normal; }
-.trip .panels { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(var(--bar) + 21vh); bottom: calc(var(--bar) + 4vh); display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.trip .panels { position: absolute; left: var(--gutter); right: var(--gutter); top: calc(var(--bar) + 21vh); bottom: calc(var(--foot) + 4vh); display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .panel {
   --show: clamp(0, calc((var(--p, 0) - .03 - var(--i) * .08) * 8), 1);
   position: relative; overflow: hidden; display: block; color: #fff; text-decoration: none; background: #0c0709; pointer-events: auto;
@@ -535,7 +536,7 @@ form button:hover { background: var(--gold-hot); }
 .scr.off { cursor: default; background: #1a1c22; animation: snow .22s steps(3) infinite;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='1'/%3E%3CfeColorMatrix values='0 0 0 0 .9  0 0 0 0 .9  0 0 0 0 .95  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 @keyframes snow { 33% { background-position: 31px 17px; } 66% { background-position: -23px 41px; } }
-.chapter.tv-head { bottom: calc(var(--bar) + 5vh); }
+.chapter.tv-head { bottom: calc(var(--foot) + 5vh); }
 .chapter.tv-head .tag { font-size: clamp(36px, 4vw, 64px); }
 .chapter.tv-head h2 { font-size: clamp(22px, 2.2vw, 34px); }
 
@@ -550,7 +551,7 @@ form button:hover { background: var(--gold-hot); }
 
 /* ── субтитры ── */
 .subs {
-  position: fixed; left: 50%; bottom: calc(var(--bar) + 3.2vh); translate: -50% 0; z-index: 6; margin: 0; max-width: min(760px, calc(100vw - 32px));
+  position: fixed; left: 50%; bottom: calc(var(--foot) + 3.2vh); translate: -50% 0; z-index: 6; margin: 0; max-width: min(760px, calc(100vw - 32px));
   font-family: var(--sans); font-weight: 400; font-size: clamp(16px, 1.55vw, 23px); line-height: 1.3; text-align: center; color: #fff6c9;
   text-shadow: 0 0 2px #000, 0 2px 6px #000, 0 0 18px rgba(0, 0, 0, .9); opacity: 0; transition: opacity .25s; pointer-events: none;
 }
@@ -575,7 +576,7 @@ form button:hover { background: var(--gold-hot); }
   .tag { font-size: 44px; margin-bottom: 8px; }
   .tag.big { font-size: 84px; }
   .chapter h2 { font-size: 23px; }
-  .chapter.left, .chapter.right, .chapter.top { left: var(--gutter); right: var(--gutter); top: auto; bottom: calc(var(--bar) + 3vh); max-width: none; }
+  .chapter.left, .chapter.right, .chapter.top { left: var(--gutter); right: var(--gutter); top: auto; bottom: calc(var(--foot) + 3vh); max-width: none; }
   .chapter.left::before, .chapter.right::before { inset: -40vh -40px -20px; background: linear-gradient(transparent, rgba(3, 2, 6, .82) 45%, rgba(3, 2, 6, .92)); }
   .chapter .body { font-size: 14.5px; line-height: 1.5; margin-top: 10px; }
   .facts { margin-top: 12px; gap: 6px; }
@@ -681,7 +682,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 
 /* регалии: заголовок вверху слева, титры — плашкой внизу, как в репортаже с дорожки */
 .chapter.carpet-head .tag { font-size: clamp(40px, 4.6vw, 76px); }
-.chapter.lower3 { left: var(--gutter); bottom: calc(var(--bar) + 4vh); max-width: min(560px, calc(100vw - 2 * var(--gutter))); width: 100%; }
+.chapter.lower3 { left: var(--gutter); bottom: calc(var(--foot) + 4vh); max-width: min(560px, calc(100vw - 2 * var(--gutter))); width: 100%; }
 .chapter.lower3::before { display: none; }
 .l3 { list-style: none; position: relative; height: 92px; }
 .l3 li {
@@ -703,7 +704,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 }
 .scr:hover::after { scale: 1.15; }
 .scr b { font-size: .78cqw; padding: 1.4cqw .4cqw .6cqw; letter-spacing: .12em; white-space: normal; line-height: 1.25; }
-.chapter.tv-head { bottom: calc(var(--bar) + 5vh); max-width: min(360px, 28vw); }
+.chapter.tv-head { bottom: calc(var(--foot) + 5vh); max-width: min(360px, 28vw); }
 .chapter.tv-head .tap-hint { font-size: 12px; letter-spacing: .12em; line-height: 1.6; text-transform: none; color: #ffd0da; animation: none; margin-top: 14px; }
 
 /* отзывы: заголовок сверху по центру, карты — в центре, под ними летит зал */
@@ -715,7 +716,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .chapter.reviews-head .eyebrow { margin-bottom: 6px; }
 .chapter.reviews-head #deckCount { margin-top: 6px; color: #ff4f6d; }
 .deck { top: calc(var(--bar) + 15vh); perspective-origin: 50% 45%; }
-.rcard { left: 50%; --h: min(calc(100vh - 2 * var(--bar) - 15vh - 24px), 560px); }
+.rcard { left: 50%; --h: min(calc(100vh - (var(--bar) + var(--foot)) - 15vh - 24px), 560px); }
 
 /* финал: из бокала — бриллиантовые буквы и приглашение */
 .chapter.booking .ice.small { width: min(520px, 70vw); margin: 0 auto 10px; animation: none; }
@@ -727,7 +728,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 
 @media (max-width: 760px) {
   .ice-fly { transform-origin: 50% 80%; }
-  .chapter.lower3 { left: var(--gutter); right: var(--gutter); bottom: calc(var(--bar) + 3vh); width: auto; }
+  .chapter.lower3 { left: var(--gutter); right: var(--gutter); bottom: calc(var(--foot) + 3vh); width: auto; }
   .chapter.carpet-head { top: calc(var(--bar) + 2vh); bottom: auto; }
   .chapter.carpet-head::before { inset: -20px -40px -40px; background: linear-gradient(rgba(3, 2, 6, .85), rgba(3, 2, 6, .5) 70%, transparent); }
   .chapter.carpet-head .eyebrow { margin-bottom: 4px; }
@@ -742,7 +743,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
   .chapter.reviews-head h2 { font-size: 19px; }
   .chapter.reviews-head .eyebrow, .chapter.reviews-head #deckCount { display: none; }
   .deck { top: calc(var(--bar) + 70px); }
-  .rcard { --h: min(calc(100vh - 2 * var(--bar) - 110px), 500px); margin-top: calc(var(--h) / -2); }
+  .rcard { --h: min(calc(100vh - (var(--bar) + var(--foot)) - 110px), 500px); margin-top: calc(var(--h) / -2); }
   .chapter.booking .ice.small { width: 76vw; margin-bottom: 4px; }
   .chapter.booking h2.finale { font-size: 26px; }
   .cta-sub { font-size: 14px; }
@@ -812,9 +813,9 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(90deg, transparent 32%, rgba(4, 2, 8, .5) 60%, rgba(4, 2, 8, .7));
 }
-.deck { top: var(--bar); bottom: var(--bar); perspective: 1400px; perspective-origin: 50% 50%; }
+.deck { top: var(--bar); bottom: var(--foot); perspective: 1400px; perspective-origin: 50% 50%; }
 .rcard {
-  --h: min(calc(100vh - 2 * var(--bar) - 84px), 640px); --w: calc(var(--h) * .735); --u: calc(var(--w) * .01);
+  --h: min(calc(100vh - (var(--bar) + var(--foot)) - 84px), 640px); --w: calc(var(--h) * .735); --u: calc(var(--w) * .01);
   left: 50%; top: 50%; width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
   padding: calc(var(--u) * 16) calc(var(--u) * 9) calc(var(--u) * 14); backface-visibility: visible;
 }
@@ -831,7 +832,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 }
 .rcard.filler .pip { display: none; }
 .deck-nav {
-  position: fixed; z-index: 6; left: calc(50% + var(--fx, 0px)); bottom: calc(var(--bar) + 8px); translate: -50% 0; display: flex; align-items: center; gap: 18px;
+  position: fixed; z-index: 6; left: calc(50% + var(--fx, 0px)); bottom: calc(var(--foot) + 8px); translate: -50% 0; display: flex; align-items: center; gap: 18px;
   opacity: 0; visibility: hidden; pointer-events: none; font-family: var(--mono); font-size: 12px; letter-spacing: .22em; color: #ffd0da; white-space: nowrap;
 }
 .deck-nav.live { pointer-events: auto; }
@@ -841,20 +842,20 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 }
 .deck-nav button:hover { background: rgba(255, 61, 99, .35); }
 .deck-nav button:disabled { opacity: .28; cursor: default; }
-.chapter.reviews-head { top: auto; bottom: calc(var(--bar) + 6vh); left: var(--gutter); translate: none; width: auto; max-width: min(400px, 32vw); text-align: left; }
+.chapter.reviews-head { top: auto; bottom: calc(var(--foot) + 6vh); left: var(--gutter); translate: none; width: auto; max-width: min(400px, 32vw); text-align: left; }
 .chapter.reviews-head::before { display: block; }
 .chapter.reviews-head .tag { font-size: clamp(34px, 3.6vw, 60px); }
 .chapter.reviews-head h2 { font-size: clamp(20px, 2vw, 30px); }
 
 @media (max-width: 760px) {
-  .rcard { --h: min(calc(100vh - 2 * var(--bar) - 38vh), 440px); --w: min(calc(var(--h) * .8), 86vw); margin-top: calc(var(--h) / -2); }
+  .rcard { --h: min(calc(100vh - (var(--bar) + var(--foot)) - 38vh), 440px); --w: min(calc(var(--h) * .8), 86vw); margin-top: calc(var(--h) / -2); }
   .rcard p { font-size: calc(var(--u) * 6.6); }
   .chapter.reviews-head { top: calc(var(--bar) + 6px); bottom: auto; left: var(--gutter); right: var(--gutter); max-width: none; }
   .chapter.reviews-head::before { display: block; inset: -10px -40px -30px; background: linear-gradient(rgba(3, 2, 6, .85), rgba(3, 2, 6, .55) 70%, transparent); }
   .chapter.reviews-head .tag { font-size: 32px; margin-bottom: 2px; }
   .chapter.reviews-head h2 { font-size: 17px; }
   .shot.girls::before { background: linear-gradient(180deg, transparent 30%, rgba(4, 2, 8, .6) 62%, rgba(4, 2, 8, .8)); }
-  .deck-nav { bottom: calc(var(--bar) + 4px); gap: 14px; }
+  .deck-nav { bottom: calc(var(--foot) + 4px); gap: 14px; }
   .deck-nav button { width: 38px; height: 38px; }
 }
 @media (max-aspect-ratio: 3/4) {
@@ -884,7 +885,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .menu-btn { display: none; align-items: center; gap: 9px; background: none; border: 0; padding: 8px 0; font: inherit; letter-spacing: inherit; text-transform: uppercase; color: var(--paper); cursor: pointer; }
 .menu-btn i { width: 16px; height: 9px; border-top: 1px solid currentColor; border-bottom: 1px solid currentColor; }
 .menu-sheet {
-  position: fixed; left: 0; right: 0; bottom: var(--bar); z-index: 11; display: grid; padding: 4px var(--gutter) 8px;
+  position: fixed; left: 0; right: 0; bottom: var(--foot); z-index: 11; display: grid; padding: 4px var(--gutter) 8px;
   background: rgba(4, 2, 6, .97); border-top: 1px solid rgba(255, 79, 109, .45);
 }
 .menu-sheet[hidden] { display: none; }
@@ -918,13 +919,13 @@ html[data-ff="rew"] .ff b::before { content: "◀◀ REW"; }
 html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 
 /* ── влёт в карту: в момент старта короткий смаз, в нём карта из клипа подменяется чёткой ── */
-.shot.dive { filter: blur(calc(var(--kick, 0) * 9px)); }
+.shot.dive { filter: blur(calc(var(--kick, 0) * 9px + var(--out, 0) * 2.5px)); }
 .shot > img.kcard { opacity: var(--ko, 0); filter: brightness(.96) saturate(1.12) contrast(1.04); }
 
 /* ── регалии: настоящий снимок с площадки America's Got Talent ── */
 .shot.titles > img { object-position: 50% 26%; filter: contrast(1.1) saturate(1.2) brightness(.86); }
 .shot.titles::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(4, 2, 8, .82), rgba(4, 2, 8, .4) 42%, transparent 62%); }
-.chapter.titles-head { max-width: min(540px, 46vw); bottom: calc(var(--bar) + 5vh); }
+.chapter.titles-head { max-width: min(540px, 46vw); bottom: calc(var(--foot) + 5vh); }
 .chapter.titles-head .credits { margin-top: 18px; gap: clamp(10px, 1.8vh, 18px); }
 .chapter.titles-head .credits li { display: grid; gap: 1px; font-size: clamp(13.5px, 1.05vw, 16px); color: #d6d0c4; }
 .chapter.titles-head .credits b { margin: 0; font-size: clamp(21px, 2.1vw, 32px); color: #fff; }
@@ -943,14 +944,14 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .geo-map .city.on circle { fill: #fff; filter: drop-shadow(0 0 6px #ff4f6d); }
 .geo-map .city.on text { fill: #fff; }
 .geo-map .plane path { fill: #fff; filter: drop-shadow(0 0 5px rgba(255, 255, 255, .8)) drop-shadow(0 5px 4px rgba(0, 0, 0, .6)); }
-.chapter.geo-head { max-width: min(400px, 30vw); bottom: calc(var(--bar) + 5vh); }
+.chapter.geo-head { max-width: min(400px, 30vw); bottom: calc(var(--foot) + 5vh); }
 
 /* ── отзывы: колода лежит внутри кадра — под той же плёночной обработкой, что и съёмка; карты как настоящие ── */
 .shot.girls { top: calc(50% + 8vh); }           /* кадр опущен: головы девушек не уходят под верхнюю полосу */
 .shot.girls::after { z-index: 3; }
 .shot.girls .deck {
   position: absolute; z-index: 2; left: calc(50% - var(--shift, 0px)); right: auto; top: calc(50% - 8vh); bottom: auto; translate: -50% -50%;
-  width: 100vw; height: calc(100vh - 2 * var(--bar)); opacity: 1; visibility: visible; perspective: 1400px; perspective-origin: 50% 50%; pointer-events: none;
+  width: 100vw; height: calc(100vh - (var(--bar) + var(--foot))); opacity: 1; visibility: visible; perspective: 1400px; perspective-origin: 50% 50%; pointer-events: none;
 }
 .rcard {
   border-radius: 4.6% / 3.3%; overflow: hidden;
@@ -974,7 +975,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard.filler { background: #f4efe4 url(../media/cardback.jpg) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
-  .chapter.titles-head { max-width: none; bottom: calc(var(--bar) + 3vh); }
+  .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
   .chapter.titles-head .credits { margin-top: 10px; gap: 7px; }
   .chapter.titles-head .credits li { font-size: 12.5px; }
   .chapter.titles-head .credits li:nth-child(n+4) { display: grid; }
@@ -993,11 +994,11 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .geo-map .land path { fill: #3b2531; stroke: rgba(255, 180, 205, .42); }
 .geo-map .city text { font-size: 25px; fill: rgba(236, 230, 218, .5); }
 .geo-map .city circle { fill: #8a737c; }
-.chapter.geo-head { top: auto; bottom: calc(var(--bar) + 3vh); translate: -50% 0; max-width: min(560px, 44vw); }
+.chapter.geo-head { top: auto; bottom: calc(var(--foot) + 3vh); translate: -50% 0; max-width: min(560px, 44vw); }
 .chapter.geo-head .tag { font-size: clamp(36px, 4vw, 64px); margin-bottom: 4px; }
 .chapter.geo-head .body { margin: 10px auto 0; font-size: clamp(14px, 1.05vw, 16px); }
 @media (max-width: 760px) {
-  .chapter.geo-head { left: var(--gutter); right: var(--gutter); translate: none; text-align: left; max-width: none; bottom: calc(var(--bar) + 3vh); }
+  .chapter.geo-head { left: var(--gutter); right: var(--gutter); translate: none; text-align: left; max-width: none; bottom: calc(var(--foot) + 3vh); }
   .chapter.geo-head .body { margin-left: 0; }
 }
 @media (max-width: 760px) {
@@ -1040,7 +1041,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
   .chapter[data-scene="card"] .tag, .chapter[data-scene="stage"] .tag, .chapter[data-scene="incog"] .tag, .chapter[data-scene="wine"] .tag { font-size: 38px; margin-bottom: 4px; }
   /* отзывы: карта как можно крупнее — это главное на экране; лица девушек остаются над ней */
   .rcard {
-    --w: min(72vw, 300px, calc((var(--vh, 1vh) * 100 - 2 * var(--bar) - 172px) * .735)); --h: calc(var(--w) / .735);
+    --w: min(72vw, 300px, calc((var(--vh, 1vh) * 100 - (var(--bar) + var(--foot)) - 172px) * .735)); --h: calc(var(--w) / .735);
     margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
   }
   .rcard p { font-size: calc(var(--u) * 6.9); }
@@ -1070,12 +1071,48 @@ a, button { -webkit-tap-highlight-color: transparent; }
   .tag { font-size: 34px; margin-bottom: 2px; }
   .chapter h2 { font-size: 20px; }
   .chapter.cover .lede { font-size: 22px; }
-  .chapter.left, .chapter.right, .chapter.top { top: auto; bottom: calc(var(--bar) + 2vh); }
+  .chapter.left, .chapter.right, .chapter.top { top: auto; bottom: calc(var(--foot) + 2vh); }
   .play { margin-top: 8px; }
-  .rcard { --h: calc(100vh - 2 * var(--bar) - 56px); --w: calc(var(--h) * .735); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); }
+  .rcard { --h: calc(100vh - (var(--bar) + var(--foot)) - 56px); --w: calc(var(--h) * .735); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); }
 }
 /* ── планшет в портретной ориентации: заголовок отзывов сверху, как на телефоне ── */
 @media (max-aspect-ratio: 3/4) and (min-width: 761px) {
   .chapter.reviews-head { top: calc(var(--bar) + 14px); bottom: auto; max-width: none; }
   .chapter.reviews-head::before { display: none; }
 }
+
+
+/* ══ ДЕСЯТАЯ РЕДАКЦИЯ ══════════════════════════════════════════════════════════════ */
+
+/* низ экрана: чёрной полосы, названия места и таймкода больше нет — только рейка глав поверх картинки; кадр занимает всё до нижнего края */
+.bar-bottom { height: var(--foot); background: none; display: flex; align-items: center; justify-content: center; gap: 14px; pointer-events: none; padding-bottom: 6px; }
+.bar-bottom > * { pointer-events: auto; }
+.rail button::before { background: rgba(255, 255, 255, .3); box-shadow: 0 0 6px rgba(0, 0, 0, .7); }
+.rail button i { background: #ff4f6d; box-shadow: 0 0 6px rgba(255, 60, 100, .8); }
+.shot.girls .deck { top: calc(50% - 8vh + (var(--bar) - var(--foot)) / 2); }
+@media (max-width: 1100px) {
+  :root { --foot: 46px; }
+  .bar-bottom { justify-content: flex-start; background: linear-gradient(transparent, rgba(0, 0, 0, .55)); }
+  .bar-bottom .rail { flex: 1; justify-content: center; }
+  .menu-btn { text-shadow: 0 0 6px #000; }
+}
+
+/* ── карта короля поверх ролика: тот же свет, что в кадре (--ktint — цвет белого поля карты в ролике), ровные края, вырез под палец ── */
+.kcard {
+  position: absolute; aspect-ratio: 1260 / 1726; translate: -50% -50%; border-radius: 3.9% / 2.85%; overflow: hidden; opacity: var(--ko, 0);
+  filter: contrast(1.22) saturate(1.35) brightness(.92);
+  -webkit-mask: radial-gradient(ellipse calc(.5% + 44% * var(--th, 1)) calc(.5% + 46% * var(--th, 1)) at 0% 100%, transparent 78%, #000 100%);
+  mask: radial-gradient(ellipse calc(.5% + 44% * var(--th, 1)) calc(.5% + 46% * var(--th, 1)) at 0% 100%, transparent 78%, #000 100%);
+}
+.kcard img { display: block; width: 100%; height: 100%; }
+.kcard::after { content: ""; position: absolute; inset: 0; background: #dad8d8; mix-blend-mode: multiply; } /* цвет белого поля карты в ролике: карта не выбивается из кадра */
+/* зрачок короля: камера влетает в него, и его чернота заливает экран */
+.pupil { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; background: radial-gradient(closest-side, #000 74%, rgba(0, 0, 0, 0) 100%); will-change: transform, opacity; }
+
+/* ── игра на карте: нажал — самолёт летит туда и ставит булавку ── */
+.geo-map { cursor: crosshair; }
+.geo-map .hop { fill: none; stroke: #fff; stroke-width: 1.7; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .7; }
+.geo-map .pin circle { fill: #ff3d63; stroke: #fff; stroke-width: 2.4; }
+.geo-map .pin text { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 30px; fill: #fff; paint-order: stroke; stroke: rgba(8, 5, 10, .92); stroke-width: 6px; }
+.geo-hint { margin-top: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #ff8fa5; }
+@media (max-width: 760px) { .geo-map .pin text { font-size: 40px; } .geo-hint { font-size: 10px; margin-top: 8px; } }
