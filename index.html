@@ -92,7 +92,10 @@
   <!-- регалии: настоящий снимок Павла на площадке America's Got Talent (неоновый логотип шоу — в самом кадре) -->
   <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.jpg" data-tr="strobe" data-mx="66%"></div>
   <!-- география: карта (tools/geomap.py вставляется из media/map.svg), маршрут рисуется при прокрутке, по нему летит самолёт -->
-  <div class="shot phonk geo" data-scenes="geo" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.12,0.82"><div class="geo-map" id="geoMap"></div></div>
+  <div class="shot phonk geo" data-scenes="geo rabbit" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
+  <!-- кролик: самолёт долетел — справа от карты появляется Павел с кроликом; достаёт из-за уха кролика плоский диск, диск раскрывается в цилиндр,
+       кролик садится в шляпу. Ролик снят на тёмном фоне под цвет карты и врастает в неё мягким краем (на телефоне сменяет карту в полосе). -->
+  <div class="shot phonk act" data-scenes="rabbit" data-src="media/rabbit.mp4" data-tr="wash" data-fade="0.3" data-mx="50%"></div>
   <!-- отзывы: одна организаторка шепчет другой на ухо (клип перематывается скроллом); от них к зрителю спиралью летят карты (.deck внутри кадра,
        под той же плёночной обработкой, что и съёмка) -->
   <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-tr="wash" data-fade="0.22" data-mx="33%">
@@ -264,11 +267,17 @@
   </section>
 
   <!-- ГЕОГРАФИЯ -->
-  <section class="chapter center geo-head" data-scene="geo" data-in="0.08" data-out="0.94">
+  <section class="chapter center geo-head" data-scene="geo" data-in="0.08" data-out="0.99">
     <p class="tag">On Tour</p>
     <h2><span lang="en">He flies to you.</span><span lang="ru">Прилетит к вам.</span></h2>
     <p class="body"><span lang="en">Private and corporate events across Europe and the Middle East, plus his own stand-up magic tour of European cities.</span><span lang="ru">Частные и корпоративные события по всей Европе и на Ближнем Востоке, плюс собственный тур stand-up magic по европейским городам.</span></p>
     <p class="geo-hint"><span lang="en">Tap the map: where should he fly next?</span><span lang="ru">Нажмите на карту — куда ему лететь дальше?</span></p>
+  </section>
+
+  <!-- КРОЛИК: тот же блок, что у карты, с продолжением фразы -->
+  <section class="chapter center geo-head" data-scene="rabbit" data-in="0.03" data-out="0.95">
+    <p class="tag">On Tour</p>
+    <h2><span lang="en">He flies to you. And not alone.</span><span lang="ru">Прилетит к вам. И не один.</span></h2>
   </section>
 
   <!-- ОТЗЫВЫ: заголовок слева внизу, под девушками; отзывы — на картах, летящих от них -->

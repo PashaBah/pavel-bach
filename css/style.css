@@ -1116,3 +1116,23 @@ a, button { -webkit-tap-highlight-color: transparent; }
 .geo-map .pin text { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 30px; fill: #fff; paint-order: stroke; stroke: rgba(8, 5, 10, .92); stroke-width: 6px; }
 .geo-hint { margin-top: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #ff8fa5; }
 @media (max-width: 760px) { .geo-map .pin text { font-size: 40px; } .geo-hint { font-size: 10px; margin-top: 8px; } }
+
+/* ── кролик: Павел появляется справа от карты; ролик вертикальный (9:16), снят на тёмном фоне и мягким краем врастает в карту ── */
+.shot.act {
+  left: auto; right: 0; top: auto; bottom: 0; width: min(44vw, 56vh); height: calc(100vh - var(--bar)); transform: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .75) 5%, #000 12%); mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .75) 5%, #000 12%);
+}
+.shot.act > video, .shot.act > img { object-position: 50% 40%; }
+.chapter.geo-head[data-scene="rabbit"] { left: 30%; }
+@media (max-aspect-ratio: 3/4) {
+  /* на телефоне он встаёт посреди полосы карты */
+  .shot.act {
+    left: 50%; right: auto; bottom: auto; top: calc(var(--bar) + var(--vh, 1vh) * 33); height: calc(var(--vh, 1vh) * 64); width: calc(var(--vh, 1vh) * 42);
+    transform: translate(-50%, -50%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, #000 88%, transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+  }
+  .shot.act > video, .shot.act > img { object-position: 50% 30%; }
+}
+@media (max-width: 760px) { .chapter.geo-head[data-scene="rabbit"] { left: var(--gutter); } }

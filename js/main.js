@@ -13,6 +13,7 @@ const SCENES = [
   { id: 'feat',    len: 2.0, base: '04:31:00.000', span: 40,  name: { en: 'Clients',         ru: 'Клиенты' },           loc: { en: 'Featuring',        ru: 'При участии' } },
   { id: 'titles',  len: 2.2, base: '04:36:00.000', span: 40,  name: { en: 'Credits',         ru: 'Регалии' },           loc: { en: 'On the record',    ru: 'Для протокола' } },
   { id: 'geo',     len: 2.8, base: '04:38:00.000', span: 60,  name: { en: 'Map',             ru: 'География' },         loc: { en: 'On tour',          ru: 'В дороге' } },
+  { id: 'rabbit',  len: 3.4, base: '04:39:00.000', span: 90,  name: { en: 'Map',             ru: 'География' },         loc: { en: 'On tour',          ru: 'В дороге' }, rail: false },
   { id: 'reviews', len: 3.6, base: '04:40:00.000', span: 90,  name: { en: 'Reviews',         ru: 'Отзывы' },            loc: { en: 'Shout-outs',       ru: 'Респект' } },
   { id: 'wine',    len: 4.8, base: '05:01:00.000', span: 160, name: { en: 'Made for you',    ru: 'Номер под вас' },     loc: { en: 'Last call',        ru: 'Последний тост' } },
   { id: 'booking', len: 2.2, base: '05:01:11.000', span: 60,  name: { en: 'Your date',       ru: 'Ваша дата' },         loc: { en: 'After the show',   ru: 'После шоу' } },
@@ -461,7 +462,8 @@ $('#geoMap').addEventListener('click', (e) => {
 function layGeo() {
   if (!geo.path || !geoShot) return;
   if (geoShot.shown < 0.01) { geoReset(); return; }
-  const q = clamp(((cur - geoShot.from) / (geoShot.to - geoShot.from) - 0.1) / 0.72);
+  const gs = SCENES[byId.geo]; // карта остаётся на экране и в следующей сцене (кролик), но маршрут рисуется только в своей
+  const q = clamp(((cur - gs.start) / gs.len - 0.1) / 0.72);
   if (Math.abs(q - geo.q) < 0.0004) return;
   geo.q = q;
   geo.path.style.strokeDashoffset = (1 - q).toFixed(4);
@@ -523,7 +525,7 @@ const menuBtns = [...document.querySelectorAll('[data-fly]')];
 const closeSheet = () => { menuSheet.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
 menuBtns.forEach((b) => b.addEventListener('click', () => { closeSheet(); flyTo(b.dataset.fly, parseFloat(b.dataset.at || 0.05)); }));
 menuBtn.addEventListener('click', () => { menuSheet.hidden = !menuSheet.hidden; menuBtn.setAttribute('aria-expanded', String(!menuSheet.hidden)); });
-const MENU_OF = { formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', feat: 'feat', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
+const MENU_OF = { formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', feat: 'feat', titles: 'titles', geo: 'geo', rabbit: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
 
 document.querySelectorAll('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
   e.preventDefault();
