@@ -665,7 +665,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.png) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.png?v=11) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=11) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -787,7 +787,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=11) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=11) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -972,7 +972,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.jpg) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=11) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1023,7 +1023,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png); mask-image: url(../media/ice_logo_m.png); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=11); mask-image: url(../media/ice_logo_m.png?v=11); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1099,15 +1099,16 @@ a, button { -webkit-tap-highlight-color: transparent; }
 
 /* ── карта короля поверх ролика: тот же свет, что в кадре (--ktint — цвет белого поля карты в ролике), ровные края, вырез под палец ── */
 .kcard {
-  position: absolute; aspect-ratio: 1260 / 1726; translate: -50% -50%; border-radius: 3.9% / 2.85%; overflow: hidden; opacity: var(--ko, 0);
+  position: absolute; aspect-ratio: 1261 / 1724; translate: -50% -50%; border-radius: 3.9% / 2.85%; overflow: hidden; opacity: var(--ko, 0);
   filter: contrast(1.22) saturate(1.35) brightness(.92);
   -webkit-mask: radial-gradient(ellipse calc(.5% + 44% * var(--th, 1)) calc(.5% + 46% * var(--th, 1)) at 0% 100%, transparent 78%, #000 100%);
   mask: radial-gradient(ellipse calc(.5% + 44% * var(--th, 1)) calc(.5% + 46% * var(--th, 1)) at 0% 100%, transparent 78%, #000 100%);
 }
 .kcard img { display: block; width: 100%; height: 100%; }
 .kcard::after { content: ""; position: absolute; inset: 0; background: #dad8d8; mix-blend-mode: multiply; } /* цвет белого поля карты в ролике: карта не выбивается из кадра */
-/* зрачок короля: камера влетает в него, и его чернота заливает экран */
-.pupil { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; background: radial-gradient(closest-side, #000 74%, rgba(0, 0, 0, 0) 100%); will-change: transform, opacity; }
+/* глубокий влёт в глаз короля: холст поверх кадра с картой, с той же обработкой, что у карты */
+.deep { position: absolute; inset: 0; width: 100%; height: 100%; display: none; pointer-events: none; filter: contrast(1.22) saturate(1.35) brightness(.92); }
+.deepsrc { display: none; }
 
 /* ── игра на карте: нажал — самолёт летит туда и ставит булавку ── */
 .geo-map { cursor: crosshair; }
@@ -1136,3 +1137,12 @@ a, button { -webkit-tap-highlight-color: transparent; }
   .shot.act > video, .shot.act > img { object-position: 50% 30%; }
 }
 @media (max-width: 760px) { .chapter.geo-head[data-scene="rabbit"] { left: var(--gutter); } }
+
+/* ══ ОДИННАДЦАТАЯ РЕДАКЦИЯ ═══════════════════════════════════════════════════════ */
+/* телефон: дверь и официант — свои ролики, достроенные вниз до квадрата; кадр стоит от верхней полосы до низа экрана, текст лежит на нём */
+@media (max-aspect-ratio: 3/4) {
+  .shot.tallm {
+    top: calc(var(--bar) + (var(--vh, 1vh) * 100 - var(--bar)) / 2);
+    height: calc(var(--vh, 1vh) * 100 - var(--bar)); width: calc(var(--vh, 1vh) * 100 - var(--bar));
+  }
+}

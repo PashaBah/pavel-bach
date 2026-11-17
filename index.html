@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-lang="en">
+<html lang="en" data-lang="en" data-v="11">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,11 +13,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ctext x='32' y='46' font-size='44' text-anchor='middle' fill='%23ff4f6d'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
-<link rel="preload" as="image" href="media/posters/cover.jpg">
+<link rel="preload" as="image" href="media/posters/cover.jpg?v=11">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@200;300;400;500&family=Pirata+One&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
 
@@ -34,9 +34,9 @@
      data-mx — какую точку кадра по ширине держать в центре вертикального экрана. -->
 <div id="film">
   <!-- обложка: подлёт к нему, он улыбается, блик на зубе -->
-  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-zoom="47%,38%,1.25" data-ramp="0:0,0.72:1,1:1" data-mx="47%"></div>
+  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.72:1,1:1" data-mx="47%"></div>
 
-  <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="46.9%" data-cy="48%">
+  <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
     <div class="panels">
       <a class="panel" href="#card" data-goto="card" data-at="0.3" data-video="media/card.mp4" style="--i:0;--ox:58%">
         <span class="pnum">01</span>
@@ -62,14 +62,20 @@
   <!-- close-up: из-за плеча, облёт в рапиде, туз; вспышка из руки — в руке король с его лицом.
        Дальше один непрерывный влёт (сцена king): камера срывается к карте (в смазе карта из клипа подменяется ею же в полном качестве, .kcard)
        и влетает в глаз короля; в глазу уже идёт следующая сцена (data-tr="eye" у сцены с дверью). data-card — где карта лежит в последнем кадре клипа: центр x,y и ширина в % кадра, наклон в градусах. -->
-  <div class="shot phonk dive" data-scenes="card king" data-src="media/card.mp4" data-tr="expand" data-ramp="0:0,0.7213:1,1:1" data-mx="47%" data-card="39.24,61.37,12.34,-0.4">
+  <div class="shot phonk dive" data-scenes="card king" data-src="media/card.mp4" data-tr="expand" data-ramp="0:0,0.7213:1,1:1" data-mx="47%" data-card="39.65,61.63,12.75,0">
     <div class="kcard"><img data-src="media/king.jpg" alt=""></div>
-    <i class="pupil"></i>
+    <!-- макро-снимки глаза короля для глубокого влёта (рисует холст #deep); data-rect — где снимок лежит на карте, в долях её ширины и высоты -->
+    <div class="deepsrc" hidden>
+      <img data-src="media/face.jpg" data-rect="0.34893,0.15081,0.60270,0.33643" alt="">
+      <img data-src="media/eye2.jpg" data-rect="0.40365,0.20302,0.47978,0.25870" alt="">
+      <img data-src="media/eye3.jpg" data-rect="0.43304,0.22324,0.45208,0.23717" alt="">
+    </div>
   </div>
+  <canvas class="deep" id="deep" aria-hidden="true"></canvas>
   <!-- шоу на сцене: дверь открыта, девушка закрывает её и обходит, через дверь летят вещи, дверь открывается — там он; шаг вперёд, приветствие -->
   <div class="shot phonk" data-scenes="stage" data-src="media/door.mp4" data-tr="eye" data-mx="72%" data-mx2="54%" data-pan="0.05,0.2"></div>
   <!-- инкогнито: «официант» отпускает поднос, поднос висит в воздухе -->
-  <div class="shot phonk" data-scenes="incog" data-src="media/waiter.mp4" data-tr="whip" data-mx="40%"></div>
+  <div class="shot phonk" data-scenes="incog" data-src="media/waiter.mp4" data-src-m="media/waiter_m.mp4" data-tr="whip" data-mx="40%"></div>
   <!-- видео: камера выезжает из-за спины дворецкого к креслу и стене телевизоров; когда доехала (60% сцены), кадр подъезжает к телевизорам (data-fit)
        и поверх клипа проявляется .tvlive: тот же кадр в полном качестве, в кинескопах (маска tvs_mask.png) крутятся его ролики, сверху — кнопки.
        Рамки экранов считает tools/tvmask.py. data-so — с какой секунды ролика идёт превью, data-oy — какую часть вертикального ролика показывать. -->
@@ -165,7 +171,7 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach</span><span lang="ru">Павел Бах</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
-        <img class="ice-logo" src="media/ice_logo.png" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
+        <img class="ice-logo" src="media/ice_logo.png?v=11" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
         <i class="ice-shine"></i>
         <i class="glint" style="--gx:14%;--gy:38%;--gd:0s"></i>
         <i class="glint" style="--gx:37%;--gy:62%;--gd:.9s"></i>
@@ -239,16 +245,16 @@
     <p class="tag big">feat.</p>
     <h2><span lang="en">Brands that have already booked him.</span><span lang="ru">Бренды, которые его уже приглашали.</span></h2>
     <ul class="logos">
-      <li><img src="media/logos/dior.png" alt="Dior"></li>
-      <li><img src="media/logos/cartier.png" alt="Cartier"></li>
-      <li><img src="media/logos/mercedes.png" alt="Mercedes-Benz"></li>
-      <li><img src="media/logos/virgin.svg" alt="Virgin"></li>
-      <li><img src="media/logos/bulgari.png" alt="Bulgari"></li>
-      <li><img src="media/logos/ritz.png" alt="The Ritz-Carlton"></li>
-      <li><img src="media/logos/nike.png" alt="Nike"></li>
-      <li><img src="media/logos/cocacola.png" alt="Coca-Cola"></li>
-      <li><img src="media/logos/xiaomi.png" alt="Xiaomi"></li>
-      <li><img src="media/logos/raiffeisen.png" alt="Raiffeisen Bank"></li>
+      <li><img src="media/logos/dior.png?v=11" alt="Dior"></li>
+      <li><img src="media/logos/cartier.png?v=11" alt="Cartier"></li>
+      <li><img src="media/logos/mercedes.png?v=11" alt="Mercedes-Benz"></li>
+      <li><img src="media/logos/virgin.svg?v=11" alt="Virgin"></li>
+      <li><img src="media/logos/bulgari.png?v=11" alt="Bulgari"></li>
+      <li><img src="media/logos/ritz.png?v=11" alt="The Ritz-Carlton"></li>
+      <li><img src="media/logos/nike.png?v=11" alt="Nike"></li>
+      <li><img src="media/logos/cocacola.png?v=11" alt="Coca-Cola"></li>
+      <li><img src="media/logos/xiaomi.png?v=11" alt="Xiaomi"></li>
+      <li><img src="media/logos/raiffeisen.png?v=11" alt="Raiffeisen Bank"></li>
     </ul>
     <p class="body small"><span lang="en">Spain · France · Monaco · Portugal · Cyprus · Dubai</span><span lang="ru">Испания · Франция · Монако · Португалия · Кипр · Дубай</span></p>
   </section>
@@ -297,7 +303,7 @@
   <!-- ЗАЯВКА: из бокала — бриллиантовые буквы и приглашение -->
   <section class="chapter center booking" id="booking" data-scene="booking" data-in="0.1" data-out="2">
     <div class="ice small" aria-hidden="true">
-      <img class="ice-logo" src="media/ice_logo.png" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
+      <img class="ice-logo" src="media/ice_logo.png?v=11" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
       <i class="ice-shine"></i>
       <i class="glint" style="--gx:20%;--gy:40%;--gd:.4s"></i>
       <i class="glint big" style="--gx:62%;--gy:46%;--gd:1.9s"></i>
@@ -339,6 +345,6 @@
 
 <div id="scrollSpace" aria-hidden="true"></div>
 
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js?v=11"></script>
 </body>
 </html>

@@ -25,7 +25,8 @@ const XFADE = 0.5;   // растворение
 const FLASH = 0.26;  // за сколько до склейки разгорается блик с зуба
 const FLASH_OUT = 0.2; // за сколько после склейки он гаснет
 const REVEAL = 0.45; // за сколько раскрывается круг (переход iris)
-const EYEW = 0.45;   // конец влёта в карту: экран уже залит чернотой зрачка, из неё кругом раскрывается следующая сцена
+const EYEW = 0.4;    // конец влёта в карту: камера уже внутри радужки короля, из темноты проявляется следующая сцена
+const D_END = 0.8;   // к этой доле сцены king радужка заливает экран целиком
 const ZTAIL = 0.17;  // какую долю конца сцены камера наезжает в точку (data-zoom)
 const WHIP = 0.34;   // ширина смаз-панорамы
 const STROBE = 0.16; // полуширина серии вспышек папарацци
@@ -34,6 +35,9 @@ const CRT = 0.34;    // сколько гаснет телевизор
 const EXP = 0.5;     // сколько раскрывается панель формата во весь экран
 
 const $ = (s) => document.querySelector(s);
+// номер выкладки (data-v у <html>): с ним каждый файл — новый адрес, и телефон не показывает старый ролик из своей памяти
+const VER = document.documentElement.dataset.v || "";
+const V = (u) => (VER && u && !/^(https?:|blob:|data:)/.test(u) ? `${u}${u.includes("?") ? "&" : "?"}v=${VER}` : u);
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const smooth = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
 const inOut = (q) => { q = clamp(q); return q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2; };
@@ -59,6 +63,7 @@ const byId = Object.fromEntries(SCENES.map((s, i) => [s.id, i]));
 const html = document.documentElement;
 const scrollSpace = $('#scrollSpace');
 const coarse = window.matchMedia('(pointer: coarse)').matches; // телефон: эффекты попроще
+const TALL = window.matchMedia('(max-aspect-ratio: 3/4)').matches; // вертикальный экран при загрузке: берём ролики, достроенные вниз
 const SAFARI = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent); // Safari плохо применяет SVG-фильтр к целой странице
 
 // ── холст для блика ──
@@ -121,7 +126,7 @@ function pump() {
     if (!best) return;
     const c = clips[best];
     c.state = 'loading'; fetching++;
-    fetch(best).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
+    fetch(V(best)).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
       .then((b) => { c.url = URL.createObjectURL(b); c.state = 'ready'; })
       .catch(() => { c.state = 'failed'; })
       .then(() => { fetching--; pump(); });
@@ -130,7 +135,7 @@ function pump() {
 // Раскадровка: лёгкие кадры клипа (каждые 0,8 с). Пока ролик не показывает картинку — качается, или телефон не дал его запустить, —
 // в кадре листаются они, так что сцена читается в любом случае.
 const FRAMES = {};
-fetch('media/frames/index.json').then((r) => (r.ok ? r.json() : {})).then((d) => Object.assign(FRAMES, d)).catch(() => {});
+fetch(V('media/frames/index.json')).then((r) => (r.ok ? r.json() : {})).then((d) => Object.assign(FRAMES, d)).catch(() => {});
 function flipbook(sh, p) {
   const F = FRAMES[sh.name], v = sh.video;
   if (!F || (v && v._primed && v.readyState >= 2)) return;
@@ -140,7 +145,7 @@ function flipbook(sh, p) {
     if (n >= F.n || sh.fr[n]) continue;
     const im = new Image();
     im.decoding = 'async'; im.onload = () => { im.ok = true; };
-    im.src = `media/frames/${sh.name}/${n}.jpg`;
+    im.src = V(`media/frames/${sh.name}/${n}.jpg`);
     sh.fr[n] = im;
   }
   let n = k;
@@ -172,7 +177,7 @@ function makeVideo(src, url, loop) {
   v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
   v.addEventListener('error', () => { // ролик из памяти не открылся — берём файл напрямую с сервера
     if (v._direct || !src) return;
-    v._direct = true; v.src = src; v.load();
+    v._direct = true; v.src = V(src); v.load();
     if (v._play) playV(v); else prime(v);
   });
   v.src = url;
@@ -210,7 +215,10 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
     const [cx, cy, cw, rot] = el.dataset.card.split(',').map(parseFloat);
     const k = SCENES[byId.king];
     sh.dive = { cx: cx / 100, cy: cy / 100, cw: cw / 100, rot, from: k.start, to: k.start + k.len, d: -1 };
-    sh.dive.pupil = el.querySelector('.pupil');
+    // слои глубокого влёта: рисунок карты и макро-снимки глаза, каждый лежит на своём месте карты (data-rect — доли ширины и высоты карты)
+    sh.dive.layers = [el.querySelector('.kcard img'), ...el.querySelectorAll('.deepsrc img')].map((img) => ({
+      img, r: (img.dataset.rect || '0,0,1,1').split(',').map(Number), src: null,
+    }));
     const card = el.querySelector('.kcard');
     card.style.left = `${cx}%`; card.style.top = `${cy}%`; card.style.width = `${cw}%`; card.style.rotate = `${rot}deg`;
   }
@@ -223,14 +231,17 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
     sh.zoom = { k: parseFloat(zk) };
     el.style.transformOrigin = `${zx} ${zy}`;
   }
-  const src = el.dataset.src;
+  // на вертикальном экране у некоторых сцен свой ролик: тот же кадр, достроенный вниз до квадрата (data-src-m)
+  const tallM = !!el.dataset.srcM && TALL;
+  if (tallM) el.classList.add('tallm');
+  const src = tallM ? el.dataset.srcM : el.dataset.src;
   if (src && /\.mp4$/.test(src)) {
     sh.src = src;
     sh.name = src.replace(/^.*\/|\.mp4$/g, '');
     clipOf(src, sh.from);
     const img = new Image();
     img.alt = ''; img.className = 'poster'; img.decoding = 'async';
-    img.src = posterOf(src);
+    img.src = V(posterOf(src));
     el.prepend(img);
     sh.poster = img;
   } else if (src) {
@@ -239,6 +250,7 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
   return sh;
 });
 shots.forEach((sh, k) => { sh.next = shots[k + 1]; sh.prev = shots[k - 1]; });
+const diveShot = shots.find((sh) => sh.dive);
 const NOVIDEO = /[?&]novideo/.test(location.search); // для проверки: сайт без роликов, на одной раскадровке (как на телефоне, который не запустил видео)
 function arm(sh) { // ролик сцены встаёт в кадр поверх постера
   const c = clips[sh.src];
@@ -257,17 +269,18 @@ function stock() { // что держать наготове: ролики и к
       if (!LAZY || d < 1.3) arm(sh); else if (d > 1.6) disarm(sh);
     }
     if (d < 2 || idle) {
-      if (sh.imgSrc && !sh.img) { sh.img = new Image(); sh.img.alt = ''; sh.img.onload = () => sh.el.prepend(sh.img); sh.img.src = sh.imgSrc; }
-      if (!sh.lazyDone) { sh.lazyDone = true; sh.el.querySelectorAll('img[data-src]').forEach((im) => { im.src = im.dataset.src; }); }
+      if (sh.imgSrc && !sh.img) { sh.img = new Image(); sh.img.alt = ''; sh.img.onload = () => sh.el.prepend(sh.img); sh.img.src = V(sh.imgSrc); }
+      if (!sh.lazyDone) { sh.lazyDone = true; sh.el.querySelectorAll('img[data-src]').forEach((im) => { im.src = V(im.dataset.src); }); }
     }
   }
 }
 
 // Кадр 16:9 накрывает экран. На вертикальном экране видна только его часть — data-mx говорит, какую точку держать в центре.
 // На широком экране кадр можно сдвинуть и укрупнить (data-dx, data-bs), чтобы герой не оказался под текстом.
-const KAR = 1260 / 1726; // пропорции картинки карты (media/king.jpg)
-const PUPIL = 0.0071;   // радиус зрачка короля в долях ширины карты
-const EYE = [0.4988, 0.2222]; // куда на карте влетает камера: глаз короля за стеклом очков (доли ширины и высоты картинки карты)
+const KAR = 1261 / 1724; // пропорции картинки карты (media/king.jpg)
+const EYE = [0.44256, 0.23188]; // куда на карте влетает камера: самая тёмная часть радужки левого глаза короля, ниже блика (доли ширины и высоты карты)
+const R_END = 0.00317;  // в конце влёта полудиагональ экрана — это столько ширины карты (4 px рисунка): вокруг только тёмная радужка, блик уже за кадром
+const GEM = [0.4806, 0.4860]; // бриллиант в зубе на последнем кадре обложки (доли кадра 16:9): из него разгорается блик
 function shiftTo(sh, mx) {
   const slack = Math.max(0, (sh.w - vw) / 2);
   sh.shift = clamp((0.5 - mx) * sh.w, -slack, slack);
@@ -298,9 +311,8 @@ function place(sh) {
     D.px = left0 - sh.shift + D.ax; // где эта точка на экране до наезда (без учёта панорамы --shift)
     D.py = top0 + D.ay;
     D.s1 = Math.max(0.75 * vw, 0.75 * vh) / cwp; // к середине влёта карта шире экрана: видно только лицо короля
-    D.pr = PUPIL * cwp;                          // радиус зрачка в кадре до наезда
-    D.pupil.style.left = `${D.ax.toFixed(1)}px`; D.pupil.style.top = `${D.ay.toFixed(1)}px`;
-    D.pupil.style.width = D.pupil.style.height = `${(2 * D.pr).toFixed(2)}px`;
+    D.cwp = cwp;
+    D.zEnd = (Math.hypot(vw, vh) / 2 / R_END) / cwp; // в конце радужка шире экрана: камера внутри глаза
     D.d = -1;
   }
   if (sh.fit) {
@@ -335,7 +347,7 @@ function visIn(sh, k) {
     case 'expand': return +(cur >= sh.from - EXP);
     case 'crt': return smooth((cur - sh.from - 0.04) / DIP);
     case 'flash': case 'strobe': case 'burn': case 'iris': return +(cur >= sh.from);
-    case 'eye': return +(cur >= sh.from - EYEW);
+    case 'eye': return Math.pow(smooth((cur - (sh.from - EYEW)) / EYEW), 1.6); // проявляется из темноты радужки, сначала медленно
     default: return smooth((cur - sh.from) / DIP);
   }
 }
@@ -346,7 +358,7 @@ function visOut(sh) {
     case 'flash': case 'strobe': case 'burn': case 'expand': case 'crt': return +(cur < sh.to);
     case 'whip': return +(cur < sh.to + WHIP / 2);
     case 'iris': return +(cur < sh.to + REVEAL);
-    case 'eye': return 1 - smooth((cur - (sh.to - 0.08)) / 0.08);
+    case 'eye': return +(cur < sh.to); // карту дальше рисует холст глубокого влёта (он гаснет сам)
     case 'wash': return +(cur < sh.to + n.fade);
     default: return 1 - smooth((cur - (sh.to - DIP)) / DIP);
   }
@@ -358,7 +370,7 @@ const panels = [...document.querySelectorAll('.panel')].map((a) => {
   clipOf(src, SCENES[byId.formats].start);
   const img = new Image();
   img.alt = ''; img.className = 'poster';
-  img.src = posterOf(src, 'p_');
+  img.src = V(posterOf(src, 'p_'));
   a.prepend(img);
   return { a, src, img, v: null };
 });
@@ -400,7 +412,7 @@ const tvShot = shots.find((sh) => sh.id === 'tv');
 // география: маршрут рисуется по мере прокрутки, по нему летит самолёт, города загораются, когда он до них долетел
 const geoShot = shots.find((sh) => sh.id === 'geo');
 const geo = { path: null, plane: null, len: 0, cities: [], q: -1 };
-fetch('media/map.svg').then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status)))).then((svg) => {
+fetch(V('media/map.svg')).then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status)))).then((svg) => {
   const box = $('#geoMap');
   box.innerHTML = svg;
   geo.path = box.querySelector('#geoRoute'); geo.plane = box.querySelector('#geoPlane'); geo.len = geo.path.getTotalLength();
@@ -721,6 +733,76 @@ function fmt(ms) {
   return `${p(ms / 3600000)}:${p((ms / 60000) % 60)}:${p((ms / 1000) % 60)}.${p(ms % 1000, 3)}`;
 }
 
+// ── глубокий влёт в глаз короля ──
+// Когда карта легла ровно и закрыла экран, её дальше рисует холст: рисунок карты, потом макро-снимок глаза, потом макро-снимок радужки.
+// Каждый следующий снимок проявляется там, где у предыдущего кончается резкость, — камера летит в глаз сама, без нарисованного зрачка.
+const deepEl = $('#deep'), deepCtx = deepEl.getContext('2d');
+let deepOn = false, deepDpr = 1;
+function deepSize() {
+  deepDpr = Math.min(2, window.devicePixelRatio || 1);
+  deepEl.width = Math.round(vw * deepDpr); deepEl.height = Math.round(vh * deepDpr);
+}
+function feather(img) { // макро-снимок с мягким круглым краем: при наложении на предыдущий не видно квадрата
+  const n = img.naturalWidth, c = document.createElement('canvas');
+  c.width = c.height = n;
+  const x = c.getContext('2d');
+  x.drawImage(img, 0, 0);
+  x.globalCompositeOperation = 'destination-in';
+  const g = x.createRadialGradient(n / 2, n / 2, n * 0.3, n / 2, n / 2, n * 0.5);
+  g.addColorStop(0, '#000'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(0, 0, n, n);
+  return c;
+}
+// масштаб карты во влёте (логарифм): сначала карта выравнивается и встаёт во весь экран, потом одним движением — в радужку
+function diveZ(D, d) {
+  return Math.log(D.s1) * smooth(d / 0.45) + Math.log(D.zEnd / D.s1) * smooth((d - 0.3) / (D_END - 0.3));
+}
+function deepFrame(sh, D, d) {
+  const alpha = cur < D.to ? smooth((d - 0.46) / 0.06) : 0;
+  if (alpha <= 0.001) {
+    if (deepOn) { deepEl.style.display = 'none'; deepOn = false; sh.el.style.visibility = ''; }
+    return;
+  }
+  if (!deepOn) { deepEl.style.display = 'block'; deepOn = true; }
+  if (deepEl.width !== Math.round(vw * deepDpr) || deepEl.height !== Math.round(vh * deepDpr)) deepSize();
+  deepEl.style.opacity = alpha.toFixed(3);
+  const ctx = deepCtx, W = D.cwp * Math.exp(diveZ(D, d)), H = W / KAR, cx = vw / 2, cy = vh / 2;
+  ctx.setTransform(deepDpr, 0, 0, deepDpr, 0, 0);
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+  ctx.fillStyle = '#050304'; ctx.fillRect(0, 0, vw, vh);
+  // где лежит слой на экране, насколько он резок (экранных точек на пиксель снимка) и закрывает ли он экран своей серединой
+  const geo = D.layers.map((L) => {
+    const [u0, v0, u1, v1] = L.r;
+    const X0 = cx + (u0 - EYE[0]) * W, X1 = cx + (u1 - EYE[0]) * W, Y0 = cy + (v0 - EYE[1]) * H, Y1 = cy + (v1 - EYE[1]) * H;
+    const ok = L.img.complete && L.img.naturalWidth > 0;
+    const inner = L === D.layers[0] ? 0 : 0.2; // у макро-снимков резкая только середина (край растушёван)
+    const ix = (X1 - X0) * inner, iy = (Y1 - Y0) * inner;
+    return { L, X0, X1, Y0, Y1, ok, dens: ok ? ((X1 - X0) * deepDpr) / L.img.naturalWidth : 0, covers: X0 + ix <= 0 && Y0 + iy <= 0 && X1 - ix >= vw && Y1 - iy >= vh };
+  });
+  const al = geo.map((g, k) => (k === 0 ? 1 : g.ok && geo[k - 1].ok ? smooth((geo[k - 1].dens - 1.2) / 1.4) : 0));
+  let k0 = 0;
+  for (let k = geo.length - 1; k > 0; k--) if (al[k] >= 0.999 && geo[k].covers) { k0 = k; break; }
+  for (let k = k0; k < geo.length; k++) {
+    const g = geo[k];
+    if (!g.ok || al[k] <= 0.001) continue;
+    if (k > 0 && !g.L.src) g.L.src = feather(g.L.img);
+    const src = k > 0 ? g.L.src : g.L.img, sw = g.L.img.naturalWidth, shh = g.L.img.naturalHeight;
+    const x0 = Math.max(0, g.X0), y0 = Math.max(0, g.Y0), x1 = Math.min(vw, g.X1), y1 = Math.min(vh, g.Y1);
+    if (x1 <= x0 || y1 <= y0) continue;
+    const kx = sw / (g.X1 - g.X0), ky = shh / (g.Y1 - g.Y0);
+    ctx.globalAlpha = al[k];
+    ctx.drawImage(src, (x0 - g.X0) * kx, (y0 - g.Y0) * ky, (x1 - x0) * kx, (y1 - y0) * ky, x0, y0, x1 - x0, y1 - y0);
+  }
+  // тот же цвет белого поля, что у карты поверх ролика (.kcard::after)
+  const c0 = geo[0];
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = '#dad8d8';
+  ctx.fillRect(Math.max(0, c0.X0), Math.max(0, c0.Y0), Math.min(vw, c0.X1) - Math.max(0, c0.X0), Math.min(vh, c0.Y1) - Math.max(0, c0.Y0));
+  ctx.globalCompositeOperation = 'source-over';
+  // карта закрыла экран и холст непрозрачен — сам кадр с роликом можно не рисовать
+  const hide = alpha >= 0.999 && c0.covers;
+  sh.el.style.visibility = hide ? 'hidden' : '';
+}
+
 // ── кадр ────────────────────────────────────────
 const film = $('#film'), whiteout = $('#whiteout'), strobeEl = $('#strobe'), burnEl = $('#burn'), whipDev = $('#whipDev');
 let last = performance.now();
@@ -770,11 +852,9 @@ function frame(now, snap) {
         const D = sh.dive, d = clamp((cur - D.from) / (D.to - D.from));
         if (Math.abs(d - D.d) > 0.0002) {
           D.d = d;
-          const a = smooth(d / 0.45), b = Math.pow(clamp((d - 0.3) / 0.45), 1.5), m = smooth(d / 0.4);
-          const t = clamp((d - 0.46) / 0.27);                                         // подлёт к зрачку
-          const st = sh.el.style, z = Math.exp(Math.log(D.s1) * a + Math.log(2.6) * b) * (1 + 2.4 * t * t); // у самого глаза камера ускоряется (картинку там уже закрывает зрачок)
+          const m = smooth(d / 0.4);
+          const st = sh.el.style, z = Math.min(Math.exp(diveZ(D, d)), 60); // сам кадр дальше не растёт: карту уже рисует холст поверх
           st.setProperty('--z', z.toFixed(4));
-          st.setProperty('--out', (t * t * t).toFixed(3)); // размытие — только у самого зрачка
           st.setProperty('--rot', `${(-D.rot * smooth(d / 0.4)).toFixed(3)}deg`);
           st.setProperty('--ax', `${((vw / 2 - D.px - sh.shift) * m).toFixed(1)}px`);
           st.setProperty('--ay', `${((vh / 2 - D.py) * m).toFixed(1)}px`);
@@ -782,11 +862,6 @@ function frame(now, snap) {
           st.setProperty('--kick', Math.sin(Math.PI * clamp(d / 0.16)).toFixed(3)); // камера срывается с места: короткий смаз
           st.setProperty('--ko', smooth((d - 0.05) / 0.05).toFixed(3));              // в смазе поверх карты из клипа встаёт чёткая
           st.setProperty('--th', (1 - smooth((d - 0.1) / 0.16)).toFixed(3));         // вырез под большой палец закрывается, когда палец ушёл из кадра
-          // зрачок короля: камера летит прямо в него, и его чернота заливает экран
-          const full = Math.hypot(vw, vh) * 0.75, r0 = D.pr * z;
-          const rs = r0 * Math.pow(full / r0, Math.pow(t, 1.25));
-          D.pupil.style.transform = `translate(-50%, -50%) scale(${(rs / r0).toFixed(3)})`;
-          D.pupil.style.opacity = smooth(t / 0.12).toFixed(3);
         }
       } else if (sh.zoomer) {
         sh.el.style.setProperty('--q', (p * p).toFixed(4)); // нырок в глаз короля: всё быстрее и быстрее
@@ -844,25 +919,15 @@ function frame(now, snap) {
       }
     }
     if (clip !== sh.clip) { sh.clip = clip; sh.el.style.clipPath = clip || 'none'; }
-    // влёт в глаз: следующая сцена сначала видна в зрачке (центр экрана), растёт вместе с наездом и занимает весь экран
-    let mask = '';
+    // после влёта в глаз: камера внутри радужки, из темноты проявляется следующая сцена и чуть оседает на место
     if (sh.tr === 'eye' && cur >= sh.from - EYEW && cur < sh.from) {
-      // сцена целиком умещается в зрачке (уменьшенная, по центру экрана) и растёт вместе с кругом; к концу встаёт на своё место
-      const q = (cur - (sh.from - EYEW)) / EYEW;
-      const R = Math.hypot(vw, vh) * 0.66 * Math.pow(q, 1.5); // круг раскрывается из черноты зрачка
-      const z = clamp(R * 2.15 / sh.h, 0.06, 1), e = smooth((q - 0.5) / 0.5); // кадр всегда чуть выше круга: в зрачке не видно его прямых краёв
-      const ax = (vw / 2 - sh.cx) * (1 - e), ay = (vh / 2 - sh.cy) * (1 - e);
-      const lx = sh.w / 2 + (vw / 2 - sh.cx - ax) / z, ly = sh.h / 2 + (vh / 2 - sh.cy - ay) / z;
-      mask = `radial-gradient(circle ${(R / z).toFixed(1)}px at ${lx.toFixed(1)}px ${ly.toFixed(1)}px, #000 68%, transparent 100%)`;
-      const st = sh.el.style;
-      st.setProperty('--z', z.toFixed(4)); st.setProperty('--ax', `${ax.toFixed(1)}px`); st.setProperty('--ay', `${ay.toFixed(1)}px`);
+      const q = smooth((cur - (sh.from - EYEW)) / EYEW);
+      sh.el.style.setProperty('--z', (1 + 0.12 * (1 - q) * (1 - q)).toFixed(4));
       sh.eyeZ = true;
     } else if (sh.eyeZ) {
-      const st = sh.el.style;
-      st.setProperty('--z', 1); st.setProperty('--ax', '0px'); st.setProperty('--ay', '0px');
+      sh.el.style.setProperty('--z', 1);
       sh.eyeZ = false;
     }
-    if (mask !== (sh.mask || '')) { sh.mask = mask; sh.el.style.webkitMaskImage = mask || 'none'; sh.el.style.maskImage = mask || 'none'; }
 
     if (sh.tr === 'flash') {
       // блик разгорается долго, а гаснет быстро: после склейки кадр сразу проясняется
@@ -891,7 +956,20 @@ function frame(now, snap) {
 
   // блик на зубе: сначала маленькая звезда на улыбке, потом полоса через кадр, кадр пересвечивается в белое
   // Блик-звезду на зубе больше не рисуем (Павлу он казался нарисованным): кадр пересвечивается в белое, как от фотовспышки.
-  if (glintDrawn) drawGlint(0, 0, 0, 0);
+  // глубокий влёт в глаз короля рисуется на своём холсте и гаснет, когда сцена с дверью проявилась
+  if (diveShot) { const D = diveShot.dive; deepFrame(diveShot, D, clamp((cur - D.from) / (D.to - D.from))); }
+  // бриллиант в зубе (он есть в самом ролике обложки): когда улыбка раскрылась, камень коротко вспыхивает,
+  // потом блик разгорается из него же, камера подлетает к нему, и кадр уходит в белое
+  const cov = shots[0];
+  let gf = 0, gxy = null;
+  if (cov.shown > 0.01 && cov.el.style.display !== 'none') {
+    const pc = clamp((cur - cov.from) / (cov.to - cov.from));
+    const tw = 0.16 * Math.sin(Math.PI * clamp((pc - 0.64) / 0.14));
+    gf = Math.max(tw, flashBefore ? flashA : 0);
+    if (gf > 0.002) gxy = onScreen(cov, GEM[0], GEM[1]);
+  }
+  if (gxy) drawGlint(gf, gxy[0], gxy[1], 0.12 + gf * 0.5, gf > 0.3);
+  else if (glintDrawn) drawGlint(0, 0, 0, 0);
   whiteout.style.opacity = smooth((flashA - 0.7) / 0.3).toFixed(3);
   // вспышки папарацци и засветка плёнки
   strobeEl.style.opacity = (strobe * 0.92).toFixed(3);
