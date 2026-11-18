@@ -665,7 +665,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.png?v=18) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=18) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.png?v=19) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=19) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -787,7 +787,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png?v=18) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=18) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=19) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=19) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -972,7 +972,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=18) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=19) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1023,7 +1023,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=18); mask-image: url(../media/ice_logo_m.png?v=18); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=19); mask-image: url(../media/ice_logo_m.png?v=19); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1363,3 +1363,59 @@ html[data-lang="ru"] .tag { font-size: clamp(36px, 4vw, 64px); }
 .chapter.booking h2.finale { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #fff; filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 26px rgba(255, 40, 80, .45)); }
 @media (max-width: 760px) { html[data-lang="ru"] .tag { font-size: 31px; } }
 
+
+/* ══ ДЕВЯТНАДЦАТАЯ РЕДАКЦИЯ: шрифт русской версии выбирает Павел ═══════════════════
+   По умолчанию — вариант № 5 с листа review/v18_shrifty: антиква прописными, белая, без хрома и без курсива. На листе она отрисовалась системным Times New Roman
+   (у Gloock нет кириллицы), поэтому на сайте стоит Tinos — тот же рисунок букв с кириллицей, одинаковый на всех устройствах.
+   Остальные варианты включаются адресом ?font=1…6 (ставит data-font у <html>), чтобы примерять их прямо на сайте. Playfair с сайта убран. */
+:root {
+  --display: "Tinos", "Times New Roman", serif;
+  --rd-fam: "Tinos", "Times New Roman", serif; --rd-w: 400; --rd-ls: .02em; --rd-case: uppercase; --rd-k: 1;       /* слово-заголовок */
+  --rd-bg: none; --rd-color: #fff;                                                                              /* белый или хром */
+  --rd-b-fam: "Tinos", "Times New Roman", serif; --rd-b-w: 400; --rd-b-case: none; --rd-b-k: 1;                 /* строки списка («Чемпион России») */
+  --rd-s-case: none; --rd-s-ls: 0; --rd-s-k: 1;                                                                 /* слоган и финальная фраза */
+  --chrome: linear-gradient(180deg, #ffffff 0%, #dfe6ee 34%, #8592a0 50%, #4d5661 53%, #e6ecf2 72%, #a5b0bc 100%);
+}
+html[data-font="1"] { --rd-fam: "Playfair", serif; --rd-w: 900; --rd-ls: -.01em; --rd-bg: var(--chrome); --rd-color: transparent; --rd-b-fam: "Jost", sans-serif; --rd-b-w: 600; --rd-s-case: uppercase; --rd-s-k: .95; }
+html[data-font="2"] { --rd-fam: "Jost", sans-serif; --rd-w: 300; --rd-ls: .3em; --rd-k: .74; --rd-b-fam: "Jost", sans-serif; --rd-b-w: 500; --rd-s-case: uppercase; --rd-s-ls: .24em; --rd-s-k: .76; }
+html[data-font="3"] { --rd-fam: "Oswald", sans-serif; --rd-w: 700; --rd-ls: .01em; --rd-k: 1.18; --rd-bg: var(--chrome); --rd-color: transparent; --rd-b-fam: "Oswald", sans-serif; --rd-b-w: 600; --rd-b-case: uppercase; --rd-s-case: uppercase; --rd-s-ls: .02em; --rd-s-k: 1.1; }
+html[data-font="4"] { --rd-fam: "Ruslan Display", serif; --rd-ls: 0; --rd-case: none; --rd-k: .95; --rd-bg: var(--chrome); --rd-color: transparent; --rd-b-fam: "Jost", sans-serif; --rd-b-w: 600; --rd-s-k: .9; }
+html[data-font="6"] { --rd-fam: "Unbounded", sans-serif; --rd-w: 800; --rd-ls: -.01em; --rd-k: .74; --rd-bg: var(--chrome); --rd-color: transparent; --rd-b-fam: "Unbounded", sans-serif; --rd-b-w: 600; --rd-b-k: .78; --rd-s-case: uppercase; --rd-s-k: .72; }
+
+html[data-lang="ru"] .tag, html[data-lang="ru"] .ptag {
+  font-family: var(--rd-fam); font-variation-settings: "opsz" 1200; font-style: normal; font-weight: var(--rd-w); text-transform: var(--rd-case); letter-spacing: var(--rd-ls); line-height: 1;
+  background: var(--rd-bg); -webkit-background-clip: text; background-clip: text; color: var(--rd-color);
+}
+html[data-lang="ru"] .tag { font-size: calc(clamp(34px, 3.7vw, 60px) * var(--rd-k)); }
+html[data-lang="ru"] .tag.big { font-size: calc(clamp(64px, 8.6vw, 136px) * var(--rd-k)); }
+html[data-lang="ru"] .ptag, html[data-lang="ru"] .panel > .ptag { font-size: calc(clamp(21px, 2vw, 34px) * var(--rd-k)); }
+html[data-lang="ru"] .chapter.formats-head .tag { font-size: calc(clamp(28px, 2.9vw, 46px) * var(--rd-k)); }
+html[data-lang="ru"] .chapter.tv-head .tag { font-size: calc(clamp(28px, 3vw, 46px) * var(--rd-k)); }
+html[data-lang="ru"] .chapter.geo-head .tag, html[data-lang="ru"] .chapter.reviews-head .tag { font-size: calc(clamp(24px, 2.4vw, 38px) * var(--rd-k)); }
+html[data-lang="ru"] .chapter[data-scene="wine"] .tag { font-size: calc(clamp(32px, 3.5vw, 56px) * var(--rd-k)); }
+html[data-lang="ru"] .chapter.cover .lede {
+  font-family: var(--rd-fam); font-variation-settings: "opsz" 1200; font-style: normal; font-weight: var(--rd-w); text-transform: var(--rd-s-case); letter-spacing: var(--rd-s-ls);
+  font-size: calc(clamp(22px, 2.5vw, 40px) * var(--rd-s-k)); line-height: 1.08;
+  background: var(--rd-bg); -webkit-background-clip: text; background-clip: text; color: var(--rd-color);
+}
+.chapter.booking h2.finale { font-family: var(--rd-fam); font-variation-settings: "opsz" 1200; font-style: normal; font-weight: var(--rd-w); font-size: calc(clamp(26px, 3.2vw, 50px) * var(--rd-s-k)); text-transform: var(--rd-s-case); letter-spacing: var(--rd-s-ls); }
+/* строки списков и цифры: без курсива */
+.chapter.titles-head .credits b, .credits b { font-family: var(--rd-b-fam); font-variation-settings: normal; font-style: normal; font-weight: var(--rd-b-w); text-transform: var(--rd-b-case); font-size: calc(clamp(18px, 1.6vw, 25px) * var(--rd-b-k)); text-shadow: 0 2px 14px rgba(0, 0, 0, .8); }
+.facts b { font-family: var(--sans); font-variation-settings: normal; font-style: normal; font-weight: 500; font-size: 18px; text-shadow: none; }
+.rcard p { font-family: "Tinos", "Times New Roman", serif; font-variation-settings: normal; font-weight: 400; font-size: calc(var(--u) * 5.7); line-height: 1.26; }
+.rcard .pip { font-family: "Tinos", "Times New Roman", serif; font-weight: 400; }
+.geo-map .city text, .geo-map .pin text { font-family: "Tinos", "Times New Roman", serif; font-style: normal; font-weight: 400; }
+html[data-lang="ru"] .cta-top { font-family: var(--sans); font-variation-settings: normal; font-style: normal; font-weight: 600; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; padding: 9px 15px 9px; }
+@media (max-width: 760px) {
+  html[data-lang="ru"] .tag { font-size: calc(30px * var(--rd-k)); }
+  html[data-lang="ru"] .tag.big { font-size: calc(72px * var(--rd-k)); }
+  html[data-lang="ru"] .ptag, html[data-lang="ru"] .panel > .ptag { font-size: calc(22px * var(--rd-k)); }
+  html[data-lang="ru"] .chapter.formats-head .tag { font-size: calc(27px * var(--rd-k)); }
+  html[data-lang="ru"] .chapter[data-scene="card"] .tag, html[data-lang="ru"] .chapter[data-scene="stage"] .tag, html[data-lang="ru"] .chapter[data-scene="incog"] .tag,
+  html[data-lang="ru"] .chapter[data-scene="wine"] .tag, html[data-lang="ru"] .chapter.tv-head .tag { font-size: calc(29px * var(--rd-k)); }
+  html[data-lang="ru"] .chapter.geo-head .tag, html[data-lang="ru"] .chapter.reviews-head .tag { font-size: calc(23px * var(--rd-k)); }
+  html[data-lang="ru"] .chapter.cover .lede { font-size: calc(22px * var(--rd-s-k)); }
+  .chapter.booking h2.finale { font-size: calc(24px * var(--rd-s-k)); }
+  html[data-lang="ru"] .cta-top { font-size: 10.5px; padding: 8px 10px; letter-spacing: .12em; }
+  .facts b { font-size: 16px; }
+}
