@@ -129,7 +129,7 @@ function pump() {
     const c = clips[best];
     c.state = 'loading'; fetching++;
     fetch(V(best)).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
-      .then((b) => { c.url = URL.createObjectURL(b); c.state = 'ready'; })
+      .then((b) => { c.blob = b; c.url = URL.createObjectURL(b); c.state = 'ready'; })
       .catch(() => { c.state = 'failed'; })
       .then(() => { fetching--; pump(); });
   }
@@ -157,12 +157,15 @@ function flipbook(sh, p) {
 const posterOf = (src, pre = '') => src.replace(/([^/]+)\.mp4$/, `posters/${pre}$1.jpg`);
 
 // Айфон не подгружает кадры ролика, пока тот хоть раз не запущен, поэтому каждый ролик запускаем без звука и сразу ставим на паузу.
-// В режиме энергосбережения автозапуск запрещён: тогда показываем подсказку и оживляем ролики по первому касанию.
+// В режиме энергосбережения автозапуск запрещён: тогда ролики оживают по первому нажатию (без подсказки — она мешала), а до того сцены идут по кадрам.
 let blocked = false;
-const tapVideo = $('#tapVideo');
 const stuck = (e) => { // только настоящий запрет автозапуска; прерванный запуск (ролик убрали из кадра) — не в счёт
   if (e && e.name !== 'NotAllowedError') return;
-  blocked = true; tapVideo.hidden = false;
+  blocked = true;
+  if (WC_OK && !wcMode) { // переходим на показ кадров холстом: ролики, которые не запустились, пересоздаются
+    wcMode = true;
+    for (const sh of shots) if (sh.video && !sh.video._wc && !sh.video._primed) disarm(sh);
+  }
 };
 function prime(v) {
   const p = v.play();
@@ -185,11 +188,11 @@ function makeVideo(src, url, loop) {
   v.src = url;
   return v;
 }
-function dropVideo(v) { v.pause(); v.removeAttribute('src'); v.load(); v.remove(); }
+function dropVideo(v) { if (v._wc) { v._wc.close(); v.remove(); return; } v.pause(); v.removeAttribute('src'); v.load(); v.remove(); }
 const filmVideos = () => [...document.querySelectorAll('#film video')];
 function unlock() {
   if (!blocked) return;
-  blocked = false; tapVideo.hidden = true;
+  blocked = false;
   filmVideos().forEach((v) => { if (v._play) playV(v); else if (!v._primed) prime(v); });
 }
 ['touchend', 'click', 'keydown'].forEach((ev) => window.addEventListener(ev, unlock, { passive: true }));
@@ -197,6 +200,110 @@ document.addEventListener('visibilitychange', () => { // вкладку свер
   if (document.visibilityState !== 'visible') return;
   filmVideos().forEach((v) => { if (v._play) playV(v); else if (IOS) prime(v); });
 });
+
+
+// ── кадры ролика на холсте (WebCodecs) ──────────
+// В режиме энергосбережения айфон не даёт запустить <video> без нажатия. Раскодировать кадры и рисовать их на холсте можно и без этого:
+// тогда ролик всё равно идёт за скроллом, а не листается редкими кадрами. Холст ведёт себя для движка как <video> (currentTime, readyState, duration).
+const FORCE_WC = /[?&]wc=1/.test(location.search); // для проверки на компьютере: сразу этот режим
+const WC_OK = typeof window.VideoDecoder === 'function' && typeof window.EncodedVideoChunk === 'function';
+let wcMode = FORCE_WC && WC_OK;
+function mp4Index(buf) { // таблица кадров mp4: где лежит каждый кадр, какие ключевые, параметры кодека
+  const dv = new DataView(buf), u8 = new Uint8Array(buf);
+  const boxes = (s, e) => {
+    const out = [];
+    while (s + 8 <= e) {
+      let size = dv.getUint32(s), h = 8;
+      const type = String.fromCharCode(u8[s + 4], u8[s + 5], u8[s + 6], u8[s + 7]);
+      if (size === 1) { size = Number(dv.getBigUint64(s + 8)); h = 16; } else if (size === 0) size = e - s;
+      if (size < h) break;
+      out.push({ type, s: s + h, e: s + size }); s += size;
+    }
+    return out;
+  };
+  const find = (list, t) => list.find((b) => b.type === t);
+  const moov = find(boxes(0, buf.byteLength), 'moov');
+  if (!moov) return null;
+  for (const trak of boxes(moov.s, moov.e).filter((b) => b.type === 'trak')) {
+    const mdia = find(boxes(trak.s, trak.e), 'mdia');
+    if (!mdia) continue;
+    const mk = boxes(mdia.s, mdia.e), hdlr = find(mk, 'hdlr'), minf = find(mk, 'minf'), mdhd = find(mk, 'mdhd');
+    if (!hdlr || !minf || !mdhd || String.fromCharCode(...u8.subarray(hdlr.s + 8, hdlr.s + 12)) !== 'vide') continue;
+    const ts = dv.getUint32(mdhd.s + (u8[mdhd.s] === 1 ? 20 : 12));
+    const stbl = find(boxes(minf.s, minf.e), 'stbl'), sb = boxes(stbl.s, stbl.e);
+    const entry = boxes(find(sb, 'stsd').s + 8, find(sb, 'stsd').e)[0];
+    if (!entry || entry.type !== 'avc1') return null;
+    const w = dv.getUint16(entry.s + 24), h = dv.getUint16(entry.s + 26), avcC = find(boxes(entry.s + 78, entry.e), 'avcC');
+    if (!avcC) return null;
+    const desc = u8.slice(avcC.s, avcC.e), hex = (x) => x.toString(16).padStart(2, '0');
+    const stsz = find(sb, 'stsz'), fixed = dv.getUint32(stsz.s + 4), n = dv.getUint32(stsz.s + 8), size = new Uint32Array(n);
+    for (let i = 0; i < n; i++) size[i] = fixed || dv.getUint32(stsz.s + 12 + i * 4);
+    const stco = find(sb, 'stco'), cb = stco || find(sb, 'co64'), nc = dv.getUint32(cb.s + 4), chunk = [];
+    for (let i = 0; i < nc; i++) chunk.push(stco ? dv.getUint32(cb.s + 8 + i * 4) : Number(dv.getBigUint64(cb.s + 8 + i * 8)));
+    const stsc = find(sb, 'stsc'), runs = [];
+    for (let i = 0, m = dv.getUint32(stsc.s + 4); i < m; i++) runs.push([dv.getUint32(stsc.s + 8 + i * 12), dv.getUint32(stsc.s + 12 + i * 12)]);
+    const off = new Float64Array(n);
+    let k = 0;
+    for (let r = 0; r < runs.length; r++) {
+      const last = r + 1 < runs.length ? runs[r + 1][0] - 1 : nc;
+      for (let c = runs[r][0]; c <= last; c++) { let o = chunk[c - 1]; for (let j = 0; j < runs[r][1] && k < n; j++) { off[k] = o; o += size[k]; k++; } }
+    }
+    const stss = find(sb, 'stss'), key = new Uint8Array(n);
+    if (stss) { for (let i = 0, m = dv.getUint32(stss.s + 4); i < m; i++) key[dv.getUint32(stss.s + 8 + i * 4) - 1] = 1; } else key.fill(1);
+    const stts = find(sb, 'stts');
+    let dur = 0;
+    for (let i = 0, m = dv.getUint32(stts.s + 4); i < m; i++) dur += dv.getUint32(stts.s + 8 + i * 8) * dv.getUint32(stts.s + 12 + i * 8);
+    return { u8, w, h, codec: `avc1.${hex(desc[1])}${hex(desc[2])}${hex(desc[3])}`, desc, n, size, off, key, duration: dur / ts, fps: n / (dur / ts) };
+  }
+  return null;
+}
+function wcVideo(c, sh) {
+  const cv = document.createElement('canvas');
+  cv.className = 'wcv';
+  cv._primed = true; cv.readyState = 0; cv.seeking = false; cv.duration = 0; cv.paused = true;
+  cv.play = () => Promise.resolve(); cv.pause = () => {}; cv.load = () => {};
+  let ix = null, dec = null, ctx = null, shown = -1, want = 0, batch = -1, busy = false, dead = false, t = 0;
+  const fail = () => { // не вышло — сцена остаётся на раскадровке, как раньше
+    if (dead) return;
+    dead = true; cv.readyState = 0; cv._primed = false; sh.wcFailed = true;
+    try { if (dec && dec.state !== 'closed') dec.close(); } catch (e) { /* уже закрыт */ }
+  };
+  async function run() {
+    busy = true; cv.seeking = true;
+    while (!dead && want !== shown) {
+      const i = want;
+      let k = i;
+      while (k > 0 && !ix.key[k]) k--;
+      batch = i;
+      try {
+        for (let j = k; j <= i; j++) dec.decode(new EncodedVideoChunk({ type: ix.key[j] ? 'key' : 'delta', timestamp: j * 1000, data: ix.u8.subarray(ix.off[j], ix.off[j] + ix.size[j]) }));
+        await dec.flush(); // после flush следующий кусок — снова с ключевого кадра
+      } catch (e) { fail(); return; }
+      shown = i;
+    }
+    busy = false; cv.seeking = false;
+  }
+  const go = (i) => { want = i; if (ix && dec && !busy && !dead && want !== shown) run(); };
+  Object.defineProperty(cv, 'currentTime', { get: () => t, set: (v) => { t = v; if (ix) go(clamp(Math.round(v * ix.fps), 0, ix.n - 1)); } });
+  cv._wc = { close: () => { dead = true; try { if (dec && dec.state !== 'closed') dec.close(); } catch (e) { /* уже закрыт */ } } };
+  c.blob.arrayBuffer().then(async (buf) => {
+    if (dead) return;
+    ix = mp4Index(buf);
+    if (!ix) throw new Error('mp4');
+    const cfg = { codec: ix.codec, description: ix.desc, codedWidth: ix.w, codedHeight: ix.h, optimizeForLatency: true };
+    const sup = await VideoDecoder.isConfigSupported(cfg);
+    if (!sup.supported || dead) throw new Error('codec');
+    cv.width = ix.w; cv.height = ix.h; ctx = cv.getContext('2d');
+    dec = new VideoDecoder({
+      output: (f) => { if (Math.round(f.timestamp / 1000) === batch && !dead) { ctx.drawImage(f, 0, 0, cv.width, cv.height); cv.readyState = 4; } f.close(); },
+      error: fail,
+    });
+    dec.configure(cfg);
+    cv.duration = ix.duration; cv.readyState = 1;
+    go(clamp(Math.round(t * ix.fps), 0, ix.n - 1));
+  }).catch(fail);
+  return cv;
+}
 
 // ── фильм ───────────────────────────────────────
 const shots = [...document.querySelectorAll('.shot')].map((el) => {
@@ -252,6 +359,7 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
   return sh;
 });
 shots.forEach((sh, k) => { sh.next = shots[k + 1]; sh.prev = shots[k - 1]; });
+if (/[?&]dbg/.test(location.search)) window.__phonk = { shots, clips, get wc() { return wcMode; }, get blocked() { return blocked; } }; // для проверки
 const diveShot = shots.find((sh) => sh.dive);
 if (diveShot) { // карта короля и макро-снимки глаза грузятся сразу после страницы: к моменту влёта они уже в памяти
   const early = () => { diveShot.lazyDone = true; diveShot.el.querySelectorAll('img[data-src]').forEach((im) => { im.src = V(im.dataset.src); if (im.decode) im.decode().catch(() => {}); }); };
@@ -261,6 +369,7 @@ const NOVIDEO = /[?&]novideo/.test(location.search); // для проверки:
 function arm(sh) { // ролик сцены встаёт в кадр поверх постера
   const c = clips[sh.src];
   if (NOVIDEO || sh.video || !c || c.state !== 'ready') return;
+  if (wcMode && c.blob && !sh.live && !sh.wcFailed) { const v = wcVideo(c, sh); sh.poster.after(v); sh.video = v; return; }
   const v = makeVideo(sh.src, c.url, sh.live);
   sh.poster.after(v);
   sh.video = v;
@@ -272,7 +381,7 @@ function fetchNow(src) { // ролик нужен прямо сейчас — к
   if (!c || c.state !== 'idle') return;
   c.state = 'loading';
   fetch(V(src)).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
-    .then((b) => { c.url = URL.createObjectURL(b); c.state = 'ready'; })
+    .then((b) => { c.blob = b; c.url = URL.createObjectURL(b); c.state = 'ready'; })
     .catch(() => { c.state = 'failed'; });
 }
 function warmFrames(sh) { // раскадровка сцены целиком: если ролик не успел, сцена всё равно идёт по кадрам, а не стоит на первом
@@ -309,7 +418,7 @@ const KS = 1.05; // чёткая карта чуть крупнее карты �
 const KAR = 1261 / 1724; // пропорции картинки карты (media/king.jpg)
 const EYE = [0.44256, 0.23188]; // куда на карте влетает камера: самая тёмная часть радужки левого глаза короля, ниже блика (доли ширины и высоты карты)
 const R_END = 0.00317;  // в конце влёта полудиагональ экрана — это столько ширины карты (4 px рисунка): вокруг только тёмная радужка, блик уже за кадром
-const PAPER = ['#ece5da', '#d3cbc0', '#b4aca2']; // тон бумаги карты (умножается на рисунок): свет сверху слева, к нижнему краю темнее
+const PAPER = ['#cbc2b7', '#a9a095', '#877e74']; // тон бумаги карты (умножается на рисунок): свет сверху слева, к нижнему краю темнее
 const GEM = [0.4806, 0.4860]; // бриллиант в зубе на последнем кадре обложки (доли кадра 16:9): из него разгорается блик
 function shiftTo(sh, mx) {
   const slack = Math.max(0, (sh.w - vw) / 2);
@@ -1108,7 +1217,7 @@ function frame(now, snap) {
   if (Math.abs(lq - lqShown) > 0.0005) {
     lqShown = lq;
     coverEl.style.setProperty('--lq', lq.toFixed(4));
-    coverEl.classList.toggle('fly', lq > 0.002); // фильтры пролёта — только пока буквы летят
+    coverEl.classList.toggle('fly', lq > 0.42); // размытие пролёта — только когда буквы уже близко, до того надпись чёткая и блестит
     html.dataset.logo = lq < 0.85 ? 'on' : 'off';
   }
 
