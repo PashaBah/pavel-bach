@@ -424,6 +424,13 @@ fetch(V('media/map.svg')).then((r) => (r.ok ? r.text() : Promise.reject(new Erro
   const box = $('#geoMap');
   box.innerHTML = svg;
   geo.path = box.querySelector('#geoRoute'); geo.plane = box.querySelector('#geoPlane'); geo.len = geo.path.getTotalLength();
+  const gr = box.querySelector('[data-n="Greece"]');
+  if (gr) { // приглашение сыграть: пульсирующая метка, пока по карте ни разу не нажали
+    const bb = gr.getBBox(), tap = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    tap.setAttribute('class', 'tapme'); tap.setAttribute('transform', `translate(${(bb.x + bb.width * 0.45).toFixed(1)} ${(bb.y + bb.height * 0.4).toFixed(1)})`);
+    tap.innerHTML = '<circle r="10"/><circle class="r2" r="10"/>';
+    geo.path.ownerSVGElement.insertBefore(tap, geo.plane);
+  }
   const N = 500, pts = [];
   for (let k = 0; k <= N; k++) pts.push(geo.path.getPointAtLength(geo.len * k / N));
   geo.cities = [...box.querySelectorAll('.city')].map((g) => { // на какой доле маршрута стоит город
@@ -433,35 +440,82 @@ fetch(V('media/map.svg')).then((r) => (r.ok ? r.text() : Promise.reject(new Erro
     return { g, t: best / N };
   });
 }).catch(() => { /* карты нет — остаётся текст */ });
-const GEO_LINES = {
-  ru: ['Ваш вечер?', 'Или здесь?', 'Он успеет и туда, и туда.', 'Хватит гонять самолёт — проверьте дату.'],
-  en: ['Your event?', 'Or here?', 'He can do both.', 'Stop flying the plane and check your date.'],
+// ── игра на карте: нажал — самолёт летит туда, страна «открывается», идёт счёт стран и километров ──
+const GEO_T = {
+  ru: {
+    home: ['Здесь он как дома.', 'Тут его уже знают в лицо.', 'Знакомый маршрут. Летит с закрытыми глазами.'],
+    fresh: ['Здесь он ещё не выступал. Будете первыми?', 'Новая страна. Он уже пакует карты.', 'Туда его ещё не звали. Пока.', 'Отличный выбор. Чемодан уже у двери.'],
+    sea: ['Посадка на воду. Он справится.', 'В море он тоже работает: яхты.', 'Чайки в восторге.'],
+    again: ['Здесь вы уже были. Ему тоже понравилось.', 'Опять сюда? У вас есть вкус.'],
+    city: 'Здесь он уже выступал. И не раз.',
+    score: (c, km) => `Открыто стран: ${c} · налетали ${km} км`,
+    goals: { 3: 'Три страны. Разогрелись.', 5: 'Пять стран — это его обычный месяц.', 8: 'Восемь. Вы летаете чаще, чем его чемодан.', 12: 'Двенадцать стран. Вам положена карта постоянного пассажира.', 20: 'Двадцать. Может, уже позовёте его к себе?', 30: 'Тридцать стран. Вы точно организатор, а не пилот?' },
+  },
+  en: {
+    home: ['He is at home here.', 'They already know his face here.', 'A familiar route. He could fly it blindfolded.'],
+    fresh: ['He has not performed here yet. Want to be the first?', 'A new country. He is already packing the cards.', 'Nobody has invited him there. Yet.', 'Good choice. The suitcase is by the door.'],
+    sea: ['Water landing. He will manage.', 'He works at sea too: yachts.', 'The seagulls loved it.'],
+    again: ['You have been here already. He liked it too.', 'Here again? You have taste.'],
+    city: 'He has performed here. More than once.',
+    score: (c, km) => `Countries opened: ${c} · ${km} km flown`,
+    goals: { 3: 'Three countries. Warmed up.', 5: 'Five countries: that is his usual month.', 8: 'Eight. You fly more than his suitcase does.', 12: 'Twelve countries. You have earned a frequent-flyer card.', 20: 'Twenty. Maybe invite him to yours already?', 30: 'Thirty countries. Are you sure you are a planner, not a pilot?' },
+  },
 };
 const SVGNS = 'http://www.w3.org/2000/svg';
-function geoReset() { // ушли со сцены — карта снова ведёт самолёт по маршруту
-  if (!geo.free) return;
-  geo.free = false; geo.q = -1; geo.hops = 0;
-  if (geo.anim) cancelAnimationFrame(geo.anim);
-  geo.path.ownerSVGElement.querySelectorAll('.hop, .pin').forEach((n) => n.remove());
+const game = { seen: new Map(), km: 0, said: '', goal: 0 };   // открытые страны (название → контур), километры, последняя реплика
+const geoSay = $('#geoSay'), geoScore = $('#geoScore'), geoHead = document.querySelector('.chapter.geo-head');
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+// точка карты → долгота и широта (обратная проекция из tools/geomap.py), чтобы считать настоящие километры
+const GK = 1600 / 83.2, mercD = (lat) => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) * 180 / Math.PI, MTOP = mercD(54.87);
+const lonLat = (p) => [p.x / GK - 18.6, (2 * Math.atan(Math.exp((MTOP - p.y / GK) * Math.PI / 180)) - Math.PI / 2) * 180 / Math.PI];
+function kmBetween(a, b) {
+  const [lo1, la1] = lonLat(a), [lo2, la2] = lonLat(b), r = Math.PI / 180;
+  const h = Math.sin((la2 - la1) * r / 2) ** 2 + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin((lo2 - lo1) * r / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(h));
 }
+function geoHud() { // счёт и реплика — в тексте главы; перерисовывается и при смене языка
+  const T = GEO_T[lang];
+  geoHead.classList.toggle('playing', game.km > 0);
+  if (!game.km) return;
+  geoScore.textContent = T.score(game.seen.size, Math.round(game.km).toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-US'));
+  geoSay.textContent = game.goal ? T.goals[game.goal] : game.said ? (Array.isArray(T[game.said[0]]) ? T[game.said[0]][game.said[1] % T[game.said[0]].length] : T[game.said[0]]) : '';
+}
+function geoReset() { // ушли со сцены — карта снова ведёт самолёт по маршруту; открытые страны и счёт остаются
+  if (!geo.free) return;
+  geo.free = false; geo.q = -1;
+  if (geo.anim) cancelAnimationFrame(geo.anim);
+  geo.path.ownerSVGElement.querySelectorAll('.hop, .pin, .aim').forEach((n) => n.remove());
+}
+const toSvg = (svg, e) => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); };
+const geoLive = () => geo.path && geoShot && geoShot.shown >= 0.6;
+$('#geoMap').addEventListener('mousemove', (e) => { // на компьютере пунктир от самолёта к курсору показывает, куда он полетит
+  if (!geoLive() || geo.flying) return;
+  const svg = geo.path.ownerSVGElement, to = toSvg(svg, e), from = geo.pos || geo.path.getPointAtLength(clamp(geo.q) * geo.len);
+  let aim = svg.querySelector('.aim');
+  if (!aim) { aim = document.createElementNS(SVGNS, 'line'); aim.setAttribute('class', 'aim'); svg.insertBefore(aim, geo.plane); }
+  aim.setAttribute('x1', from.x.toFixed(1)); aim.setAttribute('y1', from.y.toFixed(1)); aim.setAttribute('x2', to.x.toFixed(1)); aim.setAttribute('y2', to.y.toFixed(1));
+});
+$('#geoMap').addEventListener('mouseleave', () => { const a = geo.path && geo.path.ownerSVGElement.querySelector('.aim'); if (a) a.remove(); });
 $('#geoMap').addEventListener('click', (e) => {
-  if (!geo.path || !geoShot || geoShot.shown < 0.6) return;
-  const svg = geo.path.ownerSVGElement, pt = svg.createSVGPoint();
-  pt.x = e.clientX; pt.y = e.clientY;
-  const to = pt.matrixTransform(svg.getScreenCTM().inverse());
+  if (!geoLive()) return;
+  const svg = geo.path.ownerSVGElement, to = toSvg(svg, e);
   const from = geo.pos || geo.path.getPointAtLength(clamp(geo.q) * geo.len);
   const dx = to.x - from.x, dy = to.y - from.y, dist = Math.hypot(dx, dy);
   if (dist < 12) return;
+  const land = e.target.closest ? e.target.closest('.land path') : null;
+  const city = geo.cities.map((c) => c.g).find((g) => { const c = g.querySelector('circle'); return Math.hypot(+c.getAttribute('cx') - to.x, +c.getAttribute('cy') - to.y) < 26; });
   const cx = (from.x + to.x) / 2 + dy * 0.22, cy = (from.y + to.y) / 2 - Math.abs(dx) * 0.22 - 20; // дуга выгнута вверх
-  svg.querySelectorAll('.pin').forEach((n) => n.remove());
+  svg.querySelectorAll('.pin, .aim, .tapme').forEach((n) => n.remove());
+  const hops = [...svg.querySelectorAll('.hop')];
+  hops.forEach((h, k) => { if (k < hops.length - 5) h.remove(); else h.classList.add('old'); }); // следы прошлых перелётов бледнеют, старые исчезают
   const trail = document.createElementNS(SVGNS, 'path');
   trail.setAttribute('class', 'hop');
   trail.setAttribute('d', `M${from.x.toFixed(1)},${from.y.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${to.x.toFixed(1)},${to.y.toFixed(1)}`);
   trail.setAttribute('pathLength', '1');
   svg.insertBefore(trail, geo.plane);
-  geo.free = true;
+  geo.free = true; geo.flying = true;
   if (geo.anim) cancelAnimationFrame(geo.anim);
-  const t0 = performance.now(), T = clamp(dist * 2.2, 500, 1300);
+  const t0 = performance.now(), T = clamp(dist * 2.0, 450, 1200);
   const step = (now) => {
     const k = inOut(clamp((now - t0) / T)), m = 1 - k;
     const x = m * m * from.x + 2 * m * k * cx + k * k * to.x, y = m * m * from.y + 2 * m * k * cy + k * k * to.y;
@@ -470,12 +524,24 @@ $('#geoMap').addEventListener('click', (e) => {
     geo.plane.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(Math.atan2(ty, tx) * 180 / Math.PI + 90).toFixed(1)}) scale(1.5)`);
     trail.style.strokeDashoffset = (1 - k).toFixed(3);
     if (k < 1) { geo.anim = requestAnimationFrame(step); return; }
-    const lines = GEO_LINES[lang], pin = document.createElementNS(SVGNS, 'g');
+    geo.flying = false;
+    // приземлился: считаем километры, открываем страну, ставим булавку с её названием
+    game.km += kmBetween(from, to);
+    const before = game.seen.size;
+    let name = '';
+    if (city) { game.said = ['city', 0]; city.classList.add('on'); }
+    if (land) {
+      name = land.dataset.n;
+      if (game.seen.has(name)) { if (!city) game.said = ['again', game.seen.size]; }
+      else { game.seen.set(name, land); land.classList.add('seen'); if (!city) game.said = [land.dataset.home ? 'home' : 'fresh', Math.floor(Math.random() * 9)]; }
+    } else if (!city) game.said = ['sea', Math.floor(Math.random() * 9)];
+    game.goal = game.seen.size !== before && GEO_T.ru.goals[game.seen.size] ? game.seen.size : 0;
+    const pin = document.createElementNS(SVGNS, 'g');
     pin.setAttribute('class', 'pin');
-    const side = to.x > 1150 ? 'end' : to.x < 450 ? 'start' : 'middle';
-    pin.innerHTML = `<circle cx="${to.x.toFixed(1)}" cy="${to.y.toFixed(1)}" r="8"/><text x="${to.x.toFixed(1)}" y="${(to.y + (to.y > 780 ? -22 : 40)).toFixed(1)}" text-anchor="${side}">${lines[Math.min(geo.hops || 0, lines.length - 1)]}</text>`;
+    const side = to.x > 1250 ? 'end' : to.x < 350 ? 'start' : 'middle';
+    pin.innerHTML = `<circle cx="${to.x.toFixed(1)}" cy="${to.y.toFixed(1)}" r="8"/>` + (land ? `<text x="${to.x.toFixed(1)}" y="${(to.y + (to.y > 760 ? -24 : 44)).toFixed(1)}" text-anchor="${side}"><tspan lang="en">${land.dataset.n}</tspan><tspan lang="ru">${land.dataset.ru}</tspan></text>` : '');
     svg.appendChild(pin);
-    geo.hops = (geo.hops || 0) + 1;
+    geoHud();
   };
   geo.anim = requestAnimationFrame(step);
 });
@@ -588,6 +654,7 @@ function setLang(l) {
   html.lang = l;
   document.title = l === 'ru' ? 'Павел Бах — иллюзионист для частных и корпоративных событий' : 'Pavel Bach — Magician for private and corporate events';
   sceneNow = -1; // перерисовать подписи
+  if (typeof geoHud === 'function' && typeof game !== 'undefined') geoHud();
   try { localStorage.setItem('lang', l); } catch (e) { /* хранилище недоступно — не страшно */ }
 }
 let saved = null;

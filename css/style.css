@@ -665,7 +665,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.png?v=15) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=15) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.png?v=16) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=16) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -787,7 +787,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png?v=15) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=15) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=16) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=16) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -972,7 +972,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=15) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=16) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1023,7 +1023,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=15); mask-image: url(../media/ice_logo_m.png?v=15); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=16); mask-image: url(../media/ice_logo_m.png?v=16); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1259,3 +1259,106 @@ html[data-lang="ru"] .cta-top { font-family: var(--display); font-style: italic;
   .chapter .body.more { display: none !important; }
   .chapter[data-scene="wine"] .tag { font-size: 36px; }
 }
+
+/* ══ ШЕСТНАДЦАТАЯ РЕДАКЦИЯ: шрифты ═════════════════════════════════════════════
+   Пара как в глянце: контрастная антиква (Playfair, с кириллицей) для заголовков и геометрический гротеск (Jost) для подзаголовков и текста.
+   По-английски слово-заголовок остаётся готикой; по-русски готики с кириллицей нет — там антиква курсивом, прописными, в том же хроме.
+   Cormorant и моноширинный шрифт на сайте больше не используются. */
+:root { --display: "Playfair", "Times New Roman", serif; --mono: "Jost", system-ui, sans-serif; }
+.bar, .btn, form button, label, .contacts, .scroll-hint, .tap-hint, .geo-hint, .eyebrow, .pnum, .panel em, .play, .deck-nav, .menu-btn, .tap-video, .rcard footer, .body.small, .lang { font-weight: 500; }
+
+/* подзаголовок: Jost, прямой, белый — без курсива и цветных контуров */
+.chapter h2 {
+  font-family: var(--sans); font-style: normal; font-weight: 400; font-size: clamp(19px, 1.75vw, 27px); line-height: 1.22; letter-spacing: 0;
+  color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .6), 0 2px 20px rgba(0, 0, 0, .85); text-wrap: balance;
+}
+.chapter .tag + h2 { margin-top: 2px; }
+.chapter .body { margin-top: 14px; }
+.chapter.formats-head h2 { font-size: clamp(15px, 1.25vw, 19px); font-weight: 300; color: #d9d4ca; }
+.chapter.tv-head h2, .chapter.reviews-head h2 { font-size: clamp(17px, 1.5vw, 23px); }
+.chapter.feat h2 { font-size: clamp(17px, 1.6vw, 24px); font-weight: 300; }
+.chapter.geo-head h2 { font-size: clamp(18px, 1.6vw, 25px); }
+/* остальное, что было набрано Cormorant: цифры фактов, регалии, отзывы на картах, финальная фраза */
+.facts b { font-family: var(--display); font-variation-settings: "opsz" 60; font-style: italic; font-weight: 700; font-size: 21px; }
+.chapter.titles-head .credits b, .credits b { font-family: var(--display); font-variation-settings: "opsz" 60; font-style: italic; font-weight: 700; font-size: clamp(18px, 1.7vw, 26px); }
+.rcard p { font-family: var(--display); font-variation-settings: "opsz" 40; font-weight: 500; font-size: calc(var(--u) * 5.9); line-height: 1.24; }
+.rcard .pip { font-family: var(--display); font-weight: 700; }
+.chapter.booking h2.finale {
+  font-family: var(--display); font-variation-settings: "opsz" 1200; font-style: italic; font-weight: 800; font-size: clamp(26px, 3.3vw, 52px); line-height: 1.04;
+  color: transparent; text-shadow: none;
+}
+.geo-map .city text, .geo-map .pin text { font-family: var(--display); }
+
+/* слово-заголовок по-русски: антиква курсивом, прописными, в том же хроме, что и готика */
+html[data-lang="ru"] .tag, html[data-lang="ru"] .ptag {
+  font-family: var(--display); font-variation-settings: "opsz" 1200; font-style: italic; font-weight: 900; text-transform: uppercase;
+  letter-spacing: -.012em; line-height: .96; padding-right: .12em;
+}
+html[data-lang="ru"] .tag { font-size: clamp(32px, 3.5vw, 56px); margin: 0 0 12px; }
+html[data-lang="ru"] .tag.big { font-size: clamp(64px, 8.6vw, 136px); }
+html[data-lang="ru"] .ptag, html[data-lang="ru"] .panel > .ptag { font-size: clamp(22px, 2.15vw, 36px); line-height: 1; }
+html[data-lang="ru"] .chapter.formats-head .tag { font-size: clamp(28px, 2.9vw, 46px); margin-bottom: 8px; }
+html[data-lang="ru"] .chapter.tv-head .tag { font-size: clamp(28px, 3vw, 46px); }
+html[data-lang="ru"] .chapter.geo-head .tag, html[data-lang="ru"] .chapter.reviews-head .tag { font-size: clamp(24px, 2.5vw, 40px); }
+html[data-lang="ru"] .chapter[data-scene="wine"] .tag { font-size: clamp(32px, 3.6vw, 56px); }
+html[data-lang="ru"] .chapter.left, html[data-lang="ru"] .chapter.right { max-width: min(520px, calc(100vw - 2 * var(--gutter))); }
+html[data-lang="ru"] .chapter.reviews-head { max-width: min(430px, 34vw); }
+/* обложка по-русски: слоган той же антиквой */
+html[data-lang="ru"] .chapter.cover .lede {
+  font-family: var(--display); font-variation-settings: "opsz" 1200; font-style: italic; font-weight: 800; text-transform: uppercase;
+  font-size: clamp(20px, 2.5vw, 40px); letter-spacing: 0; line-height: 1.04;
+}
+/* меню по-русски: тот же гротеск, что имя и EN/RU; «Проверить дату» — наклейка антиквой */
+html[data-lang="ru"] .menu button, html[data-lang="ru"] .menu-sheet button { font-family: var(--sans); font-style: normal; font-weight: 500; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+html[data-lang="ru"] .menu-sheet button { font-size: 14px; }
+html[data-lang="ru"] .cta-top { font-family: var(--display); font-variation-settings: "opsz" 40; font-style: italic; font-weight: 800; font-size: 16px; letter-spacing: 0; }
+
+@media (max-width: 760px) {
+  .chapter h2 { font-size: 19px; }
+  .chapter.formats-head h2 { font-size: 14px; }
+  .chapter.tv-head h2, .chapter.reviews-head h2, .chapter.feat h2 { font-size: 16px; }
+  .chapter.geo-head h2 { font-size: 18px; }
+  .chapter.booking h2.finale { font-size: 24px; }
+  .chapter .body { margin-top: 8px; }
+  html[data-lang="ru"] .tag { font-size: 31px; margin-bottom: 8px; }
+  html[data-lang="ru"] .tag.big { font-size: 72px; }
+  html[data-lang="ru"] .ptag, html[data-lang="ru"] .panel > .ptag { font-size: 23px; }
+  html[data-lang="ru"] .chapter.formats-head .tag { font-size: 28px; }
+  html[data-lang="ru"] .chapter[data-scene="card"] .tag, html[data-lang="ru"] .chapter[data-scene="stage"] .tag, html[data-lang="ru"] .chapter[data-scene="incog"] .tag,
+  html[data-lang="ru"] .chapter[data-scene="wine"] .tag, html[data-lang="ru"] .chapter.tv-head .tag { font-size: 30px; }
+  html[data-lang="ru"] .chapter.geo-head .tag, html[data-lang="ru"] .chapter.reviews-head .tag { font-size: 24px; }
+  html[data-lang="ru"] .chapter.reviews-head { max-width: none; }
+  html[data-lang="ru"] .chapter.cover .lede { font-size: 21px; }
+  html[data-lang="ru"] .cta-top { font-size: 14px; }
+  .facts b { font-size: 18px; }
+}
+
+/* ── игра на карте: страны открываются, счёт в тексте главы ── */
+.geo-map .land path { transition: fill .5s, stroke .5s; cursor: crosshair; }
+.geo-map .land path:hover { fill: #4d2f3f; }
+.geo-map .land path.seen { fill: #7c1f3c; stroke: #ffb3c4; animation: opened .7s ease-out; }
+.geo-map .land path.seen[data-home] { fill: #96233f; }
+@keyframes opened { 0% { fill: #fff; } 100% { fill: #7c1f3c; } }
+.geo-map .hop.old { opacity: .28; }
+.geo-map .aim { stroke: rgba(255, 255, 255, .5); stroke-width: 1.4; stroke-dasharray: 3 7; pointer-events: none; }
+.geo-map .pin { pointer-events: none; }
+.geo-map .pin text { font-style: italic; font-weight: 800; font-size: 34px; animation: stamp .45s cubic-bezier(.2, 1.6, .4, 1) both; transform-box: fill-box; transform-origin: 50% 50%; }
+@keyframes stamp { from { opacity: 0; transform: scale(1.8) rotate(-8deg); } }
+.geo-map .tapme { pointer-events: none; }
+.geo-map .tapme circle { fill: #ff3d63; stroke: #fff; stroke-width: 2; }
+.geo-map .tapme .r2 { fill: none; stroke: #ff8fa5; stroke-width: 2.5; transform-box: fill-box; transform-origin: 50% 50%; animation: ping 1.5s ease-out infinite; }
+@keyframes ping { from { transform: scale(1); opacity: .9; } to { transform: scale(4.5); opacity: 0; } }
+.geo-hint { font-size: 12px; letter-spacing: .14em; color: #ffb3c4; animation: breathe 2.2s ease-in-out infinite; }
+.geo-say, .geo-score { display: none; }
+.chapter.geo-head.playing .body, .chapter.geo-head.playing .geo-hint { display: none; }
+.chapter.geo-head.playing .geo-say { display: block; margin-top: 12px; font-size: clamp(16px, 1.35vw, 20px); line-height: 1.3; color: #fff; min-height: 2.6em; }
+.chapter.geo-head.playing .geo-score { display: block; margin-top: 6px; font-family: var(--sans); font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #ff8fa5; }
+@media (max-width: 760px) {
+  .geo-map .pin text { font-size: 46px; }
+  .chapter.geo-head.playing .geo-say { font-size: 15px; margin-top: 8px; }
+  .geo-hint { font-size: 10.5px; }
+}
+/* правки по снимкам: заголовок крупнее, финальная фраза белым (в хроме тире попадало в тёмную полосу и пропадало) */
+html[data-lang="ru"] .tag { font-size: clamp(36px, 4vw, 64px); }
+.chapter.booking h2.finale { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #fff; filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 26px rgba(255, 40, 80, .45)); }
+@media (max-width: 760px) { html[data-lang="ru"] .tag { font-size: 31px; } }
