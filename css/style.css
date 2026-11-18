@@ -665,7 +665,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.png?v=16) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=16) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.png?v=17) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=17) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -787,7 +787,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png?v=16) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=16) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=17) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=17) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -972,7 +972,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=16) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=17) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1023,7 +1023,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=16); mask-image: url(../media/ice_logo_m.png?v=16); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=17); mask-image: url(../media/ice_logo_m.png?v=17); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1362,3 +1362,12 @@ html[data-lang="ru"] .cta-top { font-family: var(--display); font-variation-sett
 html[data-lang="ru"] .tag { font-size: clamp(36px, 4vw, 64px); }
 .chapter.booking h2.finale { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #fff; filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 26px rgba(255, 40, 80, .45)); }
 @media (max-width: 760px) { html[data-lang="ru"] .tag { font-size: 31px; } }
+
+/* ══ СЕМНАДЦАТАЯ РЕДАКЦИЯ ═══════════════════════════════════════════════════════ */
+/* телефон, сцена с картой: кадр чуть меньше экрана (82% высоты), чтобы поднятая карта слева и лицо справа помещались вместе; низ растворяется в чёрное */
+@media (max-aspect-ratio: 3/4) {
+  .shot.dive {
+    height: calc(var(--vh, 1vh) * 82); width: calc(var(--vh, 1vh) * 145.8); top: calc(var(--bar) + var(--vh, 1vh) * 41);
+    -webkit-mask-image: linear-gradient(180deg, #000 84%, transparent 100%); mask-image: linear-gradient(180deg, #000 84%, transparent 100%);
+  }
+}
