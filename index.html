@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-lang="en" data-v="25">
+<html lang="en" data-lang="en" data-v="26">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,15 +13,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ctext x='32' y='46' font-size='44' text-anchor='middle' fill='%23ff4f6d'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
-<link rel="preload" as="image" href="media/posters/cover.jpg?v=25">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tinos:wght@400;700&family=Jost:wght@200;300;400;500;600&family=Pirata+One&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
-<!-- одна буква: «x» во фрактуре UnifrakturMaguntia не читается, в слове Flex она взята из Grenze Gotisch (грузится только этот знак) -->
-<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@600&text=x&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="media/posters/cover.jpg?v=26">
+<!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css): без обращения к Google первый экран собирается быстрее.
+     Одна буква «x» в слове Flex — из Grenze Gotisch (во фрактуре UnifrakturMaguntia она не читается). -->
+<link rel="preload" as="font" type="font/woff2" href="fonts/jost-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/tinos-400-latin.woff2" crossorigin>
 <!-- примерка шрифтов русской версии: адрес с ?font=1…6 включает вариант с листа review/v18_shrifty (по умолчанию стоит № 5) и подгружает его шрифт -->
 <script>(function(){var m=location.search.match(/[?&]font=([1-6])/);if(!m)return;document.documentElement.setAttribute('data-font',m[1]);var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Playfair:opsz,wght@5..1200,400..900&family=Oswald:wght@400;600;700&family=Ruslan+Display&family=Unbounded:wght@400..900&display=swap';document.head.appendChild(l);})();</script>
-<link rel="stylesheet" href="css/style.css?v=25">
+<link rel="stylesheet" href="css/style.css?v=26">
 </head>
 <body>
 
@@ -67,10 +66,10 @@
        Дальше один непрерывный влёт (сцена king): камера срывается к карте (в смазе карта из клипа подменяется ею же в полном качестве, .kcard)
        и влетает в глаз короля; в глазу уже идёт следующая сцена (data-tr="eye" у сцены с дверью). data-card — где карта лежит в последнем кадре клипа: центр x,y и ширина в % кадра, наклон в градусах. -->
   <div class="shot phonk dive" data-scenes="card king" data-src="media/card.mp4" data-tr="expand" data-ramp="0:0,0.7213:1,1:1" data-mx="47%" data-card="39.96,58.85,10.8,-2.7">
-    <div class="kcard"><img data-src="media/king.jpg" alt=""></div>
+    <div class="kcard"><div class="kin"><img data-src="media/king.webp" alt=""></div><i class="ktint"></i></div>
     <!-- макро-снимки глаза короля для глубокого влёта (рисует холст #deep); data-rect — где снимок лежит на карте, в долях её ширины и высоты -->
     <div class="deepsrc" hidden>
-      <img data-src="media/eye2.jpg" data-rect="0.40365,0.20302,0.47978,0.25870" alt="">
+      <img data-src="media/eye2.webp" data-rect="0.40365,0.20302,0.47978,0.25870" alt="">
     </div>
   </div>
   <canvas class="deep" id="deep" aria-hidden="true"></canvas>
@@ -83,7 +82,7 @@
        Рамки экранов считает tools/tvmask.py. data-so — с какой секунды ролика идёт превью, data-oy — какую часть вертикального ролика показывать. -->
   <div class="shot phonk tvwall" data-scenes="tv" data-src="media/tv.mp4" data-tr="burn" data-ramp="0:0,0.6:1,1:1" data-mx="27%" data-mx2="46%" data-pan="0.04,0.38" data-fit="51.5,15.2,81.8,77,0.6,0.74">
     <div class="tvlive">
-      <img class="tvbg" data-src="media/tvs.jpg" alt="">
+      <img class="tvbg" data-src="media/tvs.webp" alt="">
       <div class="tubes"></div>
       <div class="screens">
         <button class="scr" type="button" data-mp4="v1771093676/CLOSE-UP_1_oiw12t" data-so="4" data-oy="17%" style="left:53.67%;top:17.36%;width:10.31%;height:14.31%"><b>Close-up showreel</b></button>
@@ -96,9 +95,9 @@
     </div>
   </div>
 
-  <div class="shot phonk dimmed" data-scenes="feat" data-src="media/crowd.jpg" data-tr="crt"></div>
+  <div class="shot phonk dimmed" data-scenes="feat" data-src="media/crowd.webp" data-tr="crt"></div>
   <!-- регалии: настоящий снимок Павла на площадке America's Got Talent (неоновый логотип шоу — в самом кадре) -->
-  <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.jpg" data-tr="wash" data-fade="0.4" data-mx="66%"></div>
+  <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.webp" data-tr="wash" data-fade="0.4" data-mx="66%"></div>
   <!-- география: карта (tools/geomap.py вставляется из media/map.svg), маршрут рисуется при прокрутке, по нему летит самолёт -->
   <div class="shot phonk geo" data-scenes="geo" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
   <!-- отзывы: одна организаторка шепчет другой на ухо (клип перематывается скроллом); от них к зрителю спиралью летят карты (.deck внутри кадра,
@@ -115,7 +114,7 @@
   </div>
   <!-- вода в вино: наливает при всех, взбалтывает — вино, лицо невозмутимое; сдержанный тост в камеру; камера уходит в бокал -->
   <div class="shot phonk" data-scenes="wine" data-src="media/wine.mp4" data-tr="whip" data-ramp="0:0,0.36:0.17,0.6:0.45,0.68:0.6,0.72:0.72,0.8:0.8,1:1" data-zoom="42.5%,62%,3.2" data-mx="47%"></div>
-  <div class="shot phonk dimmed" data-scenes="booking" data-src="media/finale.jpg" data-tr="burn"></div>
+  <div class="shot phonk dimmed" data-scenes="booking" data-src="media/finale.webp" data-tr="burn"></div>
 </div>
 
 <!-- эффекты переходов -->
@@ -169,7 +168,7 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach</span><span lang="ru">Павел Бах</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
-        <img class="ice-logo" src="media/ice_logo.png?v=25" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 96vw, 1040px" alt="">
+        <img class="ice-logo" src="media/ice_logo.webp?v=26" srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w, media/ice_logo_l.webp 1600w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" fetchpriority="high" alt="">
         <i class="ice-shine"></i>
         <i class="glint" style="--gx:14%;--gy:38%;--gd:0s"></i>
         <i class="glint" style="--gx:37%;--gy:62%;--gd:.9s"></i>
@@ -240,16 +239,16 @@
     <p class="tag big"><span lang="en">feat.</span><span lang="ru">фит.</span></p>
     <h2><span lang="en">Brands that have already booked him.</span><span lang="ru">Бренды, которые его уже приглашали.</span></h2>
     <ul class="logos">
-      <li><img src="media/logos/dior.png?v=25" alt="Dior"></li>
-      <li><img src="media/logos/cartier.png?v=25" alt="Cartier"></li>
-      <li><img src="media/logos/mercedes.png?v=25" alt="Mercedes-Benz"></li>
-      <li><img src="media/logos/motorola.svg?v=25" alt="Motorola"></li>
-      <li><img src="media/logos/bulgari.png?v=25" alt="Bulgari"></li>
-      <li><img src="media/logos/ritz.png?v=25" alt="The Ritz-Carlton"></li>
-      <li><img src="media/logos/nike.png?v=25" alt="Nike"></li>
-      <li><img src="media/logos/cocacola.png?v=25" alt="Coca-Cola"></li>
-      <li><img src="media/logos/xiaomi.png?v=25" alt="Xiaomi"></li>
-      <li><img src="media/logos/raiffeisen.png?v=25" alt="Raiffeisen Bank"></li>
+      <li><img data-lz="media/logos/dior.png" alt="Dior"></li>
+      <li><img data-lz="media/logos/cartier.png" alt="Cartier"></li>
+      <li><img data-lz="media/logos/mercedes.png" alt="Mercedes-Benz"></li>
+      <li><img data-lz="media/logos/motorola.svg" alt="Motorola"></li>
+      <li><img data-lz="media/logos/bulgari.png" alt="Bulgari"></li>
+      <li><img data-lz="media/logos/ritz.png" alt="The Ritz-Carlton"></li>
+      <li><img data-lz="media/logos/nike.png" alt="Nike"></li>
+      <li><img data-lz="media/logos/cocacola.png" alt="Coca-Cola"></li>
+      <li><img data-lz="media/logos/xiaomi.png" alt="Xiaomi"></li>
+      <li><img data-lz="media/logos/raiffeisen.png" alt="Raiffeisen Bank"></li>
     </ul>
     <p class="body small"><span lang="en">Spain · France · Monaco · Portugal · Cyprus · Dubai</span><span lang="ru">Испания · Франция · Монако · Португалия · Кипр · Дубай</span></p>
   </section>
@@ -291,7 +290,7 @@
   <!-- ЗАЯВКА: из бокала — бриллиантовые буквы и приглашение -->
   <section class="chapter center booking" id="booking" data-scene="booking" data-in="0.1" data-out="2">
     <div class="ice small" aria-hidden="true">
-      <img class="ice-logo" src="media/ice_logo.png?v=25" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 76vw, 520px" alt="">
+      <img class="ice-logo" data-lz="media/ice_logo.webp" width="1100" height="404" alt="">
       <i class="ice-shine"></i>
       <i class="glint" style="--gx:20%;--gy:40%;--gd:.4s"></i>
       <i class="glint big" style="--gx:62%;--gy:46%;--gd:1.9s"></i>
@@ -333,6 +332,6 @@
 
 <div id="scrollSpace" aria-hidden="true"></div>
 
-<script type="module" src="js/main.js?v=25"></script>
+<script type="module" src="js/main.js?v=26"></script>
 </body>
 </html>

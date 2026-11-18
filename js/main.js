@@ -115,8 +115,44 @@ function clipOf(src, at) {
   else clips[src].at = Math.min(clips[src].at, at);
   return clips[src];
 }
+// 26-я редакция. Каждый ролик лежит в трёх кодеках: H.264 (играет везде), HEVC (айфоны, маки, часть андроидов) и AV1 (новые андроиды, Chrome).
+// HEVC и AV1 в 2–3 раза легче при том же виде. Берём их, только если устройство раскодирует их аппаратно (иначе перемотка станет рывками).
+const CODECS = { hevc: 'hvc1.1.6.L93.B0', av1: 'av01.0.05M.08' };
+let CODEC = 'h264', codecKnown = false;
+async function pickCodec() {
+  const forced = location.search.match(/[?&]codec=(h264|hevc|av1)/);
+  if (forced) return forced[1];
+  const probe = document.createElement('video');
+  for (const c of (IOS || SAFARI ? ['hevc', 'av1'] : ['av1', 'hevc'])) {
+    const type = `video/mp4; codecs="${CODECS[c]}"`;
+    if (probe.canPlayType(type) !== 'probably') continue;
+    if (!navigator.mediaCapabilities) { if (c === 'hevc') return c; continue; }
+    try {
+      const r = await navigator.mediaCapabilities.decodingInfo({ type: 'file', video: { contentType: type, width: 1280, height: 720, bitrate: 1500000, framerate: 24 } });
+      if (r.supported && r.smooth && r.powerEfficient) return c;
+    } catch (e) { /* не знает такого запроса — пробуем следующий */ }
+  }
+  return 'h264';
+}
+Promise.race([pickCodec(), new Promise((r) => setTimeout(() => r('h264'), 500))]).catch(() => 'h264').then((c) => { CODEC = c; codecKnown = true; html.dataset.codec = c; pump(); });
+const wantCodec = () => (wcMode ? 'h264' : CODEC); // холст с кадрами (режим энергосбережения айфона) разбирает только H.264
+const clipFile = (src, codec) => (codec === 'h264' ? src : src.replace(/\.mp4$/, `.${codec}.mp4`));
+function fetchClip(src, done) {
+  const c = clips[src], codec = wantCodec();
+  c.state = 'loading';
+  fetch(V(clipFile(src, codec))).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
+    .then((b) => { c.blob = b; c.url = URL.createObjectURL(b); c.codec = codec; c.state = 'ready'; })
+    .catch(() => { c.state = 'failed'; })
+    .then(done);
+}
+// Загрузка по сценам: сразу качается только то, что нужно в ближайшие экраны (LOOK). Остальное — по одному ролику, в порядке фильма,
+// когда первый экран уже показан; при экономии трафика или медленной сети фоновой догрузки нет вовсе.
+const NET = navigator.connection || {};
+const SAVE = !!NET.saveData || /(^|-)2g$/.test(NET.effectiveType || '');
+const LOOK = 3.2, BG_AFTER = performance.now() + 3000;
 let fetching = 0;
 function pump() {
+  if (!codecKnown) return;
   while (fetching < 2) {
     let best = null, bd = Infinity;
     for (const src in clips) {
@@ -126,12 +162,9 @@ function pump() {
       if (d < bd) { bd = d; best = src; }
     }
     if (!best) return;
-    const c = clips[best];
-    c.state = 'loading'; fetching++;
-    fetch(V(best)).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
-      .then((b) => { c.blob = b; c.url = URL.createObjectURL(b); c.state = 'ready'; })
-      .catch(() => { c.state = 'failed'; })
-      .then(() => { fetching--; pump(); });
+    if (bd > LOOK && (SAVE || fetching > 0 || performance.now() < BG_AFTER)) return; // дальние сцены — в фоне, по одной
+    fetching++;
+    fetchClip(best, () => { fetching--; pump(); });
   }
 }
 // Раскадровка: лёгкие кадры клипа (каждые 0,8 с). Пока ролик не показывает картинку — качается, или телефон не дал его запустить, —
@@ -182,6 +215,7 @@ function makeVideo(src, url, loop) {
   v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
   v.addEventListener('error', () => { // ролик из памяти не открылся — берём файл напрямую с сервера
     if (v._direct || !src) return;
+    CODEC = 'h264'; // этот кодек устройство не потянуло: и этот ролик, и следующие берём в H.264
     v._direct = true; v.src = V(src); v.load();
     if (v._play) playV(v); else prime(v);
   });
@@ -290,7 +324,8 @@ function wcVideo(c, sh) {
     if (dead) return;
     ix = mp4Index(buf);
     if (!ix) throw new Error('mp4');
-    const cfg = { codec: ix.codec, description: ix.desc, codedWidth: ix.w, codedHeight: ix.h, optimizeForLatency: true };
+    const cfg = { codec: ix.codec, description: ix.desc, codedWidth: ix.w, codedHeight: ix.h, optimizeForLatency: true,
+      colorSpace: { primaries: 'bt709', transfer: 'iec61966-2-1', matrix: 'bt709', fullRange: false } }; // как помечены сами файлы: без сдвига гаммы
     const sup = await VideoDecoder.isConfigSupported(cfg);
     if (!sup.supported || dead) throw new Error('codec');
     cv.width = ix.w; cv.height = ix.h; ctx = cv.getContext('2d');
@@ -317,7 +352,8 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
     live: el.hasAttribute('data-live'),                                   // клип не перематывается скроллом, а играет по кругу
     mx2: el.dataset.mx2 ? parseFloat(el.dataset.mx2) / 100 : null,        // на вертикальном экране кадр панорамирует от data-mx к data-mx2
     pan: (el.dataset.pan || '0.4,0.7').split(',').map(Number), mxNow: -1, w: 0, h: 0, shift: 0, dive: null, fit: null, on: false,
-    onAt: parseFloat(el.dataset.on || 0.66),                              // с какой доли сцены то, что внутри кадра, можно нажимать
+    onAt: parseFloat(el.dataset.on || 0.66),
+    noP: el.classList.contains('girls'),                              // с какой доли сцены то, что внутри кадра, можно нажимать
   };
   // влёт в карту: data-card="cx,cy,w,rot" — где в последнем кадре клипа лежит карта (центр и ширина в % кадра, наклон в градусах)
   if (el.dataset.card) {
@@ -350,7 +386,8 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
     clipOf(src, sh.from);
     const img = new Image();
     img.alt = ''; img.className = 'poster'; img.decoding = 'async';
-    img.src = V(posterOf(src));
+    sh.posterSrc = V(posterOf(src)); // постер первой сцены нужен сразу, остальных — за три экрана до сцены или когда сеть свободна (см. stock)
+    if (first.start === 0) img.src = sh.posterSrc;
     el.prepend(img);
     sh.poster = img;
   } else if (src) {
@@ -361,14 +398,12 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
 shots.forEach((sh, k) => { sh.next = shots[k + 1]; sh.prev = shots[k - 1]; });
 if (/[?&]dbg/.test(location.search)) window.__phonk = { shots, clips, get wc() { return wcMode; }, get blocked() { return blocked; } }; // для проверки
 const diveShot = shots.find((sh) => sh.dive);
-if (diveShot) { // карта короля и макро-снимки глаза грузятся сразу после страницы: к моменту влёта они уже в памяти
-  const early = () => { diveShot.lazyDone = true; diveShot.el.querySelectorAll('img[data-src]').forEach((im) => { im.src = V(im.dataset.src); if (im.decode) im.decode().catch(() => {}); }); };
-  if (document.readyState === 'complete') early(); else window.addEventListener('load', early);
-}
+// карта короля и снимок глаза грузятся, когда до сцены с картой два экрана или сеть свободна (см. stock): первый экран их не ждёт
 const NOVIDEO = /[?&]novideo/.test(location.search); // для проверки: сайт без роликов, на одной раскадровке (как на телефоне, который не запустил видео)
 function arm(sh) { // ролик сцены встаёт в кадр поверх постера
   const c = clips[sh.src];
   if (NOVIDEO || sh.video || !c || c.state !== 'ready') return;
+  if (wcMode && c.codec !== 'h264' && !sh.wcFailed) { URL.revokeObjectURL(c.url); c.url = ''; c.blob = null; c.state = 'idle'; return; } // для холста нужен H.264: перекачиваем
   if (wcMode && c.blob && !sh.live && !sh.wcFailed) { const v = wcVideo(c, sh); sh.poster.after(v); sh.video = v; return; }
   const v = makeVideo(sh.src, c.url, sh.live);
   sh.poster.after(v);
@@ -378,11 +413,8 @@ function arm(sh) { // ролик сцены встаёт в кадр повер�
 function disarm(sh) { if (sh.video) { dropVideo(sh.video); sh.video = null; } }
 function fetchNow(src) { // ролик нужен прямо сейчас — качаем вне очереди (очередь могла быть занята дальними сценами)
   const c = clips[src];
-  if (!c || c.state !== 'idle') return;
-  c.state = 'loading';
-  fetch(V(src)).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
-    .then((b) => { c.blob = b; c.url = URL.createObjectURL(b); c.state = 'ready'; })
-    .catch(() => { c.state = 'failed'; });
+  if (!codecKnown || !c || c.state !== 'idle') return;
+  fetchClip(src, () => {});
 }
 function warmFrames(sh) { // раскадровка сцены целиком: если ролик не успел, сцена всё равно идёт по кадрам, а не стоит на первом
   const F = FRAMES[sh.name];
@@ -398,13 +430,26 @@ function warmFrames(sh) { // раскадровка сцены целиком: �
   }
 }
 function stock() { // что держать наготове: ролики и картинки ближайших сцен
-  const idle = fetching === 0;
+  const idle = fetching === 0 && !SAVE && performance.now() > BG_AFTER;
+  pump();
+  if (!mapAsked && (idle || cur > SCENES[byId.tv].start - 3)) { // за три экрана до телевизоров (или когда сеть свободна): превью в экранах, логотипы клиентов, карта мира
+    mapAsked = true; askMap();
+    document.querySelectorAll('img[data-lz]').forEach((im) => { im.src = V(im.dataset.lz); });
+    document.querySelectorAll('img[data-lz2]').forEach((im) => { im.src = im.dataset.lz2; });
+    screensLive.forEach((v) => { if (v._poster) v.poster = v._poster; }); // превью в телевизорах лежат на другом сервере
+  }
   for (const sh of shots) {
     const d = cur < sh.from ? sh.from - cur : cur > sh.to ? cur - sh.to : 0;
-    if (sh.src && d < 1.2 && !(sh.video && sh.video._primed)) { fetchNow(sh.src); warmFrames(sh); }
-    if (sh.src) {
-      if (!LAZY || d < 1.3) arm(sh); else if (d > 1.6) disarm(sh);
+    if (sh.src && d < 1.2 && !(sh.video && sh.video._primed)) {
+      fetchNow(sh.src);
+      // запасные кадры целиком нужны, только если видео точно не будет: автозапуск запрещён, ролик не скачался, режим проверки.
+      // Пока ролик просто качается, хватает двух ближайших кадров (их берёт flipbook) — иначе на каждой сцене зря качались бы десятки картинок.
+      if (blocked || NOVIDEO || clips[sh.src].state === 'failed') warmFrames(sh);
     }
+    if (sh.src) {
+      if (d < (LAZY ? 1.3 : 2.2)) arm(sh); else if (d > (LAZY ? 1.6 : 2.8)) disarm(sh); // и на компьютере держим 3–4 плеера, а не все двенадцать
+    }
+    if (sh.poster && !sh.poster.src && (d < 3 || idle)) sh.poster.src = sh.posterSrc;
     if (d < 2 || idle) {
       if (sh.imgSrc && !sh.img) { sh.img = new Image(); sh.img.alt = ''; sh.img.onload = () => sh.el.prepend(sh.img); sh.img.src = V(sh.imgSrc); }
       if (!sh.lazyDone) { sh.lazyDone = true; sh.el.querySelectorAll('img[data-src]').forEach((im) => { im.src = V(im.dataset.src); }); }
@@ -415,7 +460,7 @@ function stock() { // что держать наготове: ролики и к
 // Кадр 16:9 накрывает экран. На вертикальном экране видна только его часть — data-mx говорит, какую точку держать в центре.
 // На широком экране кадр можно сдвинуть и укрупнить (data-dx, data-bs), чтобы герой не оказался под текстом.
 const KS = 1.05; // чёткая карта чуть крупнее карты из ролика: размытый край той не выглядывает из-под неё ореолом
-const KAR = 1261 / 1724; // пропорции картинки карты (media/king.jpg)
+const KAR = 1261 / 1724; // пропорции картинки карты (media/king.webp)
 const EYE = [0.44256, 0.23188]; // куда на карте влетает камера: самая тёмная часть радужки левого глаза короля, ниже блика (доли ширины и высоты карты)
 const R_END = 0.00317;  // в конце влёта полудиагональ экрана — это столько ширины карты (4 px рисунка): вокруг только тёмная радужка, блик уже за кадром
 const PAPER = ['#cbc2b7', '#a9a095', '#877e74']; // тон бумаги карты (умножается на рисунок): свет сверху слева, к нижнему краю темнее
@@ -518,7 +563,7 @@ function panelsLive(on) {
     const c = clips[p.src];
     if (on && !p.v && c.state === 'ready') { p.v = makeVideo(p.src, c.url, true); p.img.after(p.v); }
     if (!p.v) continue;
-    if (on) { if (p.v.paused) playV(p.v); } else if (LAZY) { dropVideo(p.v); p.v = null; } else if (!p.v.paused) { p.v._play = false; p.v.pause(); }
+    if (on) { if (p.v.paused) playV(p.v); } else { dropVideo(p.v); p.v = null; }
   }
 }
 const tripShot = shots.find((sh) => sh.el.classList.contains('trip'));
@@ -534,7 +579,7 @@ document.querySelectorAll('.scr').forEach((b) => {
   if (b.dataset.mp4) {
     const v = makeVideo('', '', true);
     v.removeAttribute('src'); v.preload = 'none';
-    v.poster = `${CLOUD}w_360,q_auto:low,so_${b.dataset.so || 0}/${b.dataset.mp4}.jpg`; // тот же кадр, что стоит на экране в клипе
+    v._poster = `${CLOUD}w_360,q_auto:low,so_${b.dataset.so || 0}/${b.dataset.mp4}.jpg`; // тот же кадр, что стоит на экране в клипе; ставится ближе к сцене (askLate)
     v._src = `${CLOUD}w_360,q_auto:low,so_${b.dataset.so || 0},du_8,ac_none/${b.dataset.mp4}.mp4`;
     v.style.objectPosition = `50% ${b.dataset.oy || '50%'}`;
     t.appendChild(v);
@@ -542,7 +587,7 @@ document.querySelectorAll('.scr').forEach((b) => {
   } else if (b.dataset.yt) {
     const img = new Image();
     img.alt = '';
-    img.src = `https://i.ytimg.com/vi/${b.dataset.yt}/hqdefault.jpg`;
+    img.dataset.lz2 = `https://i.ytimg.com/vi/${b.dataset.yt}/hqdefault.jpg`;
     t.appendChild(img);
   }
   tubes.appendChild(t);
@@ -551,7 +596,8 @@ const tvShot = shots.find((sh) => sh.id === 'tv');
 // география: маршрут рисуется по мере прокрутки, по нему летит самолёт, города загораются, когда он до них долетел
 const geoShot = shots.find((sh) => sh.id === 'geo');
 const geo = { path: null, plane: null, len: 0, cities: [], q: -1 };
-fetch(V('media/map.svg')).then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status)))).then((svg) => {
+let mapAsked = false; // карта мира и логотипы клиентов нужны только к своим сценам: первый экран их не ждёт (см. later() в stock)
+const askMap = () => fetch(V('media/map.svg')).then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status)))).then((svg) => {
   const box = $('#geoMap');
   box.innerHTML = svg;
   geo.path = box.querySelector('#geoRoute'); geo.plane = box.querySelector('#geoPlane'); geo.len = geo.path.getTotalLength();
@@ -849,15 +895,19 @@ function layDeck(local, vis) {
       ry = -5 + near * (30 * s + 62 * Math.sin(ph)); rx = near * 22 * Math.cos(ph); rz = near * -16 * Math.sin(ph + 1);
       op = clamp((0.97 - s) / 0.06);
     }
+    el.classList.toggle('front', Math.abs(u) < 0.5);
+    if (op <= 0.001) { if (el._on !== false) { el._on = false; el.style.visibility = 'hidden'; } return; } // невидимые карты браузер не трогает вовсе
+    if (el._on === false) { el._on = true; el.style.visibility = ''; }
     const wob = Math.sin(t * 1.1 + j * 2) * 1.5;
     el.style.transform = `translate3d(${x.toFixed(1)}px, ${(y + wob * 2 * sc).toFixed(1)}px, 0) scale(${sc.toFixed(4)}) rotateY(${(ry + wob).toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) rotateZ(${(rz + wob * 0.3).toFixed(2)}deg)`;
     el.style.opacity = clamp(op).toFixed(3);
-    el.style.zIndex = 200 - Math.round(Math.abs(u) * 10);
+    const zi = 200 - Math.round(Math.abs(u) * 10);
+    if (zi !== el._zi) { el._zi = zi; el.style.zIndex = zi; }
     // объём: карта, повёрнутая от света, темнее; дальние и пролетающие мимо — не в фокусе
     const shade = clamp(Math.abs(ry) / 110 + Math.abs(rx) / 160), blur = u <= 0 ? -u * 7 : clamp((u - 1.2) * 0.5, 0, 2.5) / Math.max(sc, 0.2); // размытие задано до масштаба
     const look = `${shade.toFixed(2)}|${blur.toFixed(1)}`;
-    if (look !== el._look) { el._look = look; el.style.setProperty('--sh', shade.toFixed(2)); el.style.filter = blur > 0.3 ? `blur(${blur.toFixed(1)}px)` : ''; }
-    el.classList.toggle('front', Math.abs(u) < 0.5);
+    // тень поворота — фильтр яркости (раньше — переменная --sh: из-за неё карта перерисовывалась на каждом кадре); фильтр считает видеокарта
+    if (look !== el._look) { el._look = look; el.style.filter = (shade > 0.02 ? `brightness(${(1 - shade * 0.6).toFixed(3)}) ` : '') + (blur > 0.3 ? `blur(${blur.toFixed(1)}px)` : ''); }
   });
   deckNav.style.setProperty('--fx', `${F[0].toFixed(1)}px`);
   const now = Math.round(pos);
@@ -1050,7 +1100,8 @@ function frame(now, snap) {
     const vis = visIn(sh, k) * visOut(sh);
     const p = clamp((cur - sh.from) / (sh.to - sh.from));
     if (vis > 0) {
-      sh.el.style.setProperty('--p', p.toFixed(4)); // по нему CSS проявляет то, что лежит внутри кадра
+      // по --p CSS проявляет то, что лежит внутри кадра. У сцены отзывов внутри 26 карт, которым --p не нужен, а браузер пересчитывал бы стили каждой на каждом кадре
+      if (!sh.noP) sh.el.style.setProperty('--p', p.toFixed(4)); // по нему CSS проявляет то, что лежит внутри кадра
       if (sh.video && !sh.live && sh.video.readyState >= 1 && !sh.video.seeking && sh.video.duration) {
         const t = rampAt(sh.ramp, p) * (sh.video.duration - 0.05);
         if (Math.abs(sh.video.currentTime - t) > 0.02) sh.video.currentTime = t;
@@ -1076,6 +1127,7 @@ function frame(now, snap) {
         const D = sh.dive, d = clamp((cur - D.from) / (D.to - D.from));
         if (Math.abs(d - D.d) > 0.0002) {
           D.d = d;
+          sh.el.classList.toggle('diving', d > 0); // размытие кадра нужно только во время влёта в карту
           const m = smooth(d / 0.3);
           const st = sh.el.style, z = Math.min(Math.exp(diveZ(D, d)), 60); // сам кадр дальше не растёт: карту уже рисует холст поверх
           st.setProperty('--z', z.toFixed(4));
@@ -1194,10 +1246,12 @@ function frame(now, snap) {
   }
   if (gxy) drawGlint(gf, gxy[0], gxy[1], 0.12 + gf * 0.5, gf > 0.3);
   else if (glintDrawn) drawGlint(0, 0, 0, 0);
+  if (!!gxy !== fx._on) { fx._on = !!gxy; fx.style.display = gxy ? '' : 'none'; } // холст блика смешивается с кадром (screen): пока блика нет, слоя нет — иначе видеокарта смешивала бы пустоту на каждом кадре
   whiteout.style.opacity = smooth((flashA - 0.7) / 0.3).toFixed(3);
   // вспышки папарацци и засветка плёнки
   strobeEl.style.opacity = (strobe * 0.92).toFixed(3);
   burnEl.style.opacity = Math.pow(burn, 0.8).toFixed(3);
+  if ((burn > 0.001) !== burnEl._on) { burnEl._on = burn > 0.001; burnEl.style.visibility = burnEl._on ? '' : 'hidden'; }
   burnEl.style.setProperty('--f', smooth((burn - 0.45) / 0.55).toFixed(3));
   // смаз всего кадра во время панорамы, пересвет во время блика и засветки
   whipDev.setAttribute('stdDeviation', `${(whipM * 46).toFixed(1)} 0`);
