@@ -283,9 +283,11 @@ function stock() { // что держать наготове: ролики и к
 
 // Кадр 16:9 накрывает экран. На вертикальном экране видна только его часть — data-mx говорит, какую точку держать в центре.
 // На широком экране кадр можно сдвинуть и укрупнить (data-dx, data-bs), чтобы герой не оказался под текстом.
+const KS = 1.05; // чёткая карта чуть крупнее карты из ролика: размытый край той не выглядывает из-под неё ореолом
 const KAR = 1261 / 1724; // пропорции картинки карты (media/king.jpg)
 const EYE = [0.44256, 0.23188]; // куда на карте влетает камера: самая тёмная часть радужки левого глаза короля, ниже блика (доли ширины и высоты карты)
 const R_END = 0.00317;  // в конце влёта полудиагональ экрана — это столько ширины карты (4 px рисунка): вокруг только тёмная радужка, блик уже за кадром
+const PAPER = ['#ece5da', '#d3cbc0', '#b4aca2']; // тон бумаги карты (умножается на рисунок): свет сверху слева, к нижнему краю темнее
 const GEM = [0.4806, 0.4860]; // бриллиант в зубе на последнем кадре обложки (доли кадра 16:9): из него разгорается блик
 function shiftTo(sh, mx) {
   const slack = Math.max(0, (sh.w - vw) / 2);
@@ -318,7 +320,7 @@ function place(sh) {
     D.py = top0 + D.ay;
     D.s1 = Math.max(0.75 * vw, 0.75 * vh) / cwp; // к середине влёта карта шире экрана: видно только лицо короля
     D.cwp = cwp;
-    D.zEnd = (Math.hypot(vw, vh) / 2 / R_END) / cwp; // в конце радужка шире экрана: камера внутри глаза
+    D.zEnd = (Math.hypot(vw, vh) / 2 / R_END) / (cwp * KS); // в конце радужка шире экрана: камера внутри глаза
     D.d = -1;
   }
   if (sh.fit) {
@@ -763,12 +765,12 @@ function rrect(ctx, x, y, w, h, r) { // прямоугольник со скру
   ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
 }
 // масштаб карты во влёте (логарифм): сначала карта выравнивается и встаёт во весь экран, потом одним движением — в радужку
-function diveZ(D, d) {
-  return Math.log(D.s1) * smooth(d / 0.45) + Math.log(D.zEnd / D.s1) * smooth((d - 0.3) / (D_END - 0.3));
+function diveZ(D, d) { // одно движение с плавным разгоном, без остановки на полпути
+  return Math.log(D.zEnd) * Math.pow(clamp(d / D_END), 1.5);
 }
 function deepFrame(sh, D, d) {
   const k0img = D.layers[0].img;
-  const alpha = cur < D.to && k0img.complete && k0img.naturalWidth > 0 ? smooth((d - 0.46) / 0.06) : 0;
+  const alpha = cur < D.to && k0img.complete && k0img.naturalWidth > 0 ? smooth((d - 0.31) / 0.06) : 0;
   if (alpha <= 0.001) {
     if (deepOn) { deepEl.style.display = 'none'; deepOn = false; sh.el.style.visibility = ''; }
     return;
@@ -776,7 +778,7 @@ function deepFrame(sh, D, d) {
   if (!deepOn) { deepEl.style.display = 'block'; deepOn = true; }
   if (deepEl.width !== Math.round(vw * deepDpr) || deepEl.height !== Math.round(vh * deepDpr)) deepSize();
   deepEl.style.opacity = alpha.toFixed(3);
-  const ctx = deepCtx, W = D.cwp * Math.exp(diveZ(D, d)), H = W / KAR, cx = vw / 2, cy = vh / 2;
+  const ctx = deepCtx, W = D.cwp * KS * Math.exp(diveZ(D, d)), H = W / KAR, cx = vw / 2, cy = vh / 2;
   ctx.setTransform(deepDpr, 0, 0, deepDpr, 0, 0);
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
   ctx.clearRect(0, 0, vw, vh);
@@ -809,8 +811,12 @@ function deepFrame(sh, D, d) {
     ctx.drawImage(src, (x0 - g.X0) * kx, (y0 - g.Y0) * ky, (x1 - x0) * kx, (y1 - y0) * ky, x0, y0, x1 - x0, y1 - y0);
   }
   // тот же цвет белого поля, что у карты поверх ролика (.kcard::after)
-  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = '#dad8d8';
-  ctx.fillRect(Math.max(0, c0.X0), Math.max(0, c0.Y0), Math.min(vw, c0.X1) - Math.max(0, c0.X0), Math.min(vh, c0.Y1) - Math.max(0, c0.Y0));
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'multiply';
+  const px0 = Math.max(0, c0.X0), py0 = Math.max(0, c0.Y0), pw = Math.min(vw, c0.X1) - px0, ph = Math.min(vh, c0.Y1) - py0;
+  ctx.fillStyle = '#dad8d8'; ctx.fillRect(px0, py0, pw, ph);
+  const pg = ctx.createLinearGradient(c0.X0, c0.Y0, c0.X0 + (c0.Y1 - c0.Y0) * 0.47, c0.Y1); // тот же градиент, что у .kcard::before
+  pg.addColorStop(0, PAPER[0]); pg.addColorStop(0.55, PAPER[1]); pg.addColorStop(1, PAPER[2]);
+  ctx.fillStyle = pg; ctx.fillRect(px0, py0, pw, ph);
   ctx.globalCompositeOperation = 'source-over';
   ctx.restore();
   // глаз уходит в полную черноту; следующая сцена появится уже из неё
@@ -870,10 +876,10 @@ function frame(now, snap) {
         const D = sh.dive, d = clamp((cur - D.from) / (D.to - D.from));
         if (Math.abs(d - D.d) > 0.0002) {
           D.d = d;
-          const m = smooth(d / 0.4);
+          const m = smooth(d / 0.3);
           const st = sh.el.style, z = Math.min(Math.exp(diveZ(D, d)), 60); // сам кадр дальше не растёт: карту уже рисует холст поверх
           st.setProperty('--z', z.toFixed(4));
-          st.setProperty('--rot', `${(-D.rot * smooth(d / 0.4)).toFixed(3)}deg`);
+          st.setProperty('--rot', `${(-D.rot * m).toFixed(3)}deg`);
           st.setProperty('--ax', `${((vw / 2 - D.px - sh.shift) * m).toFixed(1)}px`);
           st.setProperty('--ay', `${((vh / 2 - D.py) * m).toFixed(1)}px`);
           st.setProperty('--d', d.toFixed(4));
