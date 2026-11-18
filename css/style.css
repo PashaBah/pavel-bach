@@ -665,7 +665,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.png?v=11) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=11) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.png?v=12) center / 100% 100% no-repeat; mask: url(../media/ice_logo.png?v=12) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -787,7 +787,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png?v=11) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=11) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=12) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=12) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -972,7 +972,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=11) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.jpg?v=12) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1023,7 +1023,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=11); mask-image: url(../media/ice_logo_m.png?v=11); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.png?v=12); mask-image: url(../media/ice_logo_m.png?v=12); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1146,3 +1146,85 @@ a, button { -webkit-tap-highlight-color: transparent; }
     height: calc(var(--vh, 1vh) * 100 - var(--bar)); width: calc(var(--vh, 1vh) * 100 - var(--bar));
   }
 }
+
+/* ══ ДВЕНАДЦАТАЯ РЕДАКЦИЯ ═══════════════════════════════════════════════════════ */
+
+/* ── верхнее меню: готикой, как заголовки сцен (по-русски — тем же курсивом, что заголовки); без моноширинных капсов ── */
+.menu { gap: clamp(14px, 2vw, 30px); }
+.menu button, .menu-sheet button {
+  font-family: "Pirata One", var(--display); font-size: 19px; letter-spacing: .03em; text-transform: none; color: #c3c9d0; padding: 6px 0;
+}
+html[data-lang="ru"] .menu button, html[data-lang="ru"] .menu-sheet button { font-family: var(--display); font-style: italic; font-weight: 600; letter-spacing: 0; }
+.menu button:hover { color: #fff; text-shadow: 0 0 14px rgba(255, 60, 100, .7); }
+.menu button.on, .menu-sheet button.on { color: #ff4f6d; text-shadow: 0 0 14px rgba(255, 40, 80, .5); }
+.menu button.on::after { content: none; }
+.menu-sheet button { font-size: 23px; padding: 10px 0; }
+/* «Проверить дату»: красная наклейка, как на коробке кассеты */
+.cta-top {
+  font-family: "Pirata One", var(--display); font-size: 18px; letter-spacing: .03em; text-transform: none; line-height: 1;
+  background: #e3173e; color: #fff; padding: 8px 16px 9px; rotate: -2.5deg; border: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22), 0 6px 20px rgba(227, 23, 62, .4);
+  transition: rotate .2s, scale .2s, background .2s;
+}
+html[data-lang="ru"] .cta-top { font-family: var(--display); font-style: italic; font-weight: 600; letter-spacing: 0; }
+.cta-top:hover { background: #ff2d55; color: #fff; rotate: 0deg; scale: 1.05; }
+@media (max-width: 760px) { .cta-top { font-size: 15px; padding: 6px 11px 7px; } }
+
+/* ── три формата: заголовок как у остальных сцен — слово готикой и строка под ним ── */
+.chapter.formats-head .tag { font-size: clamp(34px, 3.4vw, 56px); margin: 0 0 6px; }
+.chapter.formats-head h2 { font-size: clamp(16px, 1.45vw, 22px); color: #d9d4ca; text-shadow: 0 2px 14px rgba(0, 0, 0, .85); }
+@media (max-width: 760px) {
+  .chapter.formats-head .tag { font-size: 34px; margin-bottom: 2px; }
+  .chapter.formats-head h2 { font-size: 15px; }
+}
+
+/* ── обложка: строка «иллюзионист…» стоит отдельно; на телефоне — сразу под бриллиантовым именем ── */
+.chapter.cover { justify-content: flex-start; }
+.chapter.cover .kicker { margin: auto 0 10px; opacity: calc(1 - var(--lq, 0) * 2.6); transform: translateY(calc(var(--lq, 0) * 50px)); }
+@media (max-width: 760px) {
+  .chapter.cover .kicker { margin: 0 0 auto; color: #ffe6ea; text-shadow: 0 0 8px rgba(0, 0, 0, .95), 0 0 16px rgba(255, 40, 80, .7); }
+}
+
+/* ── карта короля: края обрезаны чуть глубже — чёрных уголков исходного снимка не видно ── */
+.kcard { border-radius: 4.7% / 3.44%; }
+.kcard img { scale: 1.014; }
+
+/* ── телефон: кадр-полоса сразу растворяется книзу в чёрное, без видимой границы ── */
+@media (max-aspect-ratio: 3/4) {
+  .shot[data-scenes="stage"], .shot[data-scenes="wine"], .shot.titles, .shot.geo {
+    -webkit-mask-image: linear-gradient(180deg, #000 52%, rgba(0, 0, 0, .8) 66%, rgba(0, 0, 0, .4) 82%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 52%, rgba(0, 0, 0, .8) 66%, rgba(0, 0, 0, .4) 82%, transparent 100%);
+  }
+  /* отзывы: организаторы — полосой сверху, карта вылетает от них вниз, к зрителю */
+  .shot.girls > video, .shot.girls > img.poster {
+    inset: auto; left: calc(33% - var(--vh, 1vh) * 32); top: calc(112px - var(--vh, 1vh) * 50 + 42vh);
+    width: calc(var(--vh, 1vh) * 88.9); height: calc(var(--vh, 1vh) * 50);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 54%, transparent 96%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 54%, transparent 96%);
+  }
+  .shot.girls::before { content: none; }
+}
+@media (max-width: 760px) {
+  /* подложка под текстом доходит до самого низа экрана и темнеет плавно, без ступеньки и без светлой полосы под ней */
+  .chapter.left::before, .chapter.right::before {
+    inset: -12vh calc(-1 * var(--gutter)) calc(-1 * (var(--foot) + 3vh) - 40px);
+    background: linear-gradient(transparent, rgba(3, 2, 6, .28) 14%, rgba(3, 2, 6, .6) 30%, rgba(3, 2, 6, .82) 50%, rgba(3, 2, 6, .93) 72%, rgba(3, 2, 6, .96));
+  }
+  .chapter.tv-head::before { top: 0; } /* у телевизоров затемнение начинается ниже: кот у кресла остаётся виден */
+  .chapter.reviews-head::before { inset: -10px calc(-1 * var(--gutter)) -26px; background: linear-gradient(rgba(3, 2, 6, .9), rgba(3, 2, 6, .6) 68%, transparent); }
+  .rcard {
+    --w: min(62vw, 270px, calc((var(--vh, 1vh) * 100 - (var(--bar) + var(--foot)) - 236px) * .735)); --h: calc(var(--w) / .735);
+    margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+  }
+}
+.chapter.formats-head { width: 100%; }
+.chapter.formats-head .tag { white-space: nowrap; }
+/* бриллиантовое имя: пока оно стоит на месте, тяжёлых фильтров на нём нет (из-за них буквы местами пропадали);
+   размытие и цветной разъезд включаются только на время пролёта сквозь буквы, блики на это время гаснут */
+.ice-fly { filter: none; will-change: transform, opacity; }
+.chapter.cover.fly .ice-fly {
+  filter: blur(calc(var(--lq, 0) * var(--lq, 0) * 9px))
+    drop-shadow(calc(var(--lq, 0) * 14px) 0 0 rgba(255, 30, 80, calc(var(--lq, 0) * .8)))
+    drop-shadow(calc(var(--lq, 0) * -14px) 0 0 rgba(40, 150, 255, calc(var(--lq, 0) * .7)));
+}
+.chapter.cover.fly .glint, .chapter.cover.fly .ice-shine { display: none; }

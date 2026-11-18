@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-lang="en" data-v="11">
+<html lang="en" data-lang="en" data-v="12">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,11 +13,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ctext x='32' y='46' font-size='44' text-anchor='middle' fill='%23ff4f6d'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
-<link rel="preload" as="image" href="media/posters/cover.jpg?v=11">
+<link rel="preload" as="image" href="media/posters/cover.jpg?v=12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@200;300;400;500&family=Pirata+One&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/style.css?v=12">
 </head>
 <body>
 
@@ -34,7 +34,7 @@
      data-mx — какую точку кадра по ширине держать в центре вертикального экрана. -->
 <div id="film">
   <!-- обложка: подлёт к нему, он улыбается, блик на зубе -->
-  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.72:1,1:1" data-mx="47%"></div>
+  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.8:1,1:1" data-mx="47%"></div>
 
   <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
     <div class="panels">
@@ -96,12 +96,9 @@
 
   <div class="shot phonk dimmed" data-scenes="feat" data-src="media/crowd.jpg" data-tr="crt"></div>
   <!-- регалии: настоящий снимок Павла на площадке America's Got Talent (неоновый логотип шоу — в самом кадре) -->
-  <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.jpg" data-tr="strobe" data-mx="66%"></div>
+  <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.jpg" data-tr="strobe" data-tr-m="wash" data-mx="66%"></div>
   <!-- география: карта (tools/geomap.py вставляется из media/map.svg), маршрут рисуется при прокрутке, по нему летит самолёт -->
-  <div class="shot phonk geo" data-scenes="geo rabbit" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
-  <!-- кролик: самолёт долетел — справа от карты появляется Павел с кроликом; достаёт из-за уха кролика плоский диск, диск раскрывается в цилиндр,
-       кролик садится в шляпу. Ролик снят на тёмном фоне под цвет карты и врастает в неё мягким краем (на телефоне сменяет карту в полосе). -->
-  <div class="shot phonk act" data-scenes="rabbit" data-src="media/rabbit.mp4" data-tr="wash" data-fade="0.3" data-mx="50%"></div>
+  <div class="shot phonk geo" data-scenes="geo" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
   <!-- отзывы: одна организаторка шепчет другой на ухо (клип перематывается скроллом); от них к зрителю спиралью летят карты (.deck внутри кадра,
        под той же плёночной обработкой, что и съёмка) -->
   <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-tr="wash" data-fade="0.22" data-mx="33%">
@@ -171,7 +168,7 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach</span><span lang="ru">Павел Бах</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
-        <img class="ice-logo" src="media/ice_logo.png?v=11" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
+        <img class="ice-logo" src="media/ice_logo.png?v=12" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
         <i class="ice-shine"></i>
         <i class="glint" style="--gx:14%;--gy:38%;--gd:0s"></i>
         <i class="glint" style="--gx:37%;--gy:62%;--gd:.9s"></i>
@@ -180,8 +177,8 @@
         <i class="glint big" style="--gx:46%;--gy:44%;--gd:3.1s"></i>
       </div>
     </div>
+    <p class="eyebrow kicker"><span lang="en">Magician · private and corporate events · Europe and worldwide</span><span lang="ru">Иллюзионист · частные и корпоративные события · Европа и мир</span></p>
     <div class="cover-text">
-      <p class="eyebrow"><span lang="en">Magician · private and corporate events · Europe and worldwide</span><span lang="ru">Иллюзионист · частные и корпоративные события · Европа и мир</span></p>
       <p class="lede"><span lang="en">Making your event impossible to forget.</span><span lang="ru">Чтобы гости точно не забыли этот вечер.</span></p>
       <p class="hero-actions">
         <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check your date</span><span lang="ru">Проверить дату</span></a>
@@ -193,8 +190,8 @@
 
   <!-- ТРИ ФОРМАТА: заголовок над тремя панелями -->
   <section class="chapter center formats-head" data-scene="formats" data-in="0.06" data-out="0.78">
-    <p class="eyebrow"><span lang="en">What you can book</span><span lang="ru">Что можно заказать</span></p>
-    <h2><span lang="en">Three formats. Scroll — each one is shown next.</span><span lang="ru">Три формата. Листайте — дальше каждый по очереди.</span></h2>
+    <p class="tag">Three Formats</p>
+    <h2><span lang="en">What you can book. Scroll — each one is shown next.</span><span lang="ru">Что можно заказать. Листайте — дальше каждый по очереди.</span></h2>
   </section>
 
   <!-- 01 CLOSE-UP: текст появляется после облёта, чтобы не закрывать лица гостей -->
@@ -245,16 +242,16 @@
     <p class="tag big">feat.</p>
     <h2><span lang="en">Brands that have already booked him.</span><span lang="ru">Бренды, которые его уже приглашали.</span></h2>
     <ul class="logos">
-      <li><img src="media/logos/dior.png?v=11" alt="Dior"></li>
-      <li><img src="media/logos/cartier.png?v=11" alt="Cartier"></li>
-      <li><img src="media/logos/mercedes.png?v=11" alt="Mercedes-Benz"></li>
-      <li><img src="media/logos/virgin.svg?v=11" alt="Virgin"></li>
-      <li><img src="media/logos/bulgari.png?v=11" alt="Bulgari"></li>
-      <li><img src="media/logos/ritz.png?v=11" alt="The Ritz-Carlton"></li>
-      <li><img src="media/logos/nike.png?v=11" alt="Nike"></li>
-      <li><img src="media/logos/cocacola.png?v=11" alt="Coca-Cola"></li>
-      <li><img src="media/logos/xiaomi.png?v=11" alt="Xiaomi"></li>
-      <li><img src="media/logos/raiffeisen.png?v=11" alt="Raiffeisen Bank"></li>
+      <li><img src="media/logos/dior.png?v=12" alt="Dior"></li>
+      <li><img src="media/logos/cartier.png?v=12" alt="Cartier"></li>
+      <li><img src="media/logos/mercedes.png?v=12" alt="Mercedes-Benz"></li>
+      <li><img src="media/logos/motorola.svg?v=12" alt="Motorola"></li>
+      <li><img src="media/logos/bulgari.png?v=12" alt="Bulgari"></li>
+      <li><img src="media/logos/ritz.png?v=12" alt="The Ritz-Carlton"></li>
+      <li><img src="media/logos/nike.png?v=12" alt="Nike"></li>
+      <li><img src="media/logos/cocacola.png?v=12" alt="Coca-Cola"></li>
+      <li><img src="media/logos/xiaomi.png?v=12" alt="Xiaomi"></li>
+      <li><img src="media/logos/raiffeisen.png?v=12" alt="Raiffeisen Bank"></li>
     </ul>
     <p class="body small"><span lang="en">Spain · France · Monaco · Portugal · Cyprus · Dubai</span><span lang="ru">Испания · Франция · Монако · Португалия · Кипр · Дубай</span></p>
   </section>
@@ -280,12 +277,6 @@
     <p class="geo-hint"><span lang="en">Tap the map: where should he fly next?</span><span lang="ru">Нажмите на карту — куда ему лететь дальше?</span></p>
   </section>
 
-  <!-- КРОЛИК: тот же блок, что у карты, с продолжением фразы -->
-  <section class="chapter center geo-head" data-scene="rabbit" data-in="0.03" data-out="0.95">
-    <p class="tag">On Tour</p>
-    <h2><span lang="en">He flies to you. And not alone.</span><span lang="ru">Прилетит к вам. И не один.</span></h2>
-  </section>
-
   <!-- ОТЗЫВЫ: заголовок слева внизу, под девушками; отзывы — на картах, летящих от них -->
   <section class="chapter left reviews-head" data-scene="reviews" data-in="0.02" data-out="0.97">
     <p class="tag">Word of Mouth</p>
@@ -303,7 +294,7 @@
   <!-- ЗАЯВКА: из бокала — бриллиантовые буквы и приглашение -->
   <section class="chapter center booking" id="booking" data-scene="booking" data-in="0.1" data-out="2">
     <div class="ice small" aria-hidden="true">
-      <img class="ice-logo" src="media/ice_logo.png?v=11" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
+      <img class="ice-logo" src="media/ice_logo.png?v=12" srcset="media/ice_logo_m.png 700w, media/ice_logo.png 1100w" sizes="(max-width: 760px) 60vw, 1040px" alt="">
       <i class="ice-shine"></i>
       <i class="glint" style="--gx:20%;--gy:40%;--gd:.4s"></i>
       <i class="glint big" style="--gx:62%;--gy:46%;--gd:1.9s"></i>
@@ -345,6 +336,6 @@
 
 <div id="scrollSpace" aria-hidden="true"></div>
 
-<script type="module" src="js/main.js?v=11"></script>
+<script type="module" src="js/main.js?v=12"></script>
 </body>
 </html>
