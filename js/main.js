@@ -5,7 +5,7 @@
 const SCENES = [
   { id: 'cover',   len: 1.15, base: '03:33:00.000', span: 70,  name: { en: '',                ru: '' },                  loc: { en: 'After hours',      ru: 'После полуночи' } },
   { id: 'formats', len: 2.4, base: '03:33:07.100', span: 30,  name: { en: 'Three formats',   ru: 'Три формата' },       loc: { en: 'Tracklist',        ru: 'Трек-лист' } },
-  { id: 'card',    len: 5.4, base: '03:41:12.400', span: 160, name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' } },
+  { id: 'card',    len: 4.4, base: '03:41:12.400', span: 160, name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' } },
   { id: 'king',    len: 1.7, base: '03:41:12.560', span: 20,  name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' }, rail: false },
   { id: 'stage',   len: 6.2, base: '03:52:47.120', span: 160, name: { en: '02 — Stage show', ru: '02 — Шоу на сцене' }, loc: { en: 'Main stage',       ru: 'Главная сцена' } },
   { id: 'incog',   len: 2.8, base: '04:05:30.000', span: 90,  name: { en: '03 — Incognito',  ru: '03 — Инкогнито' },    loc: { en: 'The party',        ru: 'Вечеринка' } },
