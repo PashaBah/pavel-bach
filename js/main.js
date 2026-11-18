@@ -267,10 +267,32 @@ function arm(sh) { // ролик сцены встаёт в кадр повер�
   if (sh.live) playV(v); else prime(v);
 }
 function disarm(sh) { if (sh.video) { dropVideo(sh.video); sh.video = null; } }
+function fetchNow(src) { // ролик нужен прямо сейчас — качаем вне очереди (очередь могла быть занята дальними сценами)
+  const c = clips[src];
+  if (!c || c.state !== 'idle') return;
+  c.state = 'loading';
+  fetch(V(src)).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
+    .then((b) => { c.url = URL.createObjectURL(b); c.state = 'ready'; })
+    .catch(() => { c.state = 'failed'; });
+}
+function warmFrames(sh) { // раскадровка сцены целиком: если ролик не успел, сцена всё равно идёт по кадрам, а не стоит на первом
+  const F = FRAMES[sh.name];
+  if (!F || sh.warm) return;
+  sh.warm = true;
+  if (!sh.fr) sh.fr = [];
+  for (let n = 0; n < F.n; n++) {
+    if (sh.fr[n]) continue;
+    const im = new Image();
+    im.decoding = 'async'; im.onload = () => { im.ok = true; };
+    im.src = V(`media/frames/${sh.name}/${n}.jpg`);
+    sh.fr[n] = im;
+  }
+}
 function stock() { // что держать наготове: ролики и картинки ближайших сцен
   const idle = fetching === 0;
   for (const sh of shots) {
     const d = cur < sh.from ? sh.from - cur : cur > sh.to ? cur - sh.to : 0;
+    if (sh.src && d < 1.2 && !(sh.video && sh.video._primed)) { fetchNow(sh.src); warmFrames(sh); }
     if (sh.src) {
       if (!LAZY || d < 1.3) arm(sh); else if (d > 1.6) disarm(sh);
     }
@@ -490,6 +512,7 @@ const toSvg = (svg, e) => { const pt = svg.createSVGPoint(); pt.x = e.clientX; p
 const geoLive = () => geo.path && geoShot && geoShot.shown >= 0.6;
 $('#geoMap').addEventListener('mousemove', (e) => { // на компьютере пунктир от самолёта к курсору показывает, куда он полетит
   if (!geoLive() || geo.flying) return;
+  if (e.target.closest && e.target.closest('.land path[data-off]')) { const a = geo.path.ownerSVGElement.querySelector('.aim'); if (a) a.remove(); return; }
   const svg = geo.path.ownerSVGElement, to = toSvg(svg, e), from = geo.pos || geo.path.getPointAtLength(clamp(geo.q) * geo.len);
   let aim = svg.querySelector('.aim');
   if (!aim) { aim = document.createElementNS(SVGNS, 'line'); aim.setAttribute('class', 'aim'); svg.insertBefore(aim, geo.plane); }
@@ -503,6 +526,7 @@ $('#geoMap').addEventListener('click', (e) => {
   const dx = to.x - from.x, dy = to.y - from.y, dist = Math.hypot(dx, dy);
   if (dist < 12) return;
   const land = e.target.closest ? e.target.closest('.land path') : null;
+  if (land && land.dataset.off) return; // эти страны в игре не участвуют: самолёт туда не летит
   const city = geo.cities.map((c) => c.g).find((g) => { const c = g.querySelector('circle'); return Math.hypot(+c.getAttribute('cx') - to.x, +c.getAttribute('cy') - to.y) < 26; });
   const cx = (from.x + to.x) / 2 + dy * 0.22, cy = (from.y + to.y) / 2 - Math.abs(dx) * 0.22 - 20; // дуга выгнута вверх
   svg.querySelectorAll('.pin, .aim, .tapme').forEach((n) => n.remove());
@@ -858,7 +882,7 @@ function deepFrame(sh, D, d) {
     const ix = (X1 - X0) * inner, iy = (Y1 - Y0) * inner;
     return { L, X0, X1, Y0, Y1, ok, dens: ok ? ((X1 - X0) * deepDpr) / L.img.naturalWidth : 0, covers: X0 + ix <= 0 && Y0 + iy <= 0 && X1 - ix >= vw && Y1 - iy >= vh };
   });
-  const al = geo.map((g, k) => (k === 0 ? 1 : g.ok && geo[k - 1].ok ? smooth((geo[k - 1].dens - 1.2) / 1.4) : 0));
+  const al = geo.map((g, k) => (k === 0 ? 1 : g.ok && geo[k - 1].ok ? smooth((geo[k - 1].dens - 0.9) / 1.3) : 0)); // снимок глаза проявляется, пока глаз на экране ещё мал: подмены не видно
   // рисуем только саму карту со скруглёнными углами: вокруг неё остаётся кадр из ролика, чёрных уголков нет
   const c0 = geo[0], cw0 = c0.X1 - c0.X0, ins = cw0 * 0.004;
   ctx.save();
