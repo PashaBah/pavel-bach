@@ -10,9 +10,10 @@
 <link rel="apple-touch-icon" href="media/apple-touch-icon.png">
 <link rel="preload" as="image" href="media/hero.webp" media="(min-aspect-ratio: 3/4)" fetchpriority="high">
 <link rel="preload" as="image" href="media/hero_t.webp" media="(max-aspect-ratio: 3/4)" fetchpriority="high">
-<!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css). Заранее грузим два файла первого экрана своего языка. -->
+<!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css). Заранее грузим два файла первого экрана своего языка
+     (EN: Jost и готика фразы под надписью; RU: Jost и Tinos с кириллицей). Надпись PAVEL BACH грузится с низким приоритетом: сначала главная картинка (LCP). -->
 <link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/jost-latin.woff2" crossorigin>
-<link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/tinos-400-latin.woff2" crossorigin>
+<link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/unifrakturmaguntia-400-latin.woff2" crossorigin>
 <link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/jost-cyrillic.woff2" crossorigin>
 <link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/tinos-400-cyrillic.woff2" crossorigin>
 <!--@boot-->
@@ -170,7 +171,7 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach — magician for corporate and private events</span><span lang="ru">Павел Бах (Pavel Bach) — иллюзионист для корпоративных и частных событий</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
-        <img class="ice-logo" src="media/ice_logo.webp?v=29" srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" alt="">
+        <img class="ice-logo" src="media/ice_logo.webp?v=29" srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" fetchpriority="low" alt="">
         <i class="ice-shine"></i>
         <i class="glint" style="--gx:14%;--gy:38%;--gd:0s"></i>
         <i class="glint" style="--gx:37%;--gy:62%;--gd:.9s"></i>
