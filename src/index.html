@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="media/apple-touch-icon.png">
+<link rel="dns-prefetch" href="https://res.cloudinary.com">
 <link rel="preload" as="image" href="media/hero.webp" media="(min-aspect-ratio: 3/4)" fetchpriority="high">
 <link rel="preload" as="image" href="media/hero_t.webp" media="(max-aspect-ratio: 3/4)" fetchpriority="high">
 <!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css). Заранее грузим два файла первого экрана своего языка
@@ -41,19 +42,19 @@
 
   <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
     <div class="panels">
-      <a class="panel" href="#card" data-goto="card" data-at="0.3" data-video="media/card.mp4" style="--i:0;--ox:58%">
+      <a class="panel" href="#card" data-goto="card" data-at="0.3" data-video="media/card.mp4" data-video-t="media/pv_card.mp4" style="--i:0;--ox:58%">
         <span class="pnum">01</span>
         <b class="ptag"><span lang="en">Close-up</span><span lang="ru">Микромагия</span></b>
         <span class="pdesc"><span lang="en">Magic right in your guests' hands</span><span lang="ru">Фокусы прямо в руках у гостей</span></span>
         <em><span lang="en">20–60 min</span><span lang="ru">20–60 минут</span></em>
       </a>
-      <a class="panel" href="#stage" data-goto="stage" data-at="0.04" data-video="media/door.mp4" style="--i:1;--ox:50%">
+      <a class="panel" href="#stage" data-goto="stage" data-at="0.04" data-video="media/door.mp4" data-video-t="media/pv_door.mp4" style="--i:1;--ox:50%">
         <span class="pnum">02</span>
         <b class="ptag"><span lang="en">Stage Show</span><span lang="ru">Шоу на сцене</span></b>
         <span class="pdesc"><span lang="en">A comedy show for the whole room</span><span lang="ru">Комедийное шоу для всего зала</span></span>
         <em><span lang="en">25 min</span><span lang="ru">25 минут</span></em>
       </a>
-      <a class="panel" href="#incog" data-goto="incog" data-at="0.04" data-video="media/waiter.mp4" style="--i:2;--ox:38%">
+      <a class="panel" href="#incog" data-goto="incog" data-at="0.04" data-video="media/waiter.mp4" data-video-t="media/pv_waiter.mp4" style="--i:2;--ox:38%">
         <span class="pnum">03</span>
         <b class="ptag"><span lang="en">Incognito</span><span lang="ru">Инкогнито</span></b>
         <span class="pdesc"><span lang="en">Nobody knows he is a magician</span><span lang="ru">Никто не знает, что он фокусник</span></span>
@@ -65,7 +66,7 @@
   <!-- close-up: из-за плеча, облёт в рапиде, туз; вспышка из руки — в руке король с его лицом.
        Дальше один непрерывный влёт (сцена king): камера срывается к карте (в смазе карта из клипа подменяется ею же в полном качестве, .kcard)
        и влетает в глаз короля; в глазу уже идёт следующая сцена (data-tr="eye" у сцены с дверью). data-card — где карта лежит в последнем кадре клипа: центр x,y и ширина в % кадра, наклон в градусах. -->
-  <div class="shot phonk dive" data-scenes="card king" data-src="media/card.mp4" data-tr="expand" data-ramp="0:0,0.7213:1,1:1" data-mx="47%" data-card="39.96,58.85,10.8,-2.7">
+  <div class="shot phonk dive" data-scenes="card king" data-src="media/card.mp4" data-src-t="media/card_t.mp4" data-win="0.25,0.440625" data-tr="expand" data-ramp="0:0,0.7213:1,1:1" data-mx="47%" data-card="39.96,58.85,10.8,-2.7">
     <div class="kcard"><div class="kin"><img data-src="media/king.webp" alt=""></div><i class="ktint"></i></div>
     <!-- макро-снимки глаза короля для глубокого влёта (рисует холст #deep); data-rect — где снимок лежит на карте, в долях её ширины и высоты -->
     <div class="deepsrc" hidden>
@@ -74,13 +75,13 @@
   </div>
   <canvas class="deep" id="deep" aria-hidden="true"></canvas>
   <!-- шоу на сцене: дверь открыта, девушка закрывает её и обходит, через дверь летят вещи, дверь открывается — там он; шаг вперёд, приветствие -->
-  <div class="shot phonk" data-scenes="stage" data-src="media/door.mp4" data-tr="eye" data-mx="72%" data-mx2="54%" data-pan="0.05,0.2"></div>
+  <div class="shot phonk" data-scenes="stage" data-src="media/door.mp4" data-src-t="media/door_t.mp4" data-win="0.3203125,0.6203125" data-tr="eye" data-mx="72%" data-mx2="54%" data-pan="0.05,0.2"></div>
   <!-- инкогнито: «официант» отпускает поднос, поднос висит в воздухе -->
   <div class="shot phonk" data-scenes="incog" data-src="media/waiter.mp4" data-src-m="media/waiter_m.mp4" data-tr="whip" data-mx="40%"></div>
   <!-- видео: камера выезжает из-за спины дворецкого к креслу и стене телевизоров; когда доехала (60% сцены), кадр подъезжает к телевизорам (data-fit)
        и поверх клипа проявляется .tvlive: тот же кадр в полном качестве, в кинескопах (маска tvs_mask.png) крутятся его ролики, сверху — кнопки.
        Рамки экранов считает tools/tvmask.py. data-so — с какой секунды ролика идёт превью, data-oy — какую часть вертикального ролика показывать. -->
-  <div class="shot phonk tvwall" data-scenes="tv" data-src="media/tv.mp4" data-tr="burn" data-ramp="0:0,0.6:1,1:1" data-mx="27%" data-mx2="46%" data-pan="0.04,0.38" data-fit="51.5,15.2,81.8,77,0.6,0.74">
+  <div class="shot phonk tvwall" data-scenes="tv" data-src="media/tv.mp4" data-src-t="media/tv_t.mp4" data-win="0.05,0.7796875" data-tr="burn" data-ramp="0:0,0.6:1,1:1" data-mx="27%" data-mx2="46%" data-pan="0.04,0.38" data-fit="51.5,15.2,81.8,77,0.6,0.74">
     <div class="tvlive">
       <img class="tvbg" data-src="media/tvs.webp" alt="">
       <div class="tubes"></div>
@@ -102,7 +103,7 @@
   <div class="shot phonk geo" data-scenes="geo" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
   <!-- отзывы: одна организаторка шепчет другой на ухо (клип перематывается скроллом); от них к зрителю спиралью летят карты (.deck внутри кадра,
        под той же плёночной обработкой, что и съёмка) -->
-  <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-tr="wash" data-fade="0.22" data-mx="33%">
+  <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-src-t="media/girls_t.mp4" data-win="0.109375,0.440625" data-tr="wash" data-fade="0.22" data-mx="33%">
     <div class="deck" id="deck">
       <article class="rcard"><span class="pip">A<i>♠</i></span><p><span lang="en">“Last year we booked Pavel seven times — and we are already planning to book him again. His performance is consistently one of the highlights of our events.”</span><span lang="ru">«За прошлый год мы приглашали Павла семь раз и уже планируем следующие события. Его выступление неизменно становится одним из главных моментов вечера».</span></p><footer><b>Justin Joy Events</b><span lang="en">Cyprus</span><span lang="ru">Кипр</span></footer><span class="pip btm">A<i>♠</i></span></article>
       <article class="rcard red"><span class="pip">K<i>♥</i></span><p><span lang="en">“The humor is genuinely funny, his presence confident and charismatic, and the show works equally well for a very demanding audience.”</span><span lang="ru">«Юмор по-настоящему смешной, подача уверенная и харизматичная, а шоу одинаково хорошо работает и на очень требовательную публику».</span></p><footer><b>Elegant Moment Events</b><span lang="en">Dubai</span><span lang="ru">Дубай</span></footer><span class="pip btm">K<i>♥</i></span></article>
@@ -113,7 +114,7 @@
     </div>
   </div>
   <!-- вода в вино: наливает при всех, взбалтывает — вино, лицо невозмутимое; сдержанный тост в камеру; камера уходит в бокал -->
-  <div class="shot phonk" data-scenes="wine" data-src="media/wine.mp4" data-tr="whip" data-ramp="0:0,0.36:0.17,0.6:0.45,0.68:0.6,0.72:0.72,0.8:0.8,1:1" data-zoom="42.5%,62%,3.2" data-mx="47%"></div>
+  <div class="shot phonk" data-scenes="wine" data-src="media/wine.mp4" data-src-t="media/wine_t.mp4" data-win="0.25,0.440625" data-tr="whip" data-ramp="0:0,0.36:0.17,0.6:0.45,0.68:0.6,0.72:0.72,0.8:0.8,1:1" data-zoom="42.5%,62%,3.2" data-mx="47%"></div>
   <div class="shot phonk dimmed" data-scenes="booking" data-src="media/finale.webp" data-tr="burn"></div>
 </div>
 
@@ -244,16 +245,16 @@
     <p class="tag big"><span lang="en">feat.</span><span lang="ru">фит.</span></p>
     <h2><span lang="en">Brands that have already booked him</span><span lang="ru">Бренды, которые его уже приглашали</span></h2>
     <ul class="logos">
-      <li><img data-lz="media/logos/dior.png" alt="Dior"></li>
-      <li><img data-lz="media/logos/cartier.png" alt="Cartier"></li>
-      <li><img data-lz="media/logos/mercedes.png" alt="Mercedes-Benz"></li>
+      <li><img data-lz="media/logos/dior.webp" alt="Dior"></li>
+      <li><img data-lz="media/logos/cartier.webp" alt="Cartier"></li>
+      <li><img data-lz="media/logos/mercedes.webp" alt="Mercedes-Benz"></li>
       <li><img data-lz="media/logos/motorola.svg" alt="Motorola"></li>
-      <li><img data-lz="media/logos/bulgari.png" alt="Bulgari"></li>
-      <li><img data-lz="media/logos/ritz.png" alt="The Ritz-Carlton"></li>
-      <li><img data-lz="media/logos/nike.png" alt="Nike"></li>
-      <li><img data-lz="media/logos/cocacola.png" alt="Coca-Cola"></li>
-      <li><img data-lz="media/logos/xiaomi.png" alt="Xiaomi"></li>
-      <li><img data-lz="media/logos/raiffeisen.png" alt="Raiffeisen Bank"></li>
+      <li><img data-lz="media/logos/bulgari.webp" alt="Bulgari"></li>
+      <li><img data-lz="media/logos/ritz.webp" alt="The Ritz-Carlton"></li>
+      <li><img data-lz="media/logos/nike.webp" alt="Nike"></li>
+      <li><img data-lz="media/logos/cocacola.webp" alt="Coca-Cola"></li>
+      <li><img data-lz="media/logos/xiaomi.webp" alt="Xiaomi"></li>
+      <li><img data-lz="media/logos/raiffeisen.webp" alt="Raiffeisen Bank"></li>
     </ul>
     <p class="body small"><span lang="en">Spain · France · Monaco · Portugal · Cyprus · Dubai</span><span lang="ru">Испания · Франция · Монако · Португалия · Кипр · Дубай</span></p>
   </section>
@@ -295,7 +296,7 @@
   <!-- ЗАЯВКА: из бокала — бриллиантовые буквы и приглашение -->
   <section class="chapter center booking" id="booking" data-scene="booking" data-in="0.1" data-out="2">
     <div class="ice small" aria-hidden="true">
-      <img class="ice-logo" data-lz="media/ice_logo.webp" width="1100" height="404" alt="">
+      <img class="ice-logo" data-same-as-cover width="1100" height="404" alt="">
       <i class="ice-shine"></i>
       <i class="glint" style="--gx:20%;--gy:40%;--gd:.4s"></i>
       <i class="glint big" style="--gx:62%;--gy:46%;--gd:1.9s"></i>
