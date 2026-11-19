@@ -1,0 +1,42 @@
+/* Отдельные страницы (документы, 404): тот же вид, что у сайта, но без фильма — один лёгкий файл стилей и два шрифта. */
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-cyrillic.woff2?v=30) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-latin.woff2?v=30) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-cyrillic.woff2?v=30) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-latin.woff2?v=30) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Jost Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 92.6%; ascent-override: 115.5%; descent-override: 41%; line-gap-override: 0%; }
+:root { --ink: #050507; --paper: #ece6da; --dim: #a59f93; --red: #e3173e; --sans: "Jost", "Jost Fallback", system-ui, sans-serif; --serif: "Tinos", "Times New Roman", serif; color-scheme: dark; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--ink); }
+body { background: var(--ink); color: var(--paper); font-family: var(--sans); font-weight: 300; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+a { color: var(--paper); text-underline-offset: 3px; }
+a:hover { color: #fff; }
+.pg-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px;
+  padding: env(safe-area-inset-top, 0px) max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px)); background: #000; }
+.brand { font-weight: 400; font-size: 13px; letter-spacing: .42em; text-transform: uppercase; text-decoration: none; padding: 12px 0; white-space: nowrap; }
+.lang { display: flex; align-items: center; gap: 8px; color: var(--dim); text-decoration: none; font-size: 11px; font-weight: 500; letter-spacing: .22em; padding: 12px 0; }
+.lang i { width: 1px; height: 11px; background: #3a3a3a; }
+.lang .on { color: var(--paper); }
+.pg { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 8vh max(20px, env(safe-area-inset-right, 0px)) 10vh max(20px, env(safe-area-inset-left, 0px)); }
+.pg h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 5vw, 54px); line-height: 1.1; color: #fff; margin-bottom: 18px; text-wrap: balance; }
+.pg h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; color: #fff; margin: 34px 0 10px; }
+.pg p, .pg li { max-width: 65ch; color: #d6cfc2; }
+.pg p + p { margin-top: 12px; }
+.pg ul { padding-left: 20px; }
+.pg li + li { margin-top: 6px; }
+.pg-date { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim) !important; }
+.pg-lede { font-size: 18px; }
+.pg mark { background: rgba(227, 23, 62, .18); color: #ff9db0; padding: 0 3px; }
+.pg-table { overflow-x: auto; margin: 18px 0; }
+.pg table { border-collapse: collapse; font-size: 14px; min-width: 620px; }
+.pg th, .pg td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.pg th { font-weight: 500; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.pg td small { color: var(--dim); }
+.pg-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.pg-btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 26px; text-decoration: none; font-size: 12px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase;
+  color: #0b0b0f; background: linear-gradient(180deg, #ffffff, #c9d3df 45%, #8d99a6 55%, #eef2f6); }
+.pg-btn:hover { background: #ff4f6d; color: #fff; }
+.pg-btn.ghost { background: transparent; color: var(--paper); border: 1px solid rgba(236, 230, 218, .5); }
+.pg-foot { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); border-top: 1px solid rgba(255, 255, 255, .08); font-size: 12px; color: var(--dim); }
+.pg-foot a { color: var(--dim); text-decoration: none; }
+.pg-foot a:hover { color: var(--paper); }
+.pg-foot span { margin-left: auto; }
