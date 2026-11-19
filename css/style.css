@@ -1648,6 +1648,8 @@ form button[aria-busy="true"] { opacity: .6; cursor: progress; }
 /* ── согласие на cookies: плашка внизу поверх страницы, над нижней полосой; кнопки «Принять» и «Отклонить» одинаковые ── */
 .consent { position: fixed; z-index: 20; left: 50%; translate: -50% 0; bottom: calc(var(--foot) + 10px); width: min(560px, calc(100vw - 24px));
   background: #0b0b0f; border: 1px solid rgba(255, 255, 255, .16); box-shadow: 0 18px 50px rgba(0, 0, 0, .6); padding: 14px 16px; font-size: 13px; line-height: 1.45; color: #ddd6ca; }
+/* блик по буквам надписи — маска из той же картинки; до события load его нет: иначе картинка надписи качалась второй раз (маска — отдельный запрос) и отнимала сеть у первого экрана */
+html:not(.ld) .ice-shine { display: none; -webkit-mask: none; mask: none; }
 .consent[hidden], .consent-opts[hidden], .consent-btns [hidden] { display: none !important; }
 .consent a { color: var(--paper); text-underline-offset: 3px; white-space: nowrap; }
 .consent-opts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; }

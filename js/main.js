@@ -48,7 +48,7 @@ const V = (u) => {
 // иначе ролик обложки отнимал сеть у первой картинки и на телефоне в мобильной сети первый экран появлялся позже.
 let go = false;
 const goQueue = [];
-function startHeavy() { if (go) return; go = true; goQueue.splice(0).forEach((f) => f()); }
+function startHeavy() { if (go) return; go = true; document.documentElement.classList.add('ld'); goQueue.splice(0).forEach((f) => f()); }
 if (document.readyState === 'complete') setTimeout(startHeavy, 0);
 else window.addEventListener('load', () => setTimeout(startHeavy, 0), { once: true });
 for (const t of ['scroll', 'pointerdown', 'keydown', 'wheel', 'touchstart']) window.addEventListener(t, startHeavy, { once: true, passive: true });
@@ -187,7 +187,7 @@ const FRAMES = {};
 fetch(V('media/frames/index.json')).then((r) => (r.ok ? r.json() : {})).then((d) => Object.assign(FRAMES, d)).catch(() => {});
 function flipbook(sh, p) {
   const F = FRAMES[sh.name], v = sh.video;
-  if (!F || (v && v._primed && v.readyState >= 2)) return;
+  if (!go || !F || (v && v._primed && v.readyState >= 2)) return;
   const k = Math.min(F.n - 1, Math.round(rampAt(sh.ramp, p) * F.dur / F.step));
   if (!sh.fr) sh.fr = [];
   for (const n of [k, k + 1]) { // нужный кадр и следующий за ним

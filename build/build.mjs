@@ -142,6 +142,23 @@ function boot(lang) {
     + `if(C.openai){var q=w.oaiq=function(){q.q.push(arguments)};q.q=[];if(!ok)q('consent',false);var o={pixelId:C.openai};if(C.staging&&/[?&]debug/.test(location.search))o.debug=true;q('init',o)}})(window,window.PB_CFG);</script>`;
 }
 
+// ── стили: номер выкладки в адресах картинок и шрифтов (тот же, что у предзагрузки в <head>) ──
+for (const f of ['css/style.css', 'css/page.css']) {
+  const p = path.join(SITE, f);
+  if (!fs.existsSync(p)) continue;
+  const c = fs.readFileSync(p, 'utf8').replace(/url\((\.\.\/(?:media|fonts)\/[^)?]+)(\?v=[^)]*)?\)/g, (_, u) => `url(${u}?v=${VER})`);
+  fs.writeFileSync(p, c);
+}
+// Стили главной встраиваются прямо в страницу (ТЗ: «критический CSS инлайн»): на медленной сети это минус один круг запросов до первого экрана.
+// Сжатие простое и безопасное: строки и url(...) не трогаются, убираются комментарии и лишние пробелы.
+function minCss(c) {
+  const keep = [];
+  c = c.replace(/\/\*[\s\S]*?\*\//g, '').replace(/url\([^)]*\)|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, (m) => `\u0000${keep.push(m) - 1}\u0000`);
+  c = c.replace(/\s+/g, ' ').replace(/\s*([{};,>])\s*/g, '$1').replace(/;}/g, '}').trim();
+  return c.replace(/\u0000(\d+)\u0000/g, (_, i) => keep[+i]);
+}
+const STYLE = minCss(rd('css/style.css'));
+
 // ── главная ──
 const SRC = rd('src/index.html');
 for (const lang of LANGS) {
@@ -170,6 +187,7 @@ ${jsonld(lang, faq)}`;
   h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}">`);
   h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
   h = paths(stripComments(h), root);
+  h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
   write(lang === 'ru' ? 'ru/index.html' : 'index.html', h);
 }
 
@@ -216,14 +234,6 @@ for (const lang of LANGS) {
   const body = `<p class="pg-lede">${N.text}</p>
 <p class="pg-btns"><a class="pg-btn" href="${BASE}${lang === 'ru' ? 'ru/' : ''}">${N.home}</a><a class="pg-btn ghost" href="https://wa.me/${cfg.whatsapp}" rel="noopener">${N.wa}</a></p>`;
   write(lang === 'ru' ? 'ru/404.html' : '404.html', shell(lang, { title: N.title, h1: N.h1, body, sub: null, root: '', noindex: true, absolute: true }));
-}
-
-// ── стили: номер выкладки в адресах картинок и шрифтов (тот же, что у предзагрузки в <head>) ──
-for (const f of ['css/style.css', 'css/page.css']) {
-  const p = path.join(SITE, f);
-  if (!fs.existsSync(p)) continue;
-  const c = fs.readFileSync(p, 'utf8').replace(/url\((\.\.\/(?:media|fonts)\/[^)?]+)(\?v=[^)]*)?\)/g, (_, u) => `url(${u}?v=${VER})`);
-  fs.writeFileSync(p, c);
 }
 
 // ── боевая сборка: копия файлов в dist/ + robots.txt, sitemap.xml, _headers ──
