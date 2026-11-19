@@ -1650,6 +1650,9 @@ html:not(.ld) .ice-shine { display: none; -webkit-mask: none; mask: none; }
 html:not(.ld) .tubes { -webkit-mask: none; mask: none; } /* маска кинескопов нужна только у телевизоров — после load */
 /* длина фильма до того, как её посчитает js/main.js (layout: (сумма сцен 39,85 × PACE + 1) высоты экрана): без этого на первой отрисовке
    «титры» с вопросами оказывались наверху страницы, а потом уезжали вниз — большой сдвиг вёрстки (CLS) */
+/* надпись на обложке появляется, когда её картинка пришла (см. скрипт рядом с ней в src/index.html) */
+.chapter.cover .ice { opacity: 0; animation: none; }
+.chapter.cover .ice.in { opacity: 1; animation: ice-in 1.4s cubic-bezier(.2, .7, .2, 1) both; }
 #scrollSpace { height: 2970lvh; }
 @media (pointer: coarse) { #scrollSpace { height: 3488lvh; } }
 /* первый экран рисуется сразу из HTML, не дожидаясь скриптов (ТЗ: «текст и кнопка не ждут видео и анимаций»; рекламные боты JS не выполняют).

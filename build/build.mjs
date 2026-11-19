@@ -67,8 +67,8 @@ const stamp = (u) => `${u.replace(/\?v=[^&"]*$/, '')}?v=${VER}`;
 function paths(h, root) {
   const fix = (u) => (ASSET.test(u) ? root + stamp(u) : u);
   return h
-    .replace(/(\s(?:src|href)=")([^"]+)"/g, (_, a, u) => `${a}${fix(u)}"`)
-    .replace(/(\ssrcset=")([^"]+)"/g, (_, a, list) => `${a}${list.split(',').map((x) => { const [u, ...r] = x.trim().split(/\s+/); return [fix(u), ...r].join(' '); }).join(', ')}"`);
+    .replace(/(\s(?:src|href|data-late-src)=")([^"]+)"/g, (_, a, u) => `${a}${fix(u)}"`)
+    .replace(/(\s(?:srcset|data-late-srcset)=")([^"]+)"/g, (_, a, list) => `${a}${list.split(',').map((x) => { const [u, ...r] = x.trim().split(/\s+/); return [fix(u), ...r].join(' '); }).join(', ')}"`);
 }
 const stripComments = (h) => h.replace(/<!--(?!@)[\s\S]*?-->\n?/g, '').replace(/<[^>]*\sdata-src-only[^>]*>\n?/g, ''); // data-src-only — только для исходника (noindex на src/)
 
