@@ -493,8 +493,10 @@ function place(sh) {
     // точка между глаз короля в координатах кадра: вокруг неё кадр растёт и поворачивается
     const D = sh.dive, cwp = D.cw * sh.w, chp = cwp / KAR, a = D.rot * Math.PI / 180;
     const ox = (EYE[0] - 0.5) * cwp, oy = (EYE[1] - 0.5) * chp;
-    D.ax = D.cx * sh.w + ox * Math.cos(a) - oy * Math.sin(a);
-    D.ay = D.cy * sh.h + ox * Math.sin(a) + oy * Math.cos(a);
+    // карта поверх ролика повёрнута вокруг самого глаза (transform-origin в CSS), поэтому глаз лежит на неповёрнутом смещении от центра.
+    // Раньше смещение здесь поворачивалось — точка наезда уходила на 3 px, и к моменту, когда карту подхватывает холст, это вырастало в скачок на 20 px
+    D.ax = D.cx * sh.w + ox;
+    D.ay = D.cy * sh.h + oy;
     el.style.transformOrigin = `${D.ax.toFixed(1)}px ${D.ay.toFixed(1)}px`;
     D.px = left0 - sh.shift + D.ax; // где эта точка на экране до наезда (без учёта панорамы --shift)
     D.py = top0 + D.ay;
@@ -1275,6 +1277,7 @@ function frame(now, snap) {
   if (Math.abs(lq - lqShown) > 0.0005) {
     lqShown = lq;
     coverEl.style.setProperty('--lq', lq.toFixed(4));
+    shots[0].el.style.setProperty('--hero', (1 - smooth(lq / 0.18)).toFixed(3)); // резкий первый кадр растворяется в ролике, пока улетают буквы
     coverEl.classList.toggle('fly', lq > 0.42); // размытие пролёта — только когда буквы уже близко, до того надпись чёткая и блестит
     html.dataset.logo = lq < 0.85 ? 'on' : 'off';
   }
