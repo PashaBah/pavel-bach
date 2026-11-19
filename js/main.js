@@ -150,64 +150,114 @@ async function pickCodec() {
 }
 Promise.race([pickCodec(), new Promise((r) => setTimeout(() => r('h264'), 500))]).catch(() => 'h264').then((c) => { CODEC = c; codecKnown = true; html.dataset.codec = c; pump(); });
 const wantCodec = () => (wcMode ? 'h264' : CODEC); // холст с кадрами (режим энергосбережения айфона) разбирает только H.264
-const clipFile = (src, codec) => (codec === 'h264' ? src : src.replace(/\.mp4$/, `.${codec}.mp4`));
-// 33-я редакция. Ролик качается кусками, и мы знаем, сколько уже пришло и с какой скоростью: если сцена вот-вот на экране, а докачивать
-// ещё долго (медленная сеть), загрузка в память прерывается и ролик играет прямо из сети, как на YouTube (stream) — вместо стоп-кадров.
-let netBps = 0; // замеренная скорость сети, байт/с (по скачанным роликам)
-function fetchClip(src, done) {
-  const c = clips[src], codec = wantCodec();
-  c.state = 'loading'; c.loaded = 0; c.total = 0; c.t0 = performance.now();
-  const ctl = (c.ctl = window.AbortController ? new AbortController() : null);
-  fetch(V(clipFile(src, codec)), ctl ? { signal: ctl.signal } : {}).then(async (r) => {
-    if (!r.ok) throw new Error(r.status);
-    c.total = +r.headers.get('content-length') || 0;
-    if (!r.body || !r.body.getReader) return r.blob();
-    const rd = r.body.getReader(), parts = [];
-    for (;;) { const { done: end, value } = await rd.read(); if (end) break; parts.push(value); c.loaded += value.length; }
-    return new Blob(parts, { type: 'video/mp4' });
-  })
-    .then((b) => {
-      if (c.state !== 'loading') return; // уже играет из сети
-      const s = (performance.now() - c.t0) / 1000;
-      if (b.size > 150000 && s > 0.05) netBps = netBps ? netBps * 0.5 + (b.size / s) * 0.5 : b.size / s;
-      c.blob = b; c.url = URL.createObjectURL(b); c.codec = codec; c.state = 'ready';
-    })
-    .catch(() => { if (c.state === 'loading') c.state = 'failed'; })
-    .then(done);
-}
-function streamClip(sh) { // сцена на подходе, а ролик ещё долго качать: играем из сети
-  const c = clips[sh.src];
-  if (!c || c.state !== 'loading' || wcMode || NOVIDEO || !c.ctl) return;
-  const s = (performance.now() - c.t0) / 1000;
-  const speed = c.loaded > 60000 && s > 0.4 ? c.loaded / s : netBps;
-  if (!speed || !c.total) return; // скорость сети ещё не ясна — решаем чуть позже (stock() проверяет каждый кадр)
-  const left = (c.total - c.loaded) / speed;
-  if (left < 1.2) return; // скоро докачается — ждём, так перемотка будет из памяти
-  c.ctl.abort(); c.state = 'stream'; c.codec = wantCodec(); c.url = V(clipFile(sh.src, c.codec));
-  if (sh.video) disarm(sh);
-}
-// Загрузка по сценам: сразу качается только то, что нужно в ближайшие экраны (LOOK). Остальное — по одному ролику, в порядке фильма,
-// когда первый экран уже показан; при экономии трафика или медленной сети фоновой догрузки нет вовсе.
+// 33-я редакция: загрузка подстраивается под сеть (как авто-качество на YouTube).
+//   • Скорость сети известна: до первого ролика — по тому, как пришли картинка первого экрана и скрипты, дальше — по самим роликам.
+//   • Медленная сеть: берём «лёгкие» копии роликов (<имя>_l…, около 40 % веса, tools/enc33l.sh), по одному, в порядке фильма.
+//     Сцена на экране без ролика получает всю полосу (загрузки дальних сцен прерываются), превью в панелях форматов ждут своей очереди.
+//     Когда всё лёгкое скачано, дальние сцены по одной докачиваются в полном качестве и подменяются, пока их нет в кадре.
+//   • Быстрая сеть: полные ролики, по два, как раньше.
+//   • Оборвалась загрузка (метро, лифт) — ролик пробуется ещё дважды, а не остаётся стоп-кадрами до конца.
 const NET = navigator.connection || {};
 const SAVE = !!NET.saveData || /(^|-)2g$/.test(NET.effectiveType || '');
+const SLOW = 600000;  // меньше 600 КБ/с (~5 Мбит/с): по одному ролику, приоритет сцене на экране
+const LITE = 350000;  // меньше 350 КБ/с (~2,8 Мбит/с): лёгкие копии
+const forcedNet = (location.search.match(/[?&]net=(slow|fast)/) || [])[1]; // для проверки: ?net=slow — вести себя как на медленной сети
+let netBps = 0, netGuessed = false, netBytes = 0; // оценка скорости (байт/с); байты всех роликов (для замера при параллельной загрузке)
+let focusSrc = null; // медленная сеть: ролик сцены на экране, которому отдана вся полоса (см. stock)
+function netGuess() { // до первого ролика: с какой скоростью пришли картинка первого экрана, шрифты и скрипты
+  let best = 0;
+  try {
+    for (const e of performance.getEntriesByType('resource')) {
+      const dt = (e.responseEnd - e.responseStart) / 1000, sz = e.transferSize || 0;
+      if (sz > 25000 && dt > 0.04) best = Math.max(best, sz / dt);
+    }
+  } catch (err) { /* браузер не даёт замеров */ }
+  if (!best && NET.downlink) best = NET.downlink * 125000; // Chrome на андроиде знает оценку сам (Мбит/с)
+  return best;
+}
+const ensureNet = () => { if (!netGuessed && go) { netGuessed = true; if (!netBps) netBps = netGuess(); } }; // первая оценка — когда первый экран уже загружен
+const slowNet = () => { ensureNet(); return forcedNet ? forcedNet === 'slow' : netBps > 0 && netBps < SLOW; };
+const liteNet = () => { ensureNet(); return forcedNet ? forcedNet === 'slow' : netBps > 0 && netBps < LITE; };
+let hiPending = false; // медленная сеть: большая картинка надписи (700 КБ) ждёт, пока скачаются ролики
+const clipFile = (src, codec, lite) => { const s = lite ? src.replace(/\.mp4$/, '_l.mp4') : src; return codec === 'h264' ? s : s.replace(/\.mp4$/, `.${codec}.mp4`); };
+async function readBlob(r, onChunk) { // ответ сервера → Blob, по пути считая пришедшие байты
+  if (!r.ok) throw Object.assign(new Error(String(r.status)), { http: r.status });
+  if (!r.body || !r.body.getReader) { const b = await r.blob(); onChunk(b.size); return b; }
+  const rd = r.body.getReader(), parts = [];
+  for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); onChunk(value.length); }
+  return new Blob(parts, { type: 'video/mp4' });
+}
+function fetchClip(src, done) {
+  const c = clips[src], codec = wantCodec(), lite = !c.noLite && liteNet();
+  const id = (c.fid = (c.fid || 0) + 1), t0 = performance.now(), b0 = netBytes;
+  c.state = 'loading';
+  c.ctl = window.AbortController ? new AbortController() : null;
+  fetch(V(clipFile(src, codec, lite)), c.ctl ? { signal: c.ctl.signal } : {})
+    .then((r) => readBlob(r, (n) => { netBytes += n; }))
+    .then((b) => {
+      if (c.fid !== id) return; // эту загрузку прервали и начали заново
+      const s = (performance.now() - t0) / 1000, got = netBytes - b0;
+      if (got > 100000 && s > 0.03) netBps = netBps ? netBps * 0.4 + (got / s) * 0.6 : got / s; // всё, что пришло за это время, — и по соседней загрузке тоже
+      c.blob = b; c.url = URL.createObjectURL(b); c.codec = codec; c.lite = lite; c.state = 'ready'; c.fails = 0;
+    })
+    .catch((e) => {
+      if (c.fid !== id) return;
+      if (lite && e.http) { c.noLite = true; c.state = 'idle'; return; } // лёгкой копии нет — берём полную
+      c.fails = (c.fails || 0) + 1;
+      if (c.fails >= 3) { c.state = 'failed'; return; }
+      c.state = 'wait'; setTimeout(() => { if (c.fid === id && c.state === 'wait') { c.state = 'idle'; pump(); } }, 1200 * c.fails);
+    })
+    .then(done);
+}
+function dropFetch(c) { // прервать загрузку (ролик дальней сцены на медленной сети): позже начнётся заново
+  if (c.state !== 'loading' || !c.ctl) return;
+  c.fid++; c.state = 'idle'; c.ctl.abort();
+}
+// Загрузка по сценам: сразу качается только то, что нужно в ближайшие экраны (LOOK). Остальное — по одному ролику, в порядке фильма,
+// когда первый экран уже показан и фильм начали листать; при экономии трафика фоновой догрузки нет вовсе.
 const LOOK = 3.2, BG_AFTER = performance.now() + 3000;
 // 30-я редакция: дальние сцены докачиваются в фоне, только когда человек начал листать фильм. Кто открыл и смотрит первый экран
-// (или закрыл страницу), не качает весь фильм (~19 МБ) — это бережёт мобильный трафик и не занимает телефон в первые секунды.
+// (или закрыл страницу), не качает весь фильм — это бережёт мобильный трафик и не занимает телефон в первые секунды.
 let bgOk = false;
 window.addEventListener('scroll', () => { bgOk = true; }, { once: true, passive: true });
 let fetching = 0;
+const inUse = (src) => shots.some((sh) => sh.src === src && (sh.video || (cur > sh.from - 2 && cur < sh.to + 2))) || panels.some((q) => q.src === src && q.v);
+function upgradeOne() { // всё лёгкое скачано и сеть свободна: дальняя сцена получает полное качество (подмена — пока её нет в кадре)
+  if (SAVE || fetching || !bgOk) return;
+  if (hiPending) { hiPending = false; hiLogo(true); }
+  for (const src in clips) {
+    const c = clips[src];
+    if (c.state !== 'ready' || !c.lite || c.upTried || inUse(src)) continue;
+    c.upTried = true; fetching++;
+    const codec = wantCodec();
+    fetch(V(clipFile(src, codec, false))).then((r) => readBlob(r, () => {})).then((b) => {
+      if (inUse(src) || c.state !== 'ready') { c.upTried = false; return; } // сцена успела подойти — попробуем позже
+      URL.revokeObjectURL(c.url); c.blob = b; c.url = URL.createObjectURL(b); c.codec = codec; c.lite = false;
+    }).catch(() => { /* останется лёгкий */ }).then(() => { fetching--; pump(); });
+    return;
+  }
+}
 function pump() {
   if (!codecKnown || !go) return;
-  const par = netBps && netBps < 400000 ? 1 : 2; // на медленной сети по одному ролику: ближайший будет готов вдвое раньше
+  ensureNet();
+  if (focusSrc) { // медленная сеть, сцене на экране не хватает ролика: качаем только его
+    const c = clips[focusSrc];
+    if (c && c.state === 'idle') { fetching++; fetchClip(focusSrc, () => { fetching--; pump(); }); }
+    return;
+  }
+  const slow = slowNet(), par = slow ? 1 : 2; // на медленной сети по одному: ближайший ролик готов вдвое раньше
   while (fetching < par) {
     let best = null, bd = Infinity;
-    for (const src in clips) {
-      const c = clips[src];
-      if (c.state !== 'idle') continue;
-      const d = c.at >= cur - 0.5 ? c.at - cur : (cur - c.at) * 3 + 2; // сначала то, что впереди
-      if (d < bd) { bd = d; best = src; }
+    for (const low of slow ? [false, true] : [true]) { // на медленной сети превью панелей (low) — только когда ролики сцен скачаны
+      for (const src in clips) {
+        const c = clips[src];
+        if (c.state !== 'idle' || (c.low && !low)) continue;
+        const d = c.at >= cur - 0.5 ? c.at - cur : (cur - c.at) * 3 + 2; // сначала то, что впереди
+        if (d < bd) { bd = d; best = src; }
+      }
+      if (best) break;
     }
-    if (!best) return;
+    if (!best) { upgradeOne(); return; }
     if (bd > LOOK && (SAVE || !bgOk || fetching > 0 || performance.now() < BG_AFTER)) return; // дальние сцены — в фоне, по одной, когда фильм начали листать
     fetching++;
     fetchClip(best, () => { fetching--; pump(); });
@@ -219,13 +269,15 @@ const FRAMES = {};
 fetch(V('media/frames/index.json')).then((r) => (r.ok ? r.json() : {})).then((d) => Object.assign(FRAMES, d)).catch(() => {});
 function flipbook(sh, p) {
   const F = FRAMES[sh.name], v = sh.video;
-  if (!go || !F || (v && v._primed && v.readyState >= 2) || (v && v._stream && sh.frShown !== undefined)) return; // ролик играет из сети — кадры не качаем, сеть ему нужнее
+  if (!go || !F || (v && v._primed && v.readyState >= 2)) return;
   const k = Math.min(F.n - 1, Math.round(rampAt(sh.ramp, p) * F.dur / F.step));
   if (!sh.fr) sh.fr = [];
-  for (const n of [k, k + 1]) { // нужный кадр и следующий за ним
-    if (n >= F.n || sh.fr[n]) continue;
+  const slow = slowNet(); // на медленной сети — один кадр за раз: полоса нужнее самому ролику
+  for (const n of slow ? [k] : [k, k + 1]) { // нужный кадр и следующий за ним
+    if (n >= F.n || sh.fr[n] || (slow && sh.frBusy)) continue;
     const im = new Image();
-    im.decoding = 'async'; im.onload = () => { im.ok = true; };
+    im.decoding = 'async'; im.onload = () => { im.ok = true; sh.frBusy = false; }; im.onerror = () => { sh.frBusy = false; };
+    sh.frBusy = true;
     im.src = V(`media/frames/${sh.name}/${n}.jpg`);
     sh.fr[n] = im;
   }
@@ -445,17 +497,16 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
   return sh;
 });
 shots.forEach((sh, k) => { sh.next = shots[k + 1]; sh.prev = shots[k - 1]; });
-if (/[?&]dbg/.test(location.search)) window.__phonk = { shots, clips, get wc() { return wcMode; }, get blocked() { return blocked; }, state: () => ({ go, codecKnown, bgOk, netBps, SAVE, fetching, cur }), pump: () => pump() }; // для проверки
+if (/[?&]dbg/.test(location.search)) window.__phonk = { shots, clips, get wc() { return wcMode; }, get blocked() { return blocked; }, state: () => ({ go, codecKnown, bgOk, netBps: Math.round(netBps), slow: slowNet(), lite: liteNet(), focus: focusSrc, SAVE, fetching, cur }), pump: () => pump() }; // для проверки
 const diveShot = shots.find((sh) => sh.dive);
 // карта короля и снимок глаза грузятся, когда до сцены с картой два экрана или сеть свободна (см. stock): первый экран их не ждёт
 const NOVIDEO = /[?&]novideo/.test(location.search); // для проверки: сайт без роликов, на одной раскадровке (как на телефоне, который не запустил видео)
 function arm(sh) { // ролик сцены встаёт в кадр поверх постера
   const c = clips[sh.src];
-  if (NOVIDEO || sh.video || !c || (c.state !== 'ready' && c.state !== 'stream')) return;
+  if (NOVIDEO || sh.video || !c || c.state !== 'ready') return;
   if (wcMode && c.codec !== 'h264' && !sh.wcFailed) { URL.revokeObjectURL(c.url); c.url = ''; c.blob = null; c.state = 'idle'; return; } // для холста нужен H.264: перекачиваем
   if (wcMode && c.blob && !sh.live && !sh.wcFailed) { const v = wcVideo(c, sh); sh.poster.after(v); sh.video = v; return; }
   const v = makeVideo(sh.src, c.url, sh.live);
-  if (c.state === 'stream') v._stream = true;
   sh.poster.after(v);
   sh.video = v;
   if (sh.live) playV(v); else prime(v);
@@ -481,6 +532,17 @@ function warmFrames(sh) { // раскадровка сцены целиком: �
 }
 function stock() { // что держать наготове: ролики и картинки ближайших сцен
   if (!go) return;
+  // 33-я редакция, медленная сеть: сцена на экране (или в полэкрана от него) без готового ролика получает всю полосу —
+  // загрузки дальних роликов прерываются (потом начнутся заново), новые не начинаются, пока её ролик не скачан
+  let focus = null, fd = Infinity; const near = new Set();
+  for (const sh of shots) {
+    if (!sh.src) continue;
+    const d = cur < sh.from ? sh.from - cur : cur > sh.to ? cur - sh.to : 0, c = clips[sh.src];
+    if (d < 1) near.add(sh.src);
+    if (d < 0.5 && c && c.state !== 'ready' && c.state !== 'failed' && d < fd) { fd = d; focus = sh; }
+  }
+  focusSrc = focus && slowNet() ? focus.src : null;
+  if (focusSrc) for (const src in clips) if (!near.has(src)) dropFetch(clips[src]);
   const idle = fetching === 0 && !SAVE && bgOk && performance.now() > BG_AFTER;
   pump();
   if (!mapAsked && (idle || cur > SCENES[byId.tv].start - 3)) { // за три экрана до телевизоров (или когда сеть свободна): превью в экранах, логотипы клиентов, карта мира
@@ -492,7 +554,6 @@ function stock() { // что держать наготове: ролики и к
   }
   for (const sh of shots) {
     const d = cur < sh.from ? sh.from - cur : cur > sh.to ? cur - sh.to : 0;
-    if (sh.src && d < 1) streamClip(sh); // за экран до сцены: если ролик не успевает, пусть начинает играть из сети
     if (sh.src && d < 1.2 && !(sh.video && sh.video._primed)) {
       fetchNow(sh.src);
       // запасные кадры целиком нужны, только если видео точно не будет: автозапуск запрещён, ролик не скачался, режим проверки.
@@ -502,8 +563,10 @@ function stock() { // что держать наготове: ролики и к
     if (sh.src) {
       if (d < (LAZY ? 1.3 : 2.2)) arm(sh); else if (d > (LAZY ? 1.6 : 2.8)) disarm(sh); // и на компьютере держим 3–4 плеера, а не все двенадцать
     }
-    if (sh.poster && !sh.poster.src && (d < 3 || idle)) sh.poster.src = sh.posterSrc;
-    if (d < 2 || idle) {
+    const slow = slowNet();
+    if (sh.poster && !sh.poster.src && (d < (slow ? 1.5 : 3) || idle)) sh.poster.src = sh.posterSrc;
+    const clipOk = !sh.src || !slow || clips[sh.src].state === 'ready' || clips[sh.src].state === 'failed'; // медленная сеть: сначала ролик сцены, потом её большие картинки
+    if ((d < 2 && clipOk) || idle) {
       if (sh.imgSrc && !sh.img) { sh.img = new Image(); sh.img.alt = ''; sh.img.onload = () => sh.el.prepend(sh.img); sh.img.src = V(sh.imgSrc); }
       if (!sh.lazyDone) { sh.lazyDone = true; sh.el.querySelectorAll('img[data-src]').forEach((im) => { im.src = V(im.dataset.src); }); }
     }
@@ -606,7 +669,8 @@ function visOut(sh) {
 // ── панели «трёх форматов»: живые клипы поверх постеров ──
 const panels = [...document.querySelectorAll('.panel')].map((a) => {
   const src = (TALL && a.dataset.videoT) || a.dataset.video; // 32-я редакция: на вертикальном экране панель — узкая полоска, ей хватает лёгкой копии 854×480
-  clipOf(src, SCENES[byId.formats].start);
+  const pc = clipOf(src, SCENES[byId.formats].start);
+  if (src !== a.dataset.video) { pc.low = true; pc.noLite = true; } // отдельное превью: у него нет лёгкой копии, на медленной сети оно ждёт своей очереди
   const img = new Image();
   img.alt = ''; img.className = 'poster';
   goQueue.push(() => { img.src = V(posterOf(a.dataset.video, 'p_')); });
@@ -798,7 +862,10 @@ function layGeo() {
 let tvLive = false, tripLive = false;
 function tubesLive(on) { // превью в телевизорах: ролики подключаются, только пока телевизоры на экране
   for (const v of screensLive) {
-    if (on) { if (!v.getAttribute('src')) v.src = v._src; if (v.paused) playV(v); }
+    if (on) {
+      if (!v.getAttribute('src') && !liteNet()) v.src = v._src; // на медленной сети в телевизорах стоят кадры: полоса нужнее роликам сцен
+      if (v.getAttribute('src') && v.paused) playV(v);
+    }
     else { v._play = false; v.pause(); if (LAZY && v.getAttribute('src')) { v.removeAttribute('src'); v.load(); } }
   }
 }
@@ -1409,12 +1476,13 @@ requestAnimationFrame(tick);
 // надпись на обложке: первым грузится лёгкий файл (первый экран появляется быстро), следом — в полном разрешении: при подлёте буквы остаются резкими
 // 32-я редакция: на телефоне (экран до ~1100 px в ширину при 3x) надписи в покое хватает обычного файла; большой нужен, только когда камера летит
 // сквозь буквы, поэтому на телефоне он качается с первым движением, а не сразу после загрузки (кто не листает — не качает 700 КБ)
-const hiLogo = () => setTimeout(() => {
+const hiLogo = (force) => setTimeout(() => {
+  if (!force && slowNet()) { hiPending = true; return; } // медленная сеть: сначала ролики (см. upgradeOne)
   const im = $('.chapter.cover .ice-logo'), hi = new Image();
   hi.src = V('media/ice_logo_x.webp');
   (hi.decode ? hi.decode() : Promise.resolve()).then(() => { im.removeAttribute('srcset'); im.src = hi.src; }).catch(() => { /* остаётся лёгкий */ });
 }, coarse ? 0 : 800);
 if (!SAVE) {
-  if (coarse) window.addEventListener('scroll', hiLogo, { once: true, passive: true });
-  else window.addEventListener('load', hiLogo, { once: true });
+  if (coarse) window.addEventListener('scroll', () => hiLogo(), { once: true, passive: true });
+  else window.addEventListener('load', () => hiLogo(), { once: true });
 }
