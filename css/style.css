@@ -1776,3 +1776,8 @@ html[data-lang="ru"] .menu-sheet button { font-size: 15px; }
     box-shadow: 0 0 0 .16cqw rgba(255, 255, 255, .85), 0 0 1.2cqw rgba(255, 60, 100, .7);
   }
 }
+/* скорость: шрифты подзаголовков и текста глав первому экрану не нужны. Пока страница не загрузилась (html.ld ставит js/main.js на load
+   или первое касание), главы кроме обложки не отрисовываются, а «титры» внизу — только когда до них доскроллили; иначе браузер качал
+   Playfair заранее и отнимал сеть у главной картинки */
+html:not(.ld) main .chapter:not(.cover) { content-visibility: hidden; }
+.roll { content-visibility: auto; contain-intrinsic-size: auto 1400px; }
