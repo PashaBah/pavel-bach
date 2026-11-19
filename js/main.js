@@ -37,7 +37,21 @@ const EXP = 0.5;     // сколько раскрывается панель ф�
 const $ = (s) => document.querySelector(s);
 // номер выкладки (data-v у <html>): с ним каждый файл — новый адрес, и телефон не показывает старый ролик из своей памяти
 const VER = document.documentElement.dataset.v || "";
-const V = (u) => (VER && u && !/^(https?:|blob:|data:)/.test(u) ? `${u}${u.includes("?") ? "&" : "?"}v=${VER}` : u);
+// 30-я редакция: у каждого языка своя страница (/ — английская, /ru/ — русская), а файлы общие. data-root у <html> — путь от страницы к корню сайта ("" или "../")
+const ROOT = document.documentElement.dataset.root || "";
+const V = (u) => {
+  if (!u || /^(https?:|blob:|data:|\/)/.test(u)) return u;
+  const p = ROOT + u;
+  return VER ? `${p}${p.includes("?") ? "&" : "?"}v=${VER}` : p;
+};
+// Всё тяжёлое (ролики, постеры сцен) начинает качаться, только когда первый экран уже показан (событие load) или человек начал листать:
+// иначе ролик обложки отнимал сеть у первой картинки и на телефоне в мобильной сети первый экран появлялся позже.
+let go = false;
+const goQueue = [];
+function startHeavy() { if (go) return; go = true; goQueue.splice(0).forEach((f) => f()); }
+if (document.readyState === 'complete') setTimeout(startHeavy, 0);
+else window.addEventListener('load', () => setTimeout(startHeavy, 0), { once: true });
+for (const t of ['scroll', 'pointerdown', 'keydown', 'wheel', 'touchstart']) window.addEventListener(t, startHeavy, { once: true, passive: true });
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const smooth = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
 const inOut = (q) => { q = clamp(q); return q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2; };
@@ -152,7 +166,7 @@ const SAVE = !!NET.saveData || /(^|-)2g$/.test(NET.effectiveType || '');
 const LOOK = 3.2, BG_AFTER = performance.now() + 3000;
 let fetching = 0;
 function pump() {
-  if (!codecKnown) return;
+  if (!codecKnown || !go) return;
   while (fetching < 2) {
     let best = null, bd = Infinity;
     for (const src in clips) {
@@ -390,8 +404,7 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
     clipOf(src, sh.from);
     const img = new Image();
     img.alt = ''; img.className = 'poster'; img.decoding = 'async';
-    sh.posterSrc = V(posterOf(src)); // постер первой сцены нужен сразу, остальных — за три экрана до сцены или когда сеть свободна (см. stock)
-    if (first.start === 0) img.src = sh.posterSrc;
+    sh.posterSrc = V(posterOf(src)); // постеры — за три экрана до сцены или когда сеть свободна (см. stock); у обложки сверху и так стоит резкий первый кадр (.hero)
     el.prepend(img);
     sh.poster = img;
   } else if (src) {
@@ -417,7 +430,7 @@ function arm(sh) { // ролик сцены встаёт в кадр повер�
 function disarm(sh) { if (sh.video) { dropVideo(sh.video); sh.video = null; } }
 function fetchNow(src) { // ролик нужен прямо сейчас — качаем вне очереди (очередь могла быть занята дальними сценами)
   const c = clips[src];
-  if (!codecKnown || !c || c.state !== 'idle') return;
+  if (!codecKnown || !go || !c || c.state !== 'idle') return;
   fetchClip(src, () => {});
 }
 function warmFrames(sh) { // раскадровка сцены целиком: если ролик не успел, сцена всё равно идёт по кадрам, а не стоит на первом
@@ -434,6 +447,7 @@ function warmFrames(sh) { // раскадровка сцены целиком: �
   }
 }
 function stock() { // что держать наготове: ролики и картинки ближайших сцен
+  if (!go) return;
   const idle = fetching === 0 && !SAVE && performance.now() > BG_AFTER;
   pump();
   if (!mapAsked && (idle || cur > SCENES[byId.tv].start - 3)) { // за три экрана до телевизоров (или когда сеть свободна): превью в экранах, логотипы клиентов, карта мира
@@ -560,7 +574,7 @@ const panels = [...document.querySelectorAll('.panel')].map((a) => {
   clipOf(src, SCENES[byId.formats].start);
   const img = new Image();
   img.alt = ''; img.className = 'poster';
-  img.src = V(posterOf(src, 'p_'));
+  goQueue.push(() => { img.src = V(posterOf(src, 'p_')); });
   a.prepend(img);
   return { a, src, img, v: null };
 });
@@ -832,20 +846,10 @@ const railMarks = SCENES.map((s) => {
 
 // ── язык ────────────────────────────────────────
 const chapterName = $('#chapterName');
-let lang = 'en', sceneNow = -1;
-function setLang(l) {
-  lang = l;
-  html.dataset.lang = l;
-  html.lang = l;
-  document.title = l === 'ru' ? 'Павел Бах — иллюзионист для частных и корпоративных событий' : 'Pavel Bach — Magician for private and corporate events';
-  sceneNow = -1; // перерисовать подписи
-  if (typeof geoHud === 'function' && typeof game !== 'undefined') geoHud();
-  try { localStorage.setItem('lang', l); } catch (e) { /* хранилище недоступно — не страшно */ }
-}
-let saved = null;
-try { saved = localStorage.getItem('lang'); } catch (e) { /* то же */ }
-setLang(saved || ((navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en'));
-$('#langToggle').addEventListener('click', () => setLang(lang === 'en' ? 'ru' : 'en'));
+// 30-я редакция: язык задан самой страницей (/ — английский, /ru/ — русский), без угадывания по языку телефона.
+// Переключатель — обычная ссылка на ту же страницу другого языка (метки из адреса и место в фильме сохраняет js/site.js).
+const lang = html.dataset.lang === 'ru' ? 'ru' : 'en';
+let sceneNow = -1;
 
 // ── отзывы: карты летят спиралью от двух организаторов к зрителю; ближняя карта — отзыв ──
 const deck = $('#deck'), deckNav = $('#deckNav'), deckCount = $('#deckCount'), deckPrev = $('#deckPrev'), deckNext = $('#deckNext');
@@ -1339,9 +1343,11 @@ function openModal(title, { yt, mp4 }) {
   }
   modal.hidden = false;
   $('#tvClose').focus();
+  window.dispatchEvent(new CustomEvent('pb:video', { detail: { title, id: yt || mp4 } })); // для аналитики (js/site.js)
 }
 const label = (b) => (b.querySelector('b') || b).innerText.trim();
-document.querySelectorAll('.scr, .play').forEach((b) => b.addEventListener('click', () => {
+document.querySelectorAll('.scr, .play, .btn[data-mp4]').forEach((b) => b.addEventListener('click', (e) => {
+  e.preventDefault();
   openModal(label(b), { mp4: b.dataset.mp4, yt: b.dataset.yt || b.dataset.video });
 }));
 const closeModal = () => { modal.hidden = true; screen.replaceChildren(); };
@@ -1349,29 +1355,7 @@ $('#tvClose').addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-// ── заявка: открывает WhatsApp Павла с готовым сообщением (своего сервера у сайта нет) ──
-const WA = '34627084012';
-const NOTE = {
-  bad: { en: 'Please add your name and the date or city.', ru: 'Укажите имя и дату или город.' },
-  ok: { en: 'Opening WhatsApp with your message ready — just press send. If it did not open, write to +34 627 084 012.',
-        ru: 'Открываю WhatsApp с готовым сообщением — останется нажать «Отправить». Если он не открылся, напишите на +34 627 084 012.' },
-};
-$('#bookForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const f = e.currentTarget, v = (n) => f[n].value.trim();
-  const valid = v('name') && (v('event') || v('email') || v('phone'));
-  $('#formNote').textContent = NOTE[valid ? 'ok' : 'bad'][lang];
-  if (!valid) return;
-  const ru = lang === 'ru';
-  const lines = [
-    ru ? 'Здравствуйте, Павел! Хочу узнать, свободна ли дата.' : 'Hi Pavel! I would like to check if you are free on our date.',
-    `${ru ? 'Имя' : 'Name'}: ${v('name')}`,
-    v('event') && `${ru ? 'Событие' : 'Event'}: ${v('event')}`,
-    v('email') && `E-mail: ${v('email')}`,
-    v('phone') && `${ru ? 'Телефон' : 'Phone'}: ${v('phone')}`,
-  ].filter(Boolean);
-  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
-});
+// ── заявка, WhatsApp, метки и пиксели — в js/site.js (30-я редакция) ──
 
 // для проверки: адрес с #at=stage:0.25 сразу открывает это место фильма
 function jumpToHash() {
