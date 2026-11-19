@@ -1562,9 +1562,6 @@ a.lang { text-decoration: none; }
 .wa-top:hover { color: #25d366; }
 .wa-bottom { display: none; color: var(--paper); text-decoration: none; text-transform: uppercase; letter-spacing: .2em; font-size: 11px; text-shadow: 0 0 6px #000; white-space: nowrap; padding: 8px 0; }
 @media (max-width: 1100px) { .wa-top { display: none; } .wa-bottom { display: inline-flex; align-items: center; gap: 7px; } .wa-bottom::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #25d366; box-shadow: 0 0 8px rgba(37, 211, 102, .8); } }
-.menu a.menu-faq { color: var(--dim); text-decoration: none; padding: 8px 0; white-space: nowrap; transition: color .2s; }
-.menu a.menu-faq:hover { color: #fff; }
-.menu-sheet a.menu-faq { display: block; text-align: left; padding: 10px 0; font-family: var(--mono); font-size: 23px; letter-spacing: .2em; color: var(--paper); text-decoration: none; text-transform: uppercase; }
 /* шоурил на первом экране */
 .reel-btn { display: inline-flex; align-items: center; gap: 10px; }
 .reel-btn i { width: 0; height: 0; border-left: 9px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
@@ -1650,6 +1647,17 @@ form button[aria-busy="true"] { opacity: .6; cursor: progress; }
   background: #0b0b0f; border: 1px solid rgba(255, 255, 255, .16); box-shadow: 0 18px 50px rgba(0, 0, 0, .6); padding: 14px 16px; font-size: 13px; line-height: 1.45; color: #ddd6ca; }
 /* блик по буквам надписи — маска из той же картинки; до события load его нет: иначе картинка надписи качалась второй раз (маска — отдельный запрос) и отнимала сеть у первого экрана */
 html:not(.ld) .ice-shine { display: none; -webkit-mask: none; mask: none; }
+html:not(.ld) .tubes { -webkit-mask: none; mask: none; } /* маска кинескопов нужна только у телевизоров — после load */
+/* длина фильма до того, как её посчитает js/main.js (layout: (сумма сцен 39,85 × PACE + 1) высоты экрана): без этого на первой отрисовке
+   «титры» с вопросами оказывались наверху страницы, а потом уезжали вниз — большой сдвиг вёрстки (CLS) */
+#scrollSpace { height: 2970lvh; }
+@media (pointer: coarse) { #scrollSpace { height: 3488lvh; } }
+/* первый экран рисуется сразу из HTML, не дожидаясь скриптов (ТЗ: «текст и кнопка не ждут видео и анимаций»; рекламные боты JS не выполняют).
+   Обложка и её текст видны с самого начала, дальше их ведёт js/main.js. Сдвиг кадра (--shift) и место резкого кадра на вертикальном экране —
+   те же, что потом считает скрипт (data-mx="47%": кадр сдвинут на 3 % ширины; data-win="0.25,0.440625"), чтобы ничего не прыгнуло. */
+.shot[data-scenes="cover"] { opacity: 1; display: block; --shift: min(calc(max(100vw, 177.78vh) * .03), calc((max(100vw, 177.78vh) - 100vw) / 2)); }
+.chapter.cover { opacity: 1; }
+@media (max-aspect-ratio: 3/4) { .shot[data-scenes="cover"] .hero { left: 25%; right: auto; width: 44.0625%; } }
 .consent[hidden], .consent-opts[hidden], .consent-btns [hidden] { display: none !important; }
 .consent a { color: var(--paper); text-underline-offset: 3px; white-space: nowrap; }
 .consent-opts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; }

@@ -191,14 +191,14 @@ if (pos) {
   }
 }
 
-// ── 5. «FAQ» в меню: на телефоне меню собирается из кнопок (js/main.js), ссылку добавляем сами ──
-const faqLink = $('.menu a.menu-faq'), sheet = $('#menuSheet');
-if (faqLink && sheet) sheet.appendChild(faqLink.cloneNode(true));
+// ── 5. «FAQ» в меню (кнопка без data-fly: js/main.js копирует её в меню телефона, а перематывает к титрам этот файл) ──
 document.addEventListener('click', (e) => {
-  const a = e.target.closest('a[href="#faq"]');
-  if (!a) return;
+  const b = e.target.closest('[data-faq], a[href="#faq"]');
+  if (!b) return;
   e.preventDefault();
-  if (sheet) { sheet.hidden = true; const mb = $('#menuBtn'); if (mb) mb.setAttribute('aria-expanded', 'false'); }
+  const sheet = $('#menuSheet'), mb = $('#menuBtn');
+  if (sheet) sheet.hidden = true;
+  if (mb) mb.setAttribute('aria-expanded', 'false');
   $('#faq').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
