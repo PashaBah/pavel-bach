@@ -164,6 +164,10 @@ function fetchClip(src, done) {
 const NET = navigator.connection || {};
 const SAVE = !!NET.saveData || /(^|-)2g$/.test(NET.effectiveType || '');
 const LOOK = 3.2, BG_AFTER = performance.now() + 3000;
+// 30-я редакция: дальние сцены докачиваются в фоне, только когда человек начал листать фильм. Кто открыл и смотрит первый экран
+// (или закрыл страницу), не качает весь фильм (~19 МБ) — это бережёт мобильный трафик и не занимает телефон в первые секунды.
+let bgOk = false;
+window.addEventListener('scroll', () => { bgOk = true; }, { once: true, passive: true });
 let fetching = 0;
 function pump() {
   if (!codecKnown || !go) return;
@@ -176,7 +180,7 @@ function pump() {
       if (d < bd) { bd = d; best = src; }
     }
     if (!best) return;
-    if (bd > LOOK && (SAVE || fetching > 0 || performance.now() < BG_AFTER)) return; // дальние сцены — в фоне, по одной
+    if (bd > LOOK && (SAVE || !bgOk || fetching > 0 || performance.now() < BG_AFTER)) return; // дальние сцены — в фоне, по одной, когда фильм начали листать
     fetching++;
     fetchClip(best, () => { fetching--; pump(); });
   }
@@ -448,7 +452,7 @@ function warmFrames(sh) { // раскадровка сцены целиком: �
 }
 function stock() { // что держать наготове: ролики и картинки ближайших сцен
   if (!go) return;
-  const idle = fetching === 0 && !SAVE && performance.now() > BG_AFTER;
+  const idle = fetching === 0 && !SAVE && bgOk && performance.now() > BG_AFTER;
   pump();
   if (!mapAsked && (idle || cur > SCENES[byId.tv].start - 3)) { // за три экрана до телевизоров (или когда сеть свободна): превью в экранах, логотипы клиентов, карта мира
     mapAsked = true; askMap();
