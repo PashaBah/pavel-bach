@@ -70,6 +70,22 @@ function paths(h, root) {
     .replace(/(\s(?:src|href|data-late-src)=")([^"]+)"/g, (_, a, u) => `${a}${fix(u)}"`)
     .replace(/(\s(?:srcset|data-late-srcset)=")([^"]+)"/g, (_, a, list) => `${a}${list.split(',').map((x) => { const [u, ...r] = x.trim().split(/\s+/); return [fix(u), ...r].join(' '); }).join(', ')}"`);
 }
+// Типографика текста (разбор Аси): короткие слова не висят в конце строки — предлоги, союзы и частицы (до трёх букв) приклеиваются
+// неразрывным пробелом к следующему слову, число — к своему слову («25 минут»), тире — к предыдущему. Только текст между тегами:
+// атрибуты, скрипты, стили и <title> не трогаются.
+const NB = ' ';
+function typo(h, lang) {
+  // предлоги, союзы, частицы: по-русски все слова из 1–2 букв и короткие служебные; по-английски — служебные слова
+  const W = lang === 'ru'
+    ? '[А-Яа-яЁё]{1,2}|для|без|при|про|под|над|или|как|что|чем|все|вся|его|её|это|уже|ещё'
+    : 'a|an|the|of|at|in|on|to|by|or|and|for|its|his|her|our|is|as|it|we|he|so|no|be|my|up|if|I|A|An|The|Of|At|In|On|To|By|Or|And|For|It|We|He|So|No|If|Is|As';
+  const short = new RegExp(`(?<=^|[ \\t\\n(«„“"'\u00a0])(${W})[ \\t\\n]+(?=\\S)`, 'gu');
+  const fix = (t) => t.replace(short, `$1${NB}`)
+    .replace(/(\d)[ \t\n]+(?=[A-Za-zА-Яа-яЁё×–\d])/g, `$1${NB}`)
+    .replace(/[ \t\n]+([—–])[ \t\n]/g, `${NB}$1 `)
+    .replace(/×[ \t\n]+/g, `×${NB}`);
+  return h.split(/(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<title>[\s\S]*?<\/title>|<[^>]+>)/).map((part, i) => (i % 2 ? part : fix(part))).join('');
+}
 const stripComments = (h) => h.replace(/<!--(?!@)[\s\S]*?-->\n?/g, '').replace(/<[^>]*\sdata-src-only[^>]*>\n?/g, ''); // data-src-only — только для исходника (noindex на src/)
 
 // ── тексты страниц ──
@@ -186,7 +202,7 @@ ${jsonld(lang, faq)}`;
   h = h.replace('<!--@meta-->', meta).replace('<!--@boot-->', boot(lang));
   h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}">`);
   h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
-  h = paths(stripComments(h), root);
+  h = typo(paths(stripComments(h), root), lang);
   h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
   write(lang === 'ru' ? 'ru/index.html' : 'index.html', h);
 }
@@ -225,7 +241,7 @@ for (const [name, byLang] of Object.entries(PAGES)) {
   for (const lang of LANGS) {
     const P = byLang[lang], sub = `${name}/`;
     const root = lang === 'ru' ? '../../' : '../';
-    write(`${lang === 'ru' ? 'ru/' : ''}${name}/index.html`, shell(lang, { ...P, sub, root }));
+    write(`${lang === 'ru' ? 'ru/' : ''}${name}/index.html`, typo(shell(lang, { ...P, sub, root }), lang));
   }
 }
 // 404: адрес может быть любой глубины, поэтому пути от корня сайта
