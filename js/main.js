@@ -379,7 +379,11 @@ const shots = [...document.querySelectorAll('.shot')].map((el) => {
   // на вертикальном экране у некоторых сцен свой ролик: тот же кадр, достроенный вниз до квадрата (data-src-m)
   const tallM = !!el.dataset.srcM && TALL;
   if (tallM) el.classList.add('tallm');
-  const src = tallM ? el.dataset.srcM : el.dataset.src;
+  // вертикальный экран видит только середину кадра 16:9. Для него у сцены может быть свой ролик — только эта середина (data-src-t), крупнее и резче
+  // при том же весе; data-win="x0,w" — какую часть ширины кадра он занимает
+  const tallT = !tallM && !!el.dataset.srcT && TALL;
+  if (tallT) { const [wx, ww] = el.dataset.win.split(',').map(Number); el.classList.add('win'); el.style.setProperty('--wx', `${wx * 100}%`); el.style.setProperty('--ww', `${ww * 100}%`); }
+  const src = tallM ? el.dataset.srcM : tallT ? el.dataset.srcT : el.dataset.src;
   if (src && /\.mp4$/.test(src)) {
     sh.src = src;
     sh.name = src.replace(/^.*\/|\.mp4$/g, '');
@@ -1379,3 +1383,10 @@ jumpToHash();
 window.addEventListener('hashchange', jumpToHash);
 
 requestAnimationFrame(tick);
+
+// надпись на обложке: первым грузится лёгкий файл (первый экран появляется быстро), следом — в полном разрешении: при подлёте буквы остаются резкими
+if (!SAVE) window.addEventListener('load', () => setTimeout(() => {
+  const im = $('.chapter.cover .ice-logo'), hi = new Image();
+  hi.src = V('media/ice_logo_x.webp');
+  (hi.decode ? hi.decode() : Promise.resolve()).then(() => { im.removeAttribute('srcset'); im.src = hi.src; }).catch(() => { /* остаётся лёгкий */ });
+}, 800));

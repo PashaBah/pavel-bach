@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-lang="en" data-v="26">
+<html lang="en" data-lang="en" data-v="27">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,14 +13,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23000'/%3E%3Ctext x='32' y='46' font-size='44' text-anchor='middle' fill='%23ff4f6d'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
-<link rel="preload" as="image" href="media/posters/cover.jpg?v=26">
+<link rel="preload" as="image" href="media/posters/cover.jpg?v=27" media="(min-aspect-ratio: 3/4)">
+<link rel="preload" as="image" href="media/posters/cover_t.jpg?v=27" media="(max-aspect-ratio: 3/4)">
 <!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css): без обращения к Google первый экран собирается быстрее.
      Одна буква «x» в слове Flex — из Grenze Gotisch (во фрактуре UnifrakturMaguntia она не читается). -->
 <link rel="preload" as="font" type="font/woff2" href="fonts/jost-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/tinos-400-latin.woff2" crossorigin>
 <!-- примерка шрифтов русской версии: адрес с ?font=1…6 включает вариант с листа review/v18_shrifty (по умолчанию стоит № 5) и подгружает его шрифт -->
 <script>(function(){var m=location.search.match(/[?&]font=([1-6])/);if(!m)return;document.documentElement.setAttribute('data-font',m[1]);var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Playfair:opsz,wght@5..1200,400..900&family=Oswald:wght@400;600;700&family=Ruslan+Display&family=Unbounded:wght@400..900&display=swap';document.head.appendChild(l);})();</script>
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 </head>
 <body>
 
@@ -37,7 +38,7 @@
      data-mx — какую точку кадра по ширине держать в центре вертикального экрана. -->
 <div id="film">
   <!-- обложка: подлёт к нему, он улыбается, блик на зубе -->
-  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.8:1,1:1" data-mx="47%"></div>
+  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-src-t="media/cover_t.mp4" data-win="0.25,0.440625" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.8:1,1:1" data-mx="47%"></div>
 
   <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
     <div class="panels">
@@ -168,7 +169,7 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach</span><span lang="ru">Павел Бах</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
-        <img class="ice-logo" src="media/ice_logo.webp?v=26" srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w, media/ice_logo_l.webp 1600w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" fetchpriority="high" alt="">
+        <img class="ice-logo" src="media/ice_logo.webp?v=27" srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" fetchpriority="high" alt="">
         <i class="ice-shine"></i>
         <i class="glint" style="--gx:14%;--gy:38%;--gd:0s"></i>
         <i class="glint" style="--gx:37%;--gy:62%;--gd:.9s"></i>
@@ -332,6 +333,6 @@
 
 <div id="scrollSpace" aria-hidden="true"></div>
 
-<script type="module" src="js/main.js?v=26"></script>
+<script type="module" src="js/main.js?v=27"></script>
 </body>
 </html>
