@@ -162,7 +162,7 @@ const SAVE = !!NET.saveData || /(^|-)2g$/.test(NET.effectiveType || '');
 const SLOW = 600000;  // меньше 600 КБ/с (~5 Мбит/с): по одному ролику, приоритет сцене на экране
 const LITE = 350000;  // меньше 350 КБ/с (~2,8 Мбит/с): лёгкие копии
 const forcedNet = (location.search.match(/[?&]net=(slow|fast)/) || [])[1]; // для проверки: ?net=slow — вести себя как на медленной сети
-let netBps = 0, netGuessed = false, netBytes = 0; // оценка скорости (байт/с); байты всех роликов (для замера при параллельной загрузке)
+let netBps = 0, netGuessed = false; // оценка скорости сети, байт/с
 let focusSrc = null; // медленная сеть: ролик сцены на экране, которому отдана вся полоса (см. stock)
 function netGuess() { // до первого ролика: с какой скоростью пришли картинка первого экрана, шрифты и скрипты
   let best = 0;
@@ -180,27 +180,27 @@ const slowNet = () => { ensureNet(); return forcedNet ? forcedNet === 'slow' : n
 const liteNet = () => { ensureNet(); return forcedNet ? forcedNet === 'slow' : netBps > 0 && netBps < LITE; };
 let hiPending = false; // медленная сеть: большая картинка надписи (700 КБ) ждёт, пока скачаются ролики
 const clipFile = (src, codec, lite) => { const s = lite ? src.replace(/\.mp4$/, '_l.mp4') : src; return codec === 'h264' ? s : s.replace(/\.mp4$/, `.${codec}.mp4`); };
-async function readBlob(r, onChunk) { // ответ сервера → Blob, по пути считая пришедшие байты
-  if (!r.ok) throw Object.assign(new Error(String(r.status)), { http: r.status });
-  if (!r.body || !r.body.getReader) { const b = await r.blob(); onChunk(b.size); return b; }
-  const rd = r.body.getReader(), parts = [];
-  for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); onChunk(value.length); }
-  return new Blob(parts, { type: 'video/mp4' });
-}
+// Ролик скачивает сам браузер (r.blob()), а не скрипт по кусочкам: на слабом телефоне, когда страница занята, загрузка не притормаживает.
+const toBlob = (r) => { if (!r.ok) throw Object.assign(new Error(String(r.status)), { http: r.status }); return r.blob(); };
+const inFlight = new Set(); // загрузки роликов, идущие сейчас: если их две, каждая получает половину полосы
 function fetchClip(src, done) {
   const c = clips[src], codec = wantCodec(), lite = !c.noLite && liteNet();
-  const id = (c.fid = (c.fid || 0) + 1), t0 = performance.now(), b0 = netBytes;
+  const id = (c.fid = (c.fid || 0) + 1), rec = { t0: performance.now(), multi: inFlight.size > 0 };
+  inFlight.forEach((x) => { x.multi = true; });
+  inFlight.add(rec);
   c.state = 'loading';
   c.ctl = window.AbortController ? new AbortController() : null;
   fetch(V(clipFile(src, codec, lite)), c.ctl ? { signal: c.ctl.signal } : {})
-    .then((r) => readBlob(r, (n) => { netBytes += n; }))
+    .then(toBlob)
     .then((b) => {
+      inFlight.delete(rec);
       if (c.fid !== id) return; // эту загрузку прервали и начали заново
-      const s = (performance.now() - t0) / 1000, got = netBytes - b0;
-      if (got > 100000 && s > 0.03) netBps = netBps ? netBps * 0.4 + (got / s) * 0.6 : got / s; // всё, что пришло за это время, — и по соседней загрузке тоже
+      const s = (performance.now() - rec.t0) / 1000;
+      if (b.size > 100000 && s > 0.03) { const v = (b.size / s) * (rec.multi ? 2 : 1); netBps = netBps ? netBps * 0.4 + v * 0.6 : v; }
       c.blob = b; c.url = URL.createObjectURL(b); c.codec = codec; c.lite = lite; c.state = 'ready'; c.fails = 0;
     })
     .catch((e) => {
+      inFlight.delete(rec);
       if (c.fid !== id) return;
       if (lite && e.http) { c.noLite = true; c.state = 'idle'; return; } // лёгкой копии нет — берём полную
       c.fails = (c.fails || 0) + 1;
@@ -230,7 +230,7 @@ function upgradeOne() { // всё лёгкое скачано и сеть сво
     if (c.state !== 'ready' || !c.lite || c.upTried || inUse(src)) continue;
     c.upTried = true; fetching++;
     const codec = wantCodec();
-    fetch(V(clipFile(src, codec, false))).then((r) => readBlob(r, () => {})).then((b) => {
+    fetch(V(clipFile(src, codec, false))).then(toBlob).then((b) => {
       if (inUse(src) || c.state !== 'ready') { c.upTried = false; return; } // сцена успела подойти — попробуем позже
       URL.revokeObjectURL(c.url); c.blob = b; c.url = URL.createObjectURL(b); c.codec = codec; c.lite = false;
     }).catch(() => { /* останется лёгкий */ }).then(() => { fetching--; pump(); });
@@ -543,8 +543,12 @@ function stock() { // что держать наготове: ролики и к
   }
   focusSrc = focus && slowNet() ? focus.src : null;
   if (focusSrc) for (const src in clips) if (!near.has(src)) dropFetch(clips[src]);
-  const idle = fetching === 0 && !SAVE && bgOk && performance.now() > BG_AFTER;
   pump();
+  // «Сеть свободна» — только когда все ролики скачаны (или не скачались совсем). Раньше это считалось по счётчику очереди, и в паузе между двумя
+  // роликами сайт разом запускал картинки всех будущих сцен (около 1,3 МБ) — они и отнимали сеть у ролика, который нужен прямо сейчас.
+  let busy = inFlight.size > 0 || fetching > 0;
+  if (!busy) for (const src in clips) { const st = clips[src].state; if (st === 'idle' || st === 'loading' || st === 'wait') { busy = true; break; } }
+  const idle = !busy && !SAVE && bgOk && performance.now() > BG_AFTER;
   if (!mapAsked && (idle || cur > SCENES[byId.tv].start - 3)) { // за три экрана до телевизоров (или когда сеть свободна): превью в экранах, логотипы клиентов, карта мира
     mapAsked = true; askMap();
     document.querySelectorAll('img[data-lz]').forEach((im) => { im.src = V(im.dataset.lz); });
