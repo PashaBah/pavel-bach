@@ -70,7 +70,11 @@ async function notifyTelegram(env, c) {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ chat_id: env.TG_CHAT, text: telegramText(c), parse_mode: 'HTML', disable_web_page_preview: true }),
   });
-  if (!r.ok) throw new Error(`telegram_${r.status}`);
+  if (!r.ok) {
+    // причина отказа от Telegram (например «chat not found», «Unauthorized») — без ключа; видна в ответе формы и в логах Cloudflare
+    let why = ''; try { why = String((await r.json()).description || '').slice(0, 120); } catch (e) { /* не JSON */ }
+    throw new Error(`telegram_${r.status}${why ? ': ' + why : ''}`);
+  }
 }
 async function notifyMail(env, c) {
   if (!env.RESEND_KEY || !env.MAIL_TO || !env.MAIL_FROM) return 'skipped';
@@ -127,7 +131,7 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, error: 'store_failed' }, 502);
   }
   // 2) уведомить
-  try { await notifyTelegram(env, card); } catch (e) { return json({ ok: false, error: 'notify_failed' }, 502); }
+  try { await notifyTelegram(env, card); } catch (e) { console.log('notify_failed', e.message); return json({ ok: false, error: 'notify_failed', why: String(e.message).slice(0, 160) }, 502); }
   card.notified = new Date().toISOString();
   card.mail = await notifyMail(env, card).catch(() => 'error');
   if (env.LEADS) await env.LEADS.put(key, JSON.stringify(card));
