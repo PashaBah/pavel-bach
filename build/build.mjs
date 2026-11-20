@@ -80,8 +80,8 @@ function typo(h, lang) {
     ? '[А-Яа-яЁё]{1,2}|[Дд]ля|[Бб]ез|[Пп]ри|[Пп]ро|[Пп]од|[Нн]ад|[Ии]ли|[Кк]ак|[Чч]то|[Чч]ем|[Вв]се|[Вв]ся|[Ее]го|[Ее]ё|[Ээ]то|[Уу]же|[Ее]щё'
     : 'a|an|the|of|at|in|on|to|by|or|and|for|its|his|her|our|is|as|it|we|he|so|no|be|my|up|if|I|A|An|The|Of|At|In|On|To|By|Or|And|For|It|We|He|So|No|If|Is|As';
   const short = new RegExp(`(?<=^|[ \\t\\n(«„“"'\u00a0])(${W})[ \\t\\n]+(?=\\S)`, 'gu');
-  // диапазоны чисел — коротким дефисом (разбор Аси): «20-40» не рвётся на конце строки, а «20–» с тире повисало
-  const fix = (t) => t.replace(/(\d)–(\d)/g, '$1-$2').replace(short, `$1${NB}`)
+  // диапазоны чисел — коротким дефисом (разбор Аси), вокруг него «склейка» U+2060: Chrome иначе переносил строку после «2-»
+  const fix = (t) => t.replace(/(\d)[–-](\d)/g, '$1\u2060-\u2060$2').replace(short, `$1${NB}`)
     .replace(/(\d)[ \t\n]+(?=[A-Za-zА-Яа-яЁё×–\d])/g, `$1${NB}`)
     .replace(/[ \t\n]+([—–])[ \t\n]/g, `${NB}$1 `)
     .replace(/×[ \t\n]+/g, `×${NB}`);
@@ -129,7 +129,7 @@ function jsonld(lang, faq) {
       jobTitle: ru ? ['Иллюзионист', 'Комедийный фокусник'] : ['Illusionist', 'Comedy magician'],
       description: META[lang].description, image: `${ORIGIN}/media/og.jpg`, url: pageUrl(lang),
       sameAs: [cfg.instagram],
-      award: ru ? 'Чемпион России по иллюзионному искусству' : 'National Champion of Russia in the art of illusion',
+      award: ru ? 'Чемпион России по иллюзионному искусству' : 'National Champion in the art of illusion',
       homeLocation: { '@type': 'Place', name: 'Barcelona' },
       knowsLanguage: ['en', 'ru'],
     },

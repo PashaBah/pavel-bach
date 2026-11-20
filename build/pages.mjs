@@ -13,7 +13,7 @@ export const PAGES = {
       body: `
 <p class="pg-date">Last updated: ${UPDATED.en}</p>
 <h2>Who is responsible</h2>
-<p>${TODO('Full legal name')} (Pavel Bach), ${TODO('NIF')}, ${TODO('address')}, e-mail ${TODO('booking e-mail')}.</p>
+<p>Pavel Bakhadov (Pavel Bach), Z2328844F, Bergnes de las Casas 3, ${TODO('postcode, city')}, e-mail pavelbah.magic@gmail.com.</p>
 <h2>What we collect</h2>
 <p>When you send a booking request: your name, a contact (WhatsApp, phone or e-mail), the event date or “not sure yet”, the city and country, the type of event and, if you add them, the number of guests and a comment.</p>
 <p>Together with the request we store: the page language, the ad tags in the link you came from (utm_source, utm_medium, utm_campaign, utm_content, utm_term), the ChatGPT ad identifier (oppref) if the link had one, the website you came from, the time, and a random request number.</p>
@@ -21,8 +21,8 @@ export const PAGES = {
 <p>To reply to your request and arrange the performance — steps taken at your request before a contract (GDPR, Art. 6(1)(b)). The ad tags show which advertising brings requests (legitimate interest, Art. 6(1)(f)). Advertising measurement in your browser runs only with your consent where the law requires it (Art. 6(1)(a)); see the <a href="../cookies/">cookie policy</a>.</p>
 <h2>Where the data goes</h2>
 <ul>
-<li>Requests are stored in ${TODO('CRM / register chosen by Pavel')}.</li>
-<li>Pavel gets a notification in Telegram (Telegram Messenger) and by e-mail through ${TODO('e-mail provider, e.g. Resend')}.</li>
+<li>Requests are stored in the request register of the site’s hosting (Cloudflare) and in a private Telegram chat.</li>
+<li>Pavel gets a notification in Telegram (Telegram Messenger).</li>
 <li>The site is hosted by Cloudflare.</li>
 <li>Advertising measurement: Meta Pixel (Meta Platforms Ireland Ltd.) and the ChatGPT Ads Measurement Pixel (OpenAI). They receive no name, phone number, e-mail or text from your request — only the visit, a tap on WhatsApp or Telegram, or the fact that a request was recorded, with its random number.</li>
 <li>If you write on WhatsApp or Telegram, their own privacy terms apply.</li>
@@ -32,7 +32,7 @@ export const PAGES = {
 <h2>Transfers outside the EU</h2>
 <p>Meta, OpenAI, Cloudflare and Telegram may process data outside the European Economic Area. Such transfers rely on the EU–US Data Privacy Framework where the provider is certified, or on the European Commission’s Standard Contractual Clauses.</p>
 <h2>Your rights</h2>
-<p>You can ask for access to your data, its correction or deletion, restrict or object to its use, ask for a copy, and withdraw consent at any time (“Cookie settings” at the bottom of the main page). Write to ${TODO('booking e-mail')}. You can also complain to the Spanish Data Protection Agency (AEPD, aepd.es).</p>`,
+<p>You can ask for access to your data, its correction or deletion, restrict or object to its use, ask for a copy, and withdraw consent at any time (“Cookie settings” at the bottom of the main page). Write to pavelbah.magic@gmail.com. You can also complain to the Spanish Data Protection Agency (AEPD, aepd.es).</p>`,
     },
     ru: {
       title: 'Политика конфиденциальности — Павел Бах',
@@ -41,7 +41,7 @@ export const PAGES = {
       body: `
 <p class="pg-date">Обновлено: ${UPDATED.ru}</p>
 <h2>Кто отвечает за данные</h2>
-<p>${TODO('полное имя')} (Pavel Bach), ${TODO('NIF')}, ${TODO('адрес')}, e-mail ${TODO('рабочая почта')}.</p>
+<p>Pavel Bakhadov (Pavel Bach), Z2328844F, Bergnes de las Casas 3, ${TODO('индекс, город')}, e-mail pavelbah.magic@gmail.com.</p>
 <h2>Что мы собираем</h2>
 <p>Когда вы отправляете заявку: имя, контакт (WhatsApp, телефон или e-mail), дату события или «пока не знаю», город и страну, тип события и, если вы их указали, число гостей и комментарий.</p>
 <p>Вместе с заявкой сохраняются: язык страницы, рекламные метки ссылки, по которой вы пришли (utm_source, utm_medium, utm_campaign, utm_content, utm_term), идентификатор рекламы в ChatGPT (oppref), если он был в ссылке, сайт, с которого вы перешли, время и случайный номер заявки.</p>
@@ -49,8 +49,8 @@ export const PAGES = {
 <p>Чтобы ответить на заявку и договориться о выступлении — действия по вашему запросу до заключения договора (GDPR, ст. 6(1)(b)). Метки показывают, какая реклама приносит заявки (законный интерес, ст. 6(1)(f)). Измерение рекламы в браузере работает только с вашего согласия там, где этого требует закон (ст. 6(1)(a)); см. <a href="../cookies/">политику cookies</a>.</p>
 <h2>Куда уходят данные</h2>
 <ul>
-<li>Заявки хранятся в ${TODO('CRM / реестр, который выберет Паша')}.</li>
-<li>Павел получает уведомление в Telegram (Telegram Messenger) и на почту через ${TODO('почтовый сервис, например Resend')}.</li>
+<li>Заявки хранятся в реестре заявок хостинга сайта (Cloudflare) и в закрытом чате Telegram.</li>
+<li>Павел получает уведомление в Telegram (Telegram Messenger).</li>
 <li>Сайт размещён на Cloudflare.</li>
 <li>Измерение рекламы: пиксель Meta (Meta Platforms Ireland Ltd.) и пиксель ChatGPT Ads (OpenAI). Они не получают имя, телефон, e-mail и текст заявки — только факт посещения, нажатия на WhatsApp или Telegram или записи заявки с её случайным номером.</li>
 <li>Если вы пишете в WhatsApp или Telegram, действуют их собственные правила конфиденциальности.</li>
@@ -60,7 +60,7 @@ export const PAGES = {
 <h2>Передача за пределы ЕС</h2>
 <p>Meta, OpenAI, Cloudflare и Telegram могут обрабатывать данные за пределами Европейской экономической зоны. Такая передача опирается на EU–US Data Privacy Framework, если поставщик в нём сертифицирован, или на стандартные договорные условия Еврокомиссии.</p>
 <h2>Ваши права</h2>
-<p>Вы можете запросить доступ к своим данным, исправление или удаление, ограничить их использование или возразить против него, получить копию и в любой момент отозвать согласие («Настройки cookies» внизу главной страницы). Пишите на ${TODO('рабочая почта')}. Жалобу можно подать в испанское агентство по защите данных (AEPD, aepd.es).</p>`,
+<p>Вы можете запросить доступ к своим данным, исправление или удаление, ограничить их использование или возразить против него, получить копию и в любой момент отозвать согласие («Настройки cookies» внизу главной страницы). Пишите на pavelbah.magic@gmail.com. Жалобу можно подать в испанское агентство по защите данных (AEPD, aepd.es).</p>`,
     },
   },
   cookies: {
@@ -80,7 +80,7 @@ export const PAGES = {
 <tr><td>__oppref</td><td>OpenAI (ChatGPT Ads Measurement Pixel)</td><td>the ChatGPT ad you came from</td><td>30 days</td><td>advertising</td></tr>
 <tr><td>__obref</td><td>OpenAI (ChatGPT Ads Measurement Pixel)</td><td>random browser reference for ad measurement</td><td>365 days</td><td>advertising</td></tr>
 </tbody></table></div>
-<p>Visit statistics: ${TODO('Cloudflare Web Analytics or Plausible')} — works without cookies.</p>
+<p>Visit statistics: Cloudflare Web Analytics — works without cookies.</p>
 <p>Videos: the showreels play from Cloudinary. The America’s Got Talent video plays from YouTube in privacy-enhanced mode and loads only after you press play; YouTube may then set its own cookies.</p>
 <p>You can also delete cookies in your browser settings. More on how your data is handled — in the <a href="../privacy/">privacy policy</a>.</p>`,
     },
@@ -100,7 +100,7 @@ export const PAGES = {
 <tr><td>__oppref</td><td>OpenAI (пиксель ChatGPT Ads)</td><td>из какой рекламы в ChatGPT вы пришли</td><td>30 дней</td><td>реклама</td></tr>
 <tr><td>__obref</td><td>OpenAI (пиксель ChatGPT Ads)</td><td>случайный номер браузера для измерения рекламы</td><td>365 дней</td><td>реклама</td></tr>
 </tbody></table></div>
-<p>Статистика посещений: ${TODO('Cloudflare Web Analytics или Plausible')} — работает без cookies.</p>
+<p>Статистика посещений: Cloudflare Web Analytics — работает без cookies.</p>
 <p>Видео: шоурилы идут с Cloudinary. Ролик America’s Got Talent идёт с YouTube в режиме повышенной конфиденциальности и загружается только после нажатия на play; после этого YouTube может поставить свои cookies.</p>
 <p>Cookies можно удалить и в настройках браузера. Подробнее о данных — в <a href="../privacy/">политике конфиденциальности</a>.</p>`,
     },
@@ -114,10 +114,10 @@ export const PAGES = {
 <p class="pg-date">Last updated: ${UPDATED.en}</p>
 <p>Information under Spanish Law 34/2002 on information society services (LSSI-CE).</p>
 <ul>
-<li>Owner: ${TODO('full legal name')} (stage name Pavel Bach), self-employed (autónomo)</li>
-<li>NIF: ${TODO('NIF')}</li>
-<li>Address: ${TODO('address')}</li>
-<li>E-mail: ${TODO('booking e-mail')}</li>
+<li>Owner: Pavel Bakhadov (stage name Pavel Bach), self-employed (autónomo)</li>
+<li>NIF: Z2328844F</li>
+<li>Address: Bergnes de las Casas 3, ${TODO('postcode, city')}</li>
+<li>E-mail: pavelbah.magic@gmail.com</li>
 <li>Activity: magic and illusion performances for private and corporate events</li>
 </ul>
 <h2>Content</h2>
@@ -135,10 +135,10 @@ export const PAGES = {
 <p class="pg-date">Обновлено: ${UPDATED.ru}</p>
 <p>Сведения по испанскому закону 34/2002 об услугах информационного общества (LSSI-CE).</p>
 <ul>
-<li>Владелец: ${TODO('полное имя')} (сценическое имя Pavel Bach), автономо</li>
-<li>NIF: ${TODO('NIF')}</li>
-<li>Адрес: ${TODO('адрес')}</li>
-<li>E-mail: ${TODO('рабочая почта')}</li>
+<li>Владелец: Pavel Bakhadov (сценическое имя Pavel Bach), автономо</li>
+<li>NIF: Z2328844F</li>
+<li>Адрес: Bergnes de las Casas 3, ${TODO('индекс, город')}</li>
+<li>E-mail: pavelbah.magic@gmail.com</li>
 <li>Деятельность: выступления с фокусами и иллюзиями на частных и корпоративных событиях</li>
 </ul>
 <h2>Материалы</h2>

@@ -1,0 +1,9 @@
+Brahms Gotisch Cyr, version 1.001
+Designer: Sasha Pavljenko (t.me/designside)
+Source: https://www.fonts.uprock.ru/fonts/brahms-gotisch-cyrillic
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The license text is available at https://openfontlicense.org/open-font-license-official-text/
+
+brahms-gotisch-cyr.woff2 is the original OpenType file (BrahmsGotischCyr.otf) repacked to WOFF2
+without any change to its tables (glyphs, metrics and names are byte-for-byte the same).
