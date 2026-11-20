@@ -12,11 +12,11 @@
 <link rel="preload" as="image" href="media/hero.webp" media="(min-aspect-ratio: 3/4)" fetchpriority="high">
 <link rel="preload" as="image" href="media/hero_t.webp" media="(max-aspect-ratio: 3/4)" fetchpriority="high">
 <!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css). Заранее грузим два файла первого экрана своего языка
-     (EN: Jost и готика Pirata One; RU: Jost и Monomakh с кириллицей). Надпись PAVEL BACH грузится с низким приоритетом: сначала главная картинка (LCP). -->
+     (EN: Jost и готика Pirata One; RU: Jost и Tinos с кириллицей). Надпись PAVEL BACH грузится с низким приоритетом: сначала главная картинка (LCP). -->
 <link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/jost-latin.woff2" crossorigin>
 <link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/pirata-one-400-latin.woff2" crossorigin>
 <link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/jost-cyrillic.woff2" crossorigin>
-<link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/monomakh-400-cyrillic.woff2" crossorigin>
+<link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/tinos-400-cyrillic.woff2" crossorigin>
 <!--@boot-->
 <link rel="stylesheet" href="css/style.css?v=29">
 </head>
@@ -103,7 +103,7 @@
   <div class="shot phonk geo" data-scenes="geo" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
   <!-- отзывы: одна организаторка шепчет другой на ухо (клип перематывается скроллом); от них к зрителю спиралью летят карты (.deck внутри кадра,
        под той же плёночной обработкой, что и съёмка) -->
-  <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-src-t="media/girls_t.mp4" data-win="0.109375,0.440625" data-tr="wash" data-fade="0.22" data-mx="33%">
+  <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-tr="wash" data-fade="0.22" data-mx="33%">
     <div class="deck" id="deck">
       <article class="rcard"><span class="pip">A<i>♠</i></span><p><span lang="en">“Last year we booked Pavel seven times — and we are already planning to book him again. His performance is consistently one of the highlights of our events.”</span><span lang="ru">«За прошлый год мы приглашали Павла семь раз и уже планируем следующие события. Его выступление неизменно становится одним из главных моментов вечера».</span></p><footer><b>Justin Joy Events</b><span lang="en">Cyprus</span><span lang="ru">Кипр</span></footer><span class="pip btm">A<i>♠</i></span></article>
       <article class="rcard red"><span class="pip">K<i>♥</i></span><p><span lang="en">“The humor is genuinely funny, his presence confident and charismatic, and the show works equally well for a very demanding audience.”</span><span lang="ru">«Юмор по-настоящему смешной, подача уверенная и харизматичная, а шоу одинаково хорошо работает и на очень требовательную публику».</span></p><footer><b>Elegant Moment Events</b><span lang="en">Dubai</span><span lang="ru">Дубай</span></footer><span class="pip btm">K<i>♥</i></span></article>

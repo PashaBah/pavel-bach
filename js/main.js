@@ -1225,7 +1225,18 @@ function frame(now, snap) {
       if (sh.src) flipbook(sh, p);
       if (sh.video && !sh.live && sh.video.readyState < 2 && now - (sh.video._kick || 0) > 1500) { sh.video._kick = now; if (!blocked) prime(sh.video); }
       if (sh.mx2 !== null) { // вертикальный экран: кадр едет от героя к тому, на что он показывает
-        const m = sh.mx + (sh.mx2 - sh.mx) * smooth((p - sh.pan[0]) / (sh.pan[1] - sh.pan[0]));
+        let m = sh.mx + (sh.mx2 - sh.mx) * smooth((p - sh.pan[0]) / (sh.pan[1] - sh.pan[0]));
+        if (sh === geoShot && geo.pos) { // 34-я редакция: на карте камера идёт за самолётом — он и нарисованный маршрут всегда в кадре
+          const fx = geo.pos.x / 1600; // ширина карты в её координатах (viewBox в media/map.svg)
+          if (!geo.free) sh.follow = sh.follow === undefined ? fx : sh.follow + (fx - sh.follow) * 0.12; // зритель ведёт самолёт сам — камера стоит
+          if (sh.follow !== undefined) m = sh.follow;
+          if (TALL && !geo.free) { // внизу карты (Кипр, Дубай) самолёт уходил под подложку текста: карта приподнимается, и он остаётся над текстом
+            const lift = clamp(geo.pos.y / 900 - 0.44, 0, 0.14);
+            sh.lift = sh.lift === undefined ? lift : sh.lift + (lift - sh.lift) * 0.12;
+            const px = Math.round(sh.lift * sh.h);
+            if (px !== sh.liftPx) { sh.liftPx = px; $('#geoMap').style.transform = px ? `translate3d(0, ${-px}px, 0)` : ''; }
+          }
+        }
         if (Math.abs(m - sh.mxNow) > 0.0005) { sh.mxNow = m; shiftTo(sh, m); if (sh.fit) sh.fit.e = -1; }
       }
       if (sh.fit) { // камера доехала — кадр подъезжает к телевизорам
