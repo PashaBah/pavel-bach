@@ -200,7 +200,10 @@ ${robots}<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 ${jsonld(lang, faq)}`;
   h = h.replace('<!--@meta-->', meta).replace('<!--@boot-->', boot(lang));
-  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}">`);
+  // русская готика (купленный шрифт): включается, только если файл лежит в fonts/ — см. конец css/style.css
+  const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/moyenage-condensed-bold.woff2'));
+  if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/moyenage-condensed-bold.woff2"');
+  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${ruGoth ? ' data-rugoth="moyenage"' : ''}>`);
   h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
   h = typo(paths(stripComments(h), root), lang);
   h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);

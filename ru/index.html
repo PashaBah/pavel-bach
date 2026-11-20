@@ -1746,7 +1746,22 @@ html[data-lang="ru"] main .chapter[data-scene] .tag, html[data-lang="ru"] .roll 
   filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 26px rgba(255, 40, 80, .45));
 }
 html[data-lang="ru"] main .chapter[data-scene] .tag, html[data-lang="ru"] .roll .tag { text-transform: uppercase; letter-spacing: .02em; line-height: 1.05; }
-@media (max-width: 760px) { html[data-lang="ru"] main .chapter.booking h2.finale{font-size: min(24px,calc((100vw - 2 * var(--gutter,24px)) / 13.6))}}.roll{padding-bottom: calc(var(--foot) + 60px + env(safe-area-inset-bottom,0px))}</style>
+@media (max-width: 760px) { html[data-lang="ru"] main .chapter.booking h2.finale { font-size: min(24px, calc((100vw - 2 * var(--gutter, 24px)) / 13.6)); } }
+
+.roll { padding-bottom: calc(var(--foot) + 60px + env(safe-area-inset-bottom, 0px)); }
+
+
+@font-face { font-family: "Moyenage Condensed"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/moyenage-condensed-bold.woff2?v=34) format("woff2"); }
+html[data-lang="ru"][data-rugoth="moyenage"] { --gothic: "Moyenage Condensed", "Times New Roman", serif; --gothic-w: 400; --t-tag: clamp(40px, 4.2vw, 66px); --t-lede: clamp(26px, 3vw, 48px); }
+@media (max-width: 760px) { html[data-lang="ru"][data-rugoth="moyenage"] { --t-tag: 40px; --t-lede: 27px; } }
+html[data-lang="ru"][data-rugoth="moyenage"] main .chapter[data-scene] .tag, html[data-lang="ru"][data-rugoth="moyenage"] .roll .tag,
+html[data-lang="ru"][data-rugoth="moyenage"] main .chapter.cover .lede, html[data-lang="ru"][data-rugoth="moyenage"] main .chapter.booking h2.finale {
+  text-transform: none; letter-spacing: .01em; line-height: 1.02;
+  background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 1px #000) drop-shadow(0 0 26px rgba(255, 40, 80, .5));
+}
+html[data-lang="ru"][data-rugoth="moyenage"] main .chapter.booking h2.finale { font-size: clamp(30px, 3.6vw, 58px); }
+@media (max-width: 760px) { html[data-lang="ru"][data-rugoth="moyenage"] main .chapter.booking h2.finale{font-size: min(31px,calc((100vw - 2 * var(--gutter,24px)) / 11.6))}}</style>
 </head>
 <body>
 
