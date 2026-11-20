@@ -13,7 +13,7 @@ export const PAGES = {
       body: `
 <p class="pg-date">Last updated: ${UPDATED.en}</p>
 <h2>Who is responsible</h2>
-<p>Pavel Bakhadov (Pavel Bach), Z2328844F, Bergnes de las Casas 3, ${TODO('postcode, city')}, e-mail pavelbah.magic@gmail.com.</p>
+<p>Pavel Bakhadov (Pavel Bach), Z2328844F, Bergnes de las Casas 3, 08025 Barcelona, e-mail pavelbah.magic@gmail.com.</p>
 <h2>What we collect</h2>
 <p>When you send a booking request: your name, a contact (WhatsApp, phone or e-mail), the event date or “not sure yet”, the city and country, the type of event and, if you add them, the number of guests and a comment.</p>
 <p>Together with the request we store: the page language, the ad tags in the link you came from (utm_source, utm_medium, utm_campaign, utm_content, utm_term), the ChatGPT ad identifier (oppref) if the link had one, the website you came from, the time, and a random request number.</p>
@@ -41,7 +41,7 @@ export const PAGES = {
       body: `
 <p class="pg-date">Обновлено: ${UPDATED.ru}</p>
 <h2>Кто отвечает за данные</h2>
-<p>Pavel Bakhadov (Pavel Bach), Z2328844F, Bergnes de las Casas 3, ${TODO('индекс, город')}, e-mail pavelbah.magic@gmail.com.</p>
+<p>Pavel Bakhadov (Pavel Bach), Z2328844F, Bergnes de las Casas 3, 08025 Barcelona, e-mail pavelbah.magic@gmail.com.</p>
 <h2>Что мы собираем</h2>
 <p>Когда вы отправляете заявку: имя, контакт (WhatsApp, телефон или e-mail), дату события или «пока не знаю», город и страну, тип события и, если вы их указали, число гостей и комментарий.</p>
 <p>Вместе с заявкой сохраняются: язык страницы, рекламные метки ссылки, по которой вы пришли (utm_source, utm_medium, utm_campaign, utm_content, utm_term), идентификатор рекламы в ChatGPT (oppref), если он был в ссылке, сайт, с которого вы перешли, время и случайный номер заявки.</p>
@@ -116,7 +116,7 @@ export const PAGES = {
 <ul>
 <li>Owner: Pavel Bakhadov (stage name Pavel Bach), self-employed (autónomo)</li>
 <li>NIF: Z2328844F</li>
-<li>Address: Bergnes de las Casas 3, ${TODO('postcode, city')}</li>
+<li>Address: Bergnes de las Casas 3, 08025 Barcelona</li>
 <li>E-mail: pavelbah.magic@gmail.com</li>
 <li>Activity: magic and illusion performances for private and corporate events</li>
 </ul>
@@ -137,7 +137,7 @@ export const PAGES = {
 <ul>
 <li>Владелец: Pavel Bakhadov (сценическое имя Pavel Bach), автономо</li>
 <li>NIF: Z2328844F</li>
-<li>Адрес: Bergnes de las Casas 3, ${TODO('индекс, город')}</li>
+<li>Адрес: Bergnes de las Casas 3, 08025 Barcelona</li>
 <li>E-mail: pavelbah.magic@gmail.com</li>
 <li>Деятельность: выступления с фокусами и иллюзиями на частных и корпоративных событиях</li>
 </ul>
