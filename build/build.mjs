@@ -77,10 +77,11 @@ const NB = ' ';
 function typo(h, lang) {
   // предлоги, союзы, частицы: по-русски все слова из 1–2 букв и короткие служебные; по-английски — служебные слова
   const W = lang === 'ru'
-    ? '[А-Яа-яЁё]{1,2}|для|без|при|про|под|над|или|как|что|чем|все|вся|его|её|это|уже|ещё'
+    ? '[А-Яа-яЁё]{1,2}|[Дд]ля|[Бб]ез|[Пп]ри|[Пп]ро|[Пп]од|[Нн]ад|[Ии]ли|[Кк]ак|[Чч]то|[Чч]ем|[Вв]се|[Вв]ся|[Ее]го|[Ее]ё|[Ээ]то|[Уу]же|[Ее]щё'
     : 'a|an|the|of|at|in|on|to|by|or|and|for|its|his|her|our|is|as|it|we|he|so|no|be|my|up|if|I|A|An|The|Of|At|In|On|To|By|Or|And|For|It|We|He|So|No|If|Is|As';
   const short = new RegExp(`(?<=^|[ \\t\\n(«„“"'\u00a0])(${W})[ \\t\\n]+(?=\\S)`, 'gu');
-  const fix = (t) => t.replace(short, `$1${NB}`)
+  // диапазоны чисел — коротким дефисом (разбор Аси): «20-40» не рвётся на конце строки, а «20–» с тире повисало
+  const fix = (t) => t.replace(/(\d)–(\d)/g, '$1-$2').replace(short, `$1${NB}`)
     .replace(/(\d)[ \t\n]+(?=[A-Za-zА-Яа-яЁё×–\d])/g, `$1${NB}`)
     .replace(/[ \t\n]+([—–])[ \t\n]/g, `${NB}$1 `)
     .replace(/×[ \t\n]+/g, `×${NB}`);
@@ -201,9 +202,9 @@ ${robots}<meta property="og:type" content="website">
 ${jsonld(lang, faq)}`;
   h = h.replace('<!--@meta-->', meta).replace('<!--@boot-->', boot(lang));
   // русская готика (купленный шрифт): включается, только если файл лежит в fonts/ — см. конец css/style.css
-  const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/moyenage-condensed-bold.woff2'));
-  if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/moyenage-condensed-bold.woff2"');
-  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${ruGoth ? ' data-rugoth="moyenage"' : ''}>`);
+  const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/brahms-gotisch-cyr.woff2'));
+  if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/brahms-gotisch-cyr.woff2"');
+  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${ruGoth ? ' data-rugoth="brahms"' : ''}>`);
   h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
   h = typo(paths(stripComments(h), root), lang);
   h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
