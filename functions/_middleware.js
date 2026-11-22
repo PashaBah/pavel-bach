@@ -11,7 +11,7 @@ export async function onRequest(ctx) {
   const res = await ctx.next();
   const url = new URL(ctx.request.url);
   const type = res.headers.get('content-type') || '';
-  const prodHost = ctx.env.PROD_HOST; // боевой домен без www, например pavelbach.com (переменная окружения)
+  const prodHost = ctx.env.PROD_HOST || 'pavelbach.com'; // боевой домен без www; переменная окружения PROD_HOST может его заменить
   const isProd = prodHost && (url.hostname === prodHost || url.hostname === `www.${prodHost}`);
   if (!type.includes('text/html')) {
     if (isProd) return res;

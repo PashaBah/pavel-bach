@@ -2,7 +2,7 @@
 // ЧЕРНОВИКИ: перечислено только то, что стоит или встанет на сайт по ТЗ. Места, которые решает Паша, помечены <mark>[…]</mark>.
 // Перед запуском — показать гестору или юристу (ТЗ, раздел «Юридические страницы»).
 const TODO = (s) => `<mark>[${s}]</mark>`;
-const UPDATED = { en: '19 November 2026 (draft)', ru: '19 ноября 2026 (черновик)' };
+const UPDATED = { en: '22 November 2026', ru: '22 ноября 2026' };
 
 export const PAGES = {
   privacy: {
@@ -28,7 +28,7 @@ export const PAGES = {
 <li>If you write on WhatsApp or Telegram, their own privacy terms apply.</li>
 </ul>
 <h2>How long</h2>
-<p>Requests are kept for ${TODO('period, e.g. 24 months after the last contact')}, unless a booking requires longer storage by law (invoices, taxes). Cookies — see the <a href="../cookies/">cookie policy</a>.</p>
+<p>Requests are kept for 24 months after the last contact, unless a booking requires longer storage by law (invoices, taxes). Cookies — see the <a href="../cookies/">cookie policy</a>.</p>
 <h2>Transfers outside the EU</h2>
 <p>Meta, OpenAI, Cloudflare and Telegram may process data outside the European Economic Area. Such transfers rely on the EU–US Data Privacy Framework where the provider is certified, or on the European Commission’s Standard Contractual Clauses.</p>
 <h2>Your rights</h2>
@@ -56,7 +56,7 @@ export const PAGES = {
 <li>Если вы пишете в WhatsApp или Telegram, действуют их собственные правила конфиденциальности.</li>
 </ul>
 <h2>Сколько хранятся</h2>
-<p>Заявки хранятся ${TODO('срок, например 24 месяца после последнего контакта')}, если бронь не требует хранить дольше по закону (счета, налоги). Cookies — см. <a href="../cookies/">политику cookies</a>.</p>
+<p>Заявки хранятся 24 месяца после последнего контакта, если бронь не требует хранить дольше по закону (счета, налоги). Cookies — см. <a href="../cookies/">политику cookies</a>.</p>
 <h2>Передача за пределы ЕС</h2>
 <p>Meta, OpenAI, Cloudflare и Telegram могут обрабатывать данные за пределами Европейской экономической зоны. Такая передача опирается на EU–US Data Privacy Framework, если поставщик в нём сертифицирован, или на стандартные договорные условия Еврокомиссии.</p>
 <h2>Ваши права</h2>
