@@ -7,7 +7,7 @@
     "openai": ""
   },
   "analytics": {
-    "cloudflareToken": "",
+    "cloudflareToken": "d8cd8ece1fae48cdaea2b13abf719066",
     "plausibleDomain": "",
     "needsConsent": true
   },
