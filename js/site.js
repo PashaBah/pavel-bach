@@ -107,6 +107,7 @@ function applyChoice(c) {
   if (LS) put(LS, 'pb_consent', choice);
   if (window.fbq && CFG.meta) window.fbq('consent', choice.ads ? 'grant' : 'revoke');
   if (window.oaiq && CFG.openai) window.oaiq('consent', choice.ads); // false — пиксель OpenAI сам стирает свои cookies
+  if (choice.ads) pageView(); // согласились только сейчас — засчитываем этот заход
   if (!choice.ads && was && was.ads) { // отозвали согласие: стираем cookies Meta
     for (const n of ['_fbp', '_fbc']) document.cookie = `${n}=; Max-Age=0; path=/; domain=${location.hostname.replace(/^www\./, '')}`;
   }
@@ -151,6 +152,15 @@ function log(name, data) {
 const fb = (...a) => { if (CFG.meta && window.fbq && adsOK()) window.fbq(...a); };
 const oai = (...a) => { if (CFG.openai && window.oaiq && adsOK()) window.oaiq(...a); };
 const an = (name, props) => { if (CFG.plausible && window.plausible && anOK()) window.plausible(name, { props }); };
+// заход на сайт для OpenAI (в кабинете видно, что люди с рекламы доходят): один раз за загрузку — сразу или в момент согласия
+let pvSent = false;
+function pageView() {
+  if (pvSent || !CFG.openai || !window.oaiq || !adsOK()) return;
+  pvSent = true;
+  log('page_viewed', { lang: LANG });
+  window.oaiq('measure', 'page_viewed', { type: 'contents', contents: [{ id: LANG === 'ru' ? 'home_ru' : 'home_en', name: LANG === 'ru' ? 'Главная (RU)' : 'Home (EN)', content_type: 'page' }] });
+}
+pageView();
 PB.track = function track(name, data = {}) {
   log(name, data);
   if (name === 'messenger_click') { // интерес, не заявка
