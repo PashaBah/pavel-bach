@@ -80,14 +80,15 @@
   <div class="shot phonk" data-scenes="incog" data-src="media/waiter.mp4" data-src-m="media/waiter_m.mp4" data-tr="whip" data-mx="40%"></div>
   <!-- видео: камера выезжает из-за спины дворецкого к креслу и стене телевизоров; когда доехала (60% сцены), кадр подъезжает к телевизорам (data-fit)
        и поверх клипа проявляется .tvlive: тот же кадр в полном качестве, в кинескопах (маска tvs_mask.png) крутятся его ролики, сверху — кнопки.
-       Рамки экранов считает tools/tvmask.py. data-so — с какой секунды ролика идёт превью, data-oy — какую часть вертикального ролика показывать. -->
+       Рамки экранов считает tools/tvmask.py. data-so — с какой секунды ролика идёт превью, data-oy — какую часть вертикального ролика показывать.
+       Если у экрана есть и data-mp4, и data-yt: в кинескопе крутится превью с Cloudinary, а по нажатию открывается YouTube (так у шоурила сцены). -->
   <div class="shot phonk tvwall" data-scenes="tv" data-src="media/tv.mp4" data-src-t="media/tv_t.mp4" data-win="0.05,0.7796875" data-tr="burn" data-ramp="0:0,0.6:1,1:1" data-mx="27%" data-mx2="46%" data-pan="0.04,0.38" data-fit="51.5,15.2,81.8,77,0.6,0.74">
     <div class="tvlive">
       <img class="tvbg" data-src="media/tvs.webp" alt="">
       <div class="tubes"></div>
       <div class="screens">
         <button class="scr" type="button" data-mp4="v1771093676/CLOSE-UP_1_oiw12t" data-so="4" data-oy="17%" style="left:53.67%;top:17.36%;width:10.31%;height:14.31%"><b>Close-up showreel</b></button>
-        <button class="scr" type="button" data-mp4="v1771094733/STAGE_MAGIC_1_go9ljb" data-so="4" data-oy="50%" style="left:69.38%;top:18.06%;width:10.86%;height:14.58%"><b>Stage showreel</b></button>
+        <button class="scr" type="button" data-mp4="v1771094733/STAGE_MAGIC_1_go9ljb" data-yt="KnucqaUPHE0" data-ru-data-yt="4EIKEGrkC4o" data-so="4" data-oy="50%" style="left:69.38%;top:18.06%;width:10.86%;height:14.58%"><b>Stage showreel</b></button>
         <button class="scr" type="button" data-mp4="v1771244778/%D0%A8%D0%9E%D0%A3%D0%A0%D0%98%D0%9B_2_1_rncumr" data-so="8" data-oy="21%" style="left:53.20%;top:40.00%;width:9.84%;height:13.61%"><b><span lang="en">Showreel</span><span lang="ru">Шоурил</span></b></button>
         <button class="scr" type="button" data-mp4="v1771094556/PABLO_STARK_%D0%A0%D0%95%D0%90%D0%9A%D0%A6%D0%98%D0%98_1_phflu2" data-so="14" data-oy="14%" style="left:68.20%;top:41.39%;width:10.39%;height:14.03%"><b><span lang="en">Guest reactions</span><span lang="ru">Реакции гостей</span></b></button>
         <button class="scr" type="button" data-mp4="v1771094407/PABLO_STARK_%D0%9F%D0%A0%D0%9E%D0%9C%D0%9E_1_cfu14e" data-so="8" data-oy="4%" style="left:52.97%;top:61.11%;width:9.14%;height:12.64%"><b><span lang="en">Promo</span><span lang="ru">Промо</span></b></button>
