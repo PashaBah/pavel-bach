@@ -81,7 +81,7 @@ export const PAGES = {
 <tr><td>__obref</td><td>OpenAI (ChatGPT Ads Measurement Pixel)</td><td>random browser reference for ad measurement</td><td>365 days</td><td>advertising</td></tr>
 </tbody></table></div>
 <p>Visit statistics: Cloudflare Web Analytics — works without cookies.</p>
-<p>Videos: the showreels play from Cloudinary. The America’s Got Talent video plays from YouTube in privacy-enhanced mode and loads only after you press play; YouTube may then set its own cookies.</p>
+<p>Videos: most showreels play from Cloudinary. The stage show showreel and the America’s Got Talent video play from YouTube in privacy-enhanced mode; each loads only after you press play, and YouTube may then set its own cookies.</p>
 <p>You can also delete cookies in your browser settings. More on how your data is handled — in the <a href="../privacy/">privacy policy</a>.</p>`,
     },
     ru: {
@@ -101,7 +101,7 @@ export const PAGES = {
 <tr><td>__obref</td><td>OpenAI (пиксель ChatGPT Ads)</td><td>случайный номер браузера для измерения рекламы</td><td>365 дней</td><td>реклама</td></tr>
 </tbody></table></div>
 <p>Статистика посещений: Cloudflare Web Analytics — работает без cookies.</p>
-<p>Видео: шоурилы идут с Cloudinary. Ролик America’s Got Talent идёт с YouTube в режиме повышенной конфиденциальности и загружается только после нажатия на play; после этого YouTube может поставить свои cookies.</p>
+<p>Видео: большинство шоурилов идут с Cloudinary. Шоурил шоу на сцене и ролик America’s Got Talent идут с YouTube в режиме повышенной конфиденциальности, каждый загружается только после нажатия на play; после этого YouTube может поставить свои cookies.</p>
 <p>Cookies можно удалить и в настройках браузера. Подробнее о данных — в <a href="../privacy/">политике конфиденциальности</a>.</p>`,
     },
   },
