@@ -1442,9 +1442,10 @@ window.addEventListener('scroll', () => { if (performance.now() - last > 120) fr
 
 // ── видео целиком: кнопки «смотреть» и экраны телевизоров ──
 const modal = $('#tvModal'), tvTitle = $('#tvTitle'), screen = $('#modalScreen');
-function openModal(title, { yt, mp4 }) {
+function openModal(title, { yt, mp4, wide }) {
   tvTitle.textContent = title;
   screen.replaceChildren();
+  screen.classList.toggle('wide', !!wide); // горизонтальный ролик (data-wide) — окно 16:9, остальные вертикальные 9:16
   if (yt) { // без куки до нажатия на play
     const f = document.createElement('iframe');
     f.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&playsinline=1&rel=0`;
@@ -1465,7 +1466,7 @@ function openModal(title, { yt, mp4 }) {
 const label = (b) => (b.querySelector('b') || b).innerText.trim();
 document.querySelectorAll('.scr, .play, .btn[data-mp4]').forEach((b) => b.addEventListener('click', (e) => {
   e.preventDefault();
-  openModal(label(b), { mp4: b.dataset.mp4, yt: b.dataset.yt || b.dataset.video });
+  openModal(label(b), { mp4: b.dataset.mp4, yt: b.dataset.yt || b.dataset.video, wide: 'wide' in b.dataset });
 }));
 const closeModal = () => { modal.hidden = true; screen.replaceChildren(); };
 $('#tvClose').addEventListener('click', closeModal);
