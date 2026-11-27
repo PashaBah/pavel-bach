@@ -1,13 +1,13 @@
 /* шрифты сайта (26-я редакция): файлы в папке fonts, взяты с Google Fonts, только латиница и кириллица */
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-cyrillic.woff2?v=46) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Pirata One"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/pirata-one-400-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-cyrillic.woff2?v=46) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-cyrillic.woff2?v=46) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "UnifrakturMaguntia"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/unifrakturmaguntia-400-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 600; font-display: swap; src: url(../fonts/grenze-gotisch-600-x.woff2?v=46) format("woff2"); unicode-range: U+78; }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-cyrillic.woff2?v=47) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Pirata One"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/pirata-one-400-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-cyrillic.woff2?v=47) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-cyrillic.woff2?v=47) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "UnifrakturMaguntia"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/unifrakturmaguntia-400-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 600; font-display: swap; src: url(../fonts/grenze-gotisch-600-x.woff2?v=47) format("woff2"); unicode-range: U+78; }
 :root {
   --ink: #040507;
   --paper: #ece6da;
@@ -687,7 +687,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.webp?v=46) center / 100% 100% no-repeat; mask: url(../media/ice_logo.webp?v=46) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.webp?v=47) center / 100% 100% no-repeat; mask: url(../media/ice_logo.webp?v=47) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -809,7 +809,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png?v=46) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=46) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=47) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=47) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -995,7 +995,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.webp?v=46) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.webp?v=47) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1046,7 +1046,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.webp?v=46); mask-image: url(../media/ice_logo_m.webp?v=46); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.webp?v=47); mask-image: url(../media/ice_logo_m.webp?v=47); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1522,7 +1522,7 @@ form button { white-space: nowrap; }
 .rcard footer b, .rcard .pip { color: #1a1311; }
 .rcard.red .pip { color: #a41d1a; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(64, 34, 31, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(234, 68, 113, .2); }
-.rcard.filler { background: url(../media/cardback.webp?v=46) center / 100% 100% no-repeat, rgb(234, 191, 222); background-blend-mode: multiply; }
+.rcard.filler { background: url(../media/cardback.webp?v=47) center / 100% 100% no-repeat, rgb(234, 191, 222); background-blend-mode: multiply; }
 /* три формата: ролики те же, что в фильме (свет уже в них); панель чуть темнее кадра — чёрным слоем, а не фильтром */
 .panel video, .panel img.poster { filter: none; }
 .panel::before {
@@ -1550,8 +1550,8 @@ html[data-logo="on"] .brand { opacity: 1; pointer-events: auto; }
 .ice-fly { will-change: auto; }
 .chapter.cover.fly .ice-fly { will-change: transform, opacity; }
 .ice-logo { filter: none; position: relative; }
-.ice::before { content: ""; position: absolute; left: -9.62%; right: -9.62%; top: -26.13%; bottom: -26.13%; background: url(../media/glow_d.webp?v=46) center / 100% 100% no-repeat; pointer-events: none; }
-@media (max-width: 760px) { .ice::before { left: -27.78%; right: -27.78%; top: -75.5%; bottom: -75.5%; background-image: url(../media/glow_m.webp?v=46); } }
+.ice::before { content: ""; position: absolute; left: -9.62%; right: -9.62%; top: -26.13%; bottom: -26.13%; background: url(../media/glow_d.webp?v=47) center / 100% 100% no-repeat; pointer-events: none; }
+@media (max-width: 760px) { .ice::before { left: -27.78%; right: -27.78%; top: -75.5%; bottom: -75.5%; background-image: url(../media/glow_m.webp?v=47); } }
 /* ролик-середина для вертикального экрана стоит на своём месте кадра */
 .shot.win > video, .shot.win > canvas.wcv, .shot.win > img.poster { left: var(--wx); right: auto; width: var(--ww); }
 
@@ -1696,9 +1696,9 @@ html:not(.ld) .tubes { -webkit-mask: none; mask: none; } /* маска кине�
       читается сразу). Хром и красное свечение — как были, и в русской версии тоже (там фраза под надписью была просто белой — выглядело ошибкой).
    2) Четыре уровня, каждый везде одинаковый: готика-заголовок (один размер во всех главах) → подзаголовок (Jost 400, белый) →
       основной текст (Jost 300, кремовый) → подписи (Jost 500, прописные, разрядка; акцентные — один розовый, служебные — серые). */
-@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/grenze-gotisch-700-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-cyrillic.woff2?v=46) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/grenze-gotisch-700-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-cyrillic.woff2?v=47) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root {
   --gothic: "Grenze Gotisch", "Times New Roman", serif; --gothic-w: 700;
   --pink: #ff4f6d; --body-c: #d6d0c4;
@@ -1755,8 +1755,8 @@ html[data-lang] main .chapter.titles-head .credits li b span { font: inherit; co
       подзаголовки, жирные. Цитаты на картах отзывов — той же антиквой: на странице три семейства, а не пять.
    3) Один размер основного текста (15 px) и один размер подписей (11 px) на всех экранах; всё в полосах — одного размера (12 px).
    4) На телефоне заголовки крупнее (иерархия читается сразу); в телевизорах значок play стоит над подписью с одинаковым отступом. */
-@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-cyrillic.woff2?v=46) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-latin.woff2?v=46) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-cyrillic.woff2?v=47) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-latin.woff2?v=47) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root { --gothic: "Pirata One", "Times New Roman", serif; --gothic-w: 400; --sub: "Playfair Display", "Times New Roman", serif; --t-body: 15px; --t-cap: 11px; --t-ui: 12px; }
 html[data-lang="ru"] { --gothic: "Monomakh", "Times New Roman", serif; --gothic-w: 400; }
 @media (max-width: 760px) { :root { --t-tag: 38px; --t-ptag: 21px; --t-lede: 24px; --t-sub: 19px; --t-body: 15px; --t-cap: 11px; } }
@@ -1795,7 +1795,7 @@ html[data-lang="ru"] .menu-sheet button { font-size: 15px; }
 html:not(.ld) main .chapter:not(.cover) { content-visibility: hidden; }
 .roll { content-visibility: auto; contain-intrinsic-size: auto 1400px; }
 /* лёгкие картинки (32-я редакция): блик по буквам надписи — по своей маске 600 px (19 КБ), а не по второй копии логотипа (110–260 КБ); рубашка карт — WebP */
-.ice-shine, html.ld .ice-shine { -webkit-mask: url(../media/ice_mask.webp?v=46) center / 100% 100% no-repeat; mask: url(../media/ice_mask.webp?v=46) center / 100% 100% no-repeat; }
+.ice-shine, html.ld .ice-shine { -webkit-mask: url(../media/ice_mask.webp?v=47) center / 100% 100% no-repeat; mask: url(../media/ice_mask.webp?v=47) center / 100% 100% no-repeat; }
 html:not(.ld) .ice-shine { -webkit-mask: none; mask: none; }
 
 /* ══ ТРИДЦАТЬ ЧЕТВЁРТАЯ РЕДАКЦИЯ ════════════════════════════════════════════════════════════════════════════════
@@ -1815,7 +1815,7 @@ html[data-lang="ru"] main .chapter[data-scene] .tag, html[data-lang="ru"] .roll 
 /* ══ Русская готика: Brahms Gotisch Cyr (Саша Павленко, лицензия SIL OFL 1.1, бесплатная) — выбор Павла 20.11.2026 ══════════════
    Покупать Moyenage Павел передумал. Сборка (build/build.mjs) ставит русской странице data-rugoth="brahms", когда файл шрифта на месте.
    Вид — как у английской готики: строчные с прописной, то же оформление, что у заголовков (см. --chrome). */
-@font-face { font-family: "Brahms Gotisch Cyr"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/brahms-gotisch-cyr.woff2?v=46) format("woff2"); }
+@font-face { font-family: "Brahms Gotisch Cyr"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/brahms-gotisch-cyr.woff2?v=47) format("woff2"); }
 html[data-lang="ru"][data-rugoth="brahms"] { --gothic: "Brahms Gotisch Cyr", "Times New Roman", serif; --gothic-w: 400; --t-tag: clamp(40px, 4.2vw, 66px); --t-lede: clamp(26px, 3vw, 48px); }
 /* строчные у этой готики ниже, чем у Pirata One: на телефоне кегль крупнее английского, но «География выступлений» (9,4 кегля) ещё в одну строку */
 @media (max-width: 760px) { html[data-lang="ru"][data-rugoth="brahms"] { --t-tag: 36px; --t-lede: 27px; } }
@@ -1874,80 +1874,97 @@ html[data-lang][data-v] main .chapter .why[open] summary::after { rotate: 45deg;
 html[data-lang][data-v] main .chapter .why p { margin: 6px 0 0; font-family: var(--sans); font-weight: 300; font-size: var(--t-body); line-height: 1.55; color: var(--body-c); text-shadow: 0 1px 10px rgba(0, 0, 0, .8); }
 .faq details p b { font-weight: 500; color: var(--paper); }
 
+
 /* ── «Ваш ход»: фокус через экран (js/trick.js) ─────────────────────────
-   Стол с картами: доска 3:4, координаты карт — в долях доски, размеры — в --u (сотая ширины доски), поэтому раскладка одинаковая на любом экране. */
+   Стол — доска 3:4 на бордовом бархате; вещи — из одной карты 8×5 (--atlas собирает скрипт), размеры — в --u (сотая ширины доски). */
 .shot.trickshot { width: 100vw; height: 100vh; background: radial-gradient(120% 90% at 66% 46%, #3d0d27 0%, #1b0715 48%, #08040a 100%); }
-.tboard { position: absolute; aspect-ratio: 3 / 4; container-type: inline-size; --u: 1cqw; }
-.tboard .tcard { position: absolute; width: calc(var(--u) * 11.333); aspect-ratio: 34 / 48; translate: -50% -50%; rotate: var(--r, 0deg); }
-.tcard {
-  border-radius: 7% / 5%; background: linear-gradient(160deg, #fbf6ec 0%, #f1e7d4 100%); color: #1c1914;
-  box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * .9) calc(var(--u) * 2.4) rgba(0, 0, 0, .55);
-  font-family: "Tinos", "Times New Roman", serif; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
-}
-.tcard.red { color: #b3261e; }
-.tcard .tix { position: absolute; left: 8%; top: 4%; display: grid; justify-items: center; font-weight: 700; font-size: calc(var(--u) * 3.5); line-height: 1; letter-spacing: -.04em; }
-.tcard .tix i { font-style: normal; font-size: .8em; margin-top: .06em; }
-.tcard .tix.btm { left: auto; top: auto; right: 8%; bottom: 4%; rotate: 180deg; }
-.tcard .tpip { position: absolute; left: 50%; top: 52%; translate: -50% -50%; font-size: calc(var(--u) * 6.2); line-height: 1; }
-.tcard .tpip.ace { font-size: calc(var(--u) * 8.6); }
-.tcard .tbig { position: absolute; left: 50%; top: 60%; translate: -50% -50%; font-size: calc(var(--u) * 6.4); font-weight: 700; line-height: 1; }
-.tcard .tcrown { position: absolute; left: 50%; top: 30%; translate: -50% -50%; width: calc(var(--u) * 4.6); height: calc(var(--u) * 2.6);
-  background: linear-gradient(180deg, #e2bf73, #a87a2c); clip-path: polygon(0 100%, 0 18%, 24% 58%, 50% 0, 76% 58%, 100% 18%, 100% 100%); }
+.tboard { position: absolute; aspect-ratio: 3 / 4; container-type: inline-size; --u: 1cqw; border-radius: 16px;
+  background: radial-gradient(120% 95% at 50% 38%, #4c1531 0%, #2d0b1e 58%, #1c0713 100%);
+  box-shadow: inset 0 0 calc(var(--u) * 14) rgba(0, 0, 0, .55), 0 0 0 1px rgba(216, 183, 122, .22), 0 18px 60px rgba(0, 0, 0, .55); }
+.titem { position: absolute; width: calc(var(--u) * 15.5 * var(--s, 1)); aspect-ratio: 192 / 171; translate: -50% -50%; rotate: var(--r, 0deg);
+  background-image: var(--atlas); background-repeat: no-repeat; background-size: 800% 500%;
+  filter: drop-shadow(0 0 .6px rgba(255, 236, 220, .6)) drop-shadow(0 calc(var(--u) * .9) calc(var(--u) * 1.2) rgba(0, 0, 0, .55));
+  opacity: 0; transition: opacity .7s ease; -webkit-user-select: none; user-select: none; }
+html.trick-atlas .titem { opacity: 1; }
 
-/* карта-предсказание: рубашка сайта (та же, что у колоды отзывов), при открытии переворачивается */
-.pcard { position: relative; width: 120px; aspect-ratio: 34 / 48; perspective: 900px; container-type: inline-size; }
-.pcard .pin { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotate(-5deg); transition: transform .95s cubic-bezier(.2, .75, .2, 1); }
-.pcard.open .pin { transform: rotateY(180deg) rotate(4deg); }
-.pcard .pback, .pcard .pface { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 7% / 5%; }
-.pcard .pback { background: #4a0b1d url(../media/cardback.webp?v=46) center / 100% 100% no-repeat;
-  box-shadow: 0 0 0 1px rgba(216, 183, 122, .55), 0 10px 30px rgba(0, 0, 0, .6), 0 0 38px rgba(255, 79, 109, .28); }
-.pcard .pface { transform: rotateY(180deg); --u: 8.824cqw; box-shadow: 0 0 0 1px rgba(216, 183, 122, .6), 0 12px 40px rgba(0, 0, 0, .6), 0 0 50px rgba(255, 79, 109, .35); }
+/* конверт с предсказанием: лежит на углу стола, в конце переворачивается — внутри карточка с помадой */
+.pcard { position: absolute; width: 24%; aspect-ratio: 34 / 26; perspective: 900px; container-type: inline-size; z-index: 2; }
+.pcard .pin { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotate(-8deg); transition: transform 1s cubic-bezier(.2, .75, .2, 1); }
+.pcard.open .pin { transform: rotateY(180deg) rotate(3deg); }
+.pcard .pback, .pcard .pface { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 4px; }
+.pcard .pback { background: linear-gradient(160deg, #f7f0e3, #e6d7bd); box-shadow: 0 0 0 1px rgba(120, 90, 50, .35), 0 10px 26px rgba(0, 0, 0, .55), 0 0 34px rgba(255, 79, 109, .22); overflow: hidden; }
+.pcard .pback::before { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, #efe4cf, #dccaa8); clip-path: polygon(0 0, 100% 0, 50% 58%); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25)); }
+.pcard .seal { position: absolute; left: 50%; top: 56%; translate: -50% -50%; width: 26cqw; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 38% 34%, #c2343f, #8e1424 60%, #5e0b17); box-shadow: 0 2px 6px rgba(0, 0, 0, .45), inset 0 0 0 2cqw rgba(0, 0, 0, .12);
+  font: 700 9cqw/1 var(--display); font-style: normal; color: #e8c27a; letter-spacing: -.04em; }
+.pcard .pface { transform: rotateY(180deg); background: linear-gradient(160deg, #fbf6ec, #efe4cf); box-shadow: 0 0 0 1px rgba(216, 183, 122, .6), 0 12px 40px rgba(0, 0, 0, .6), 0 0 60px rgba(255, 79, 109, .4);
+  display: grid; justify-items: center; align-content: center; gap: 2cqw; --u: 1.6cqw; }
+.pcard .pface .titem { position: relative; translate: none; rotate: -12deg; width: 46cqw; background-position: 0% 75%; opacity: 1; filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .35)); }
+.pcard .pface b { font: italic 600 9cqw/1.1 var(--display); color: #8e1424; }
 
-/* заставка в фильме: стол справа от текста (на телефоне — над текстом), предсказание лежит рядом со столом */
+/* заставка в фильме: стол справа от текста (на телефоне — над текстом), конверт лежит на углу стола */
 .ttable.teaser { position: absolute; right: 8vw; top: 50%; translate: 0 -50%; height: min(76vh, 640px); aspect-ratio: 3 / 4; }
 .ttable.teaser .tboard { inset: 0; }
-.ttable.teaser .pcard { position: absolute; width: 22%; left: -30%; top: 4%; }
+.ttable .pcard { right: -9%; top: -5%; }
 .chapter .trick-go { margin: 22px 0 0; }
 @media (max-aspect-ratio: 3/4) {
-  .ttable.teaser { right: auto; left: 50%; top: calc(var(--bar) + 1.5vh); translate: -50% 0; height: calc(var(--vh, 1vh) * 40); }
-  .ttable.teaser .pcard { width: 20%; left: auto; right: -17%; top: -2%; }
+  .ttable.teaser { right: auto; left: 50%; top: calc(var(--bar) + 2.5vh); translate: -50% 0; height: calc(var(--vh, 1vh) * 40); }
+  .ttable .pcard { right: -6%; top: -4%; width: 26%; }
 }
 
 /* окно фокуса: весь экран, страница под ним не листается */
 .trick { position: fixed; inset: 0; z-index: 45; touch-action: none; overscroll-behavior: contain;
   background: radial-gradient(120% 90% at 62% 46%, #3d0d27 0%, #1b0715 50%, #08040a 100%); }
 .trick[hidden] { display: none; }
-.trick-in { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(260px, 400px) auto; align-items: center; justify-content: center;
-  gap: clamp(28px, 5vw, 90px); padding: 32px max(var(--gutter), env(safe-area-inset-right, 0px)) 32px max(var(--gutter), env(safe-area-inset-left, 0px)); }
-.trick .modal-close { position: absolute; top: max(10px, env(safe-area-inset-top, 0px)); right: 16px; z-index: 3; }
-.trick-side { max-height: calc(100% + 60px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 30px 40px; margin: -30px -40px; } /* поля — чтобы свечение карты не обрезалось краем прокрутки */
+.trick-in { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(280px, 430px) auto; align-items: stretch; justify-content: center;
+  gap: clamp(28px, 5vw, 90px); padding: 32px max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px)); }
+.trick .modal-close { position: absolute; top: max(10px, env(safe-area-inset-top, 0px)); right: 16px; z-index: 5; }
+.trick-side { position: relative; display: flex; flex-direction: column; padding-top: 4vh; min-height: 0; }
 .trick-step { margin: 0 0 12px; font-family: var(--sans); font-weight: 500; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--pink, #ff4f6d); }
 .trick-say { margin: 0; font-family: var(--sub, var(--display)); font-size: clamp(22px, 2.1vw, 32px); line-height: 1.22; color: var(--paper); text-wrap: balance; text-shadow: 0 0 22px rgba(255, 40, 80, .25); }
-.trick-say.pop { animation: trickPop .55s ease-out; }
+.trick-say.pop { animation: trickPop .5s ease-out; }
 @keyframes trickPop { from { opacity: 0; transform: translateY(10px); } }
 .trick-sub { margin: 12px 0 0; font-family: var(--sans); font-weight: 300; font-size: 15px; line-height: 1.55; color: var(--body-c, #d6d0c4); }
-.trick-sub.hint { color: #ffb3c2; }
-.trick-side .pcard { margin: 26px 0 4px 4px; width: min(120px, 15vh); transition: width .6s ease; }
-.trick-btns { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 0; }
-.trick-btns[hidden], .trick-btns .btn[hidden], .trick-btns:has(> [hidden]:only-child) { display: none; }
-.trick-table { position: relative; height: min(calc(100vh - 64px), 900px); aspect-ratio: 3 / 4; touch-action: none; }
-.trick-table .tboard { inset: 0; transition: opacity .7s ease; }
-.trick .tboard .tcard { cursor: pointer; }
-.trick.done .trick-side .pcard { width: min(190px, 27vh); }
-.trick.done .trick-table .tboard { opacity: .3; }
+.trick-bar { display: block; height: 2px; margin-top: 18px; background: rgba(255, 255, 255, .12); position: relative; overflow: hidden; border-radius: 2px; }
+.trick-bar::after { content: ""; position: absolute; inset: 0; background: var(--pink, #ff4f6d); transform-origin: 0 50%; transform: scaleX(0); }
+.trick-bar.run::after { animation: trickBar var(--t, 5s) linear forwards; }
+@keyframes trickBar { to { transform: scaleX(1); } }
+.trick[data-step="0"] .trick-bar, .trick.done .trick-bar { visibility: hidden; }
+.trick-btns { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 0; position: relative; z-index: 2; }
+.trick-btns[hidden], .trick-btns:has(> [hidden]:only-child) { display: none; }
+/* ведущий: вырезанные позы, меняются рывком — как стоп-моушен; белая кромка — как у бумажной вырезки */
+.trick-host { position: relative; flex: 1 1 auto; min-height: 160px; margin-top: 10px; pointer-events: none;
+  background: no-repeat 50% 100% / contain; filter: drop-shadow(0 0 0 #fff) drop-shadow(2px 0 0 #f4ede0) drop-shadow(-2px 0 0 #f4ede0) drop-shadow(0 -2px 0 #f4ede0) drop-shadow(0 14px 24px rgba(0, 0, 0, .5)); }
+.trick-host.jump { animation: hostJump .32s steps(3, end); }
+@keyframes hostJump { 0% { transform: translateY(10px) rotate(-2.5deg) scale(.97); } 50% { transform: translateY(-4px) rotate(1.5deg); } 100% { transform: none; } }
+.trick-host .smoke, .trick-host .lamp { display: none; }
+.trick.genie .trick-host { filter: drop-shadow(0 14px 24px rgba(0, 0, 0, .5)); animation: genieBob 3.2s ease-in-out infinite; background-size: auto 92%; background-position: 50% 0; }
+.trick.genie .trick-host[data-pose="p3"] { animation: none; background-size: contain; background-position: 50% 100%; }
+.trick.genie .trick-host:not([data-pose="p3"]) .smoke { display: block; position: absolute; left: 50%; bottom: 6%; width: 64%; height: 46%; translate: -50% 0;
+  background: radial-gradient(40% 30% at 50% 20%, rgba(235, 230, 240, .85), transparent 70%), radial-gradient(30% 40% at 40% 60%, rgba(220, 215, 230, .6), transparent 70%), radial-gradient(18% 34% at 56% 88%, rgba(220, 215, 230, .7), transparent 70%);
+  filter: blur(8px); animation: smoke 2.6s ease-in-out infinite alternate; }
+@keyframes genieBob { 50% { transform: translateY(-8px); } }
+@keyframes smoke { to { transform: scale(1.06, 1.1) translateY(-4px); opacity: .8; } }
+.trick-table { position: relative; align-self: center; height: min(calc(100vh - 64px), 900px); aspect-ratio: 3 / 4; touch-action: none; }
+.trick-table .tboard { inset: 0; transition: opacity .7s ease, filter .7s ease; }
+.trick-table .pcard { right: -7%; top: -3%; transition: right .8s cubic-bezier(.2, .75, .2, 1), top .8s cubic-bezier(.2, .75, .2, 1), width .8s cubic-bezier(.2, .75, .2, 1); }
+.trick.done .trick-table .tboard { opacity: .28; filter: blur(2px); }
+.trick.done .trick-table .pcard { right: 18%; top: 30%; width: 64%; }
 @media (max-width: 760px), (max-aspect-ratio: 3/4) {
-  .trick-in { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 10px;
-    padding: calc(env(safe-area-inset-top, 0px) + 44px) 14px calc(env(safe-area-inset-bottom, 0px) + 10px); }
-  .trick .modal-close { top: calc(env(safe-area-inset-top, 0px) + 6px); right: 10px; }
-  .trick-side { position: relative; width: 100%; padding: 0 72px 0 0; margin: 0; max-height: none; overflow: visible; flex: none; }
-  .trick-step { margin-bottom: 6px; font-size: 10px; }
+  .trick-in { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px;
+    padding: calc(env(safe-area-inset-top, 0px) + 40px) 14px calc(env(safe-area-inset-bottom, 0px) + 10px); }
+  .trick .modal-close { top: calc(env(safe-area-inset-top, 0px) + 4px); right: 10px; }
+  .trick-side { width: 100%; padding: 0 0 0 86px; min-height: 118px; flex: none; }
+  .trick-host { position: absolute; left: 0; top: -6px; width: 78px; height: 118px; min-height: 0; margin: 0; background-size: 170% auto; background-position: 50% 0;
+    filter: drop-shadow(1px 0 0 #f4ede0) drop-shadow(-1px 0 0 #f4ede0) drop-shadow(0 -1px 0 #f4ede0) drop-shadow(0 6px 10px rgba(0, 0, 0, .5)); }
+  .trick.genie .trick-host { background-size: 150% auto; }
+  .trick-step { margin-bottom: 4px; font-size: 10px; }
   .trick-say { font-size: 19px; }
-  .trick-sub { margin-top: 6px; font-size: 13.5px; line-height: 1.45; }
+  .trick-sub { margin-top: 5px; font-size: 13.5px; line-height: 1.45; }
+  .trick-bar { margin-top: 10px; }
   .trick-btns { margin-top: 10px; gap: 8px; }
   .trick-btns .btn { padding: 10px 14px; font-size: 11px; }
-  .trick-side .pcard { position: absolute; right: 0; top: 0; width: 60px; margin: 0; }
-  .trick-table { height: auto; width: min(100%, calc((100svh - 240px) * .75)); flex: none; }
-  .trick.done .trick-side { padding-right: 0; }
-  .trick.done .trick-side .pcard { position: relative; width: min(46vw, 30svh); margin: 16px auto 4px; }
-  .trick.done .trick-table { display: none; }
+  .trick-table { height: auto; width: min(100%, calc((100svh - 260px) * .75)); flex: none; }
+  .trick-table .pcard { right: -3%; top: -4%; width: 27%; }
+  .trick.done .trick-table .pcard { right: 12%; top: 26%; width: 76%; }
 }

@@ -40,12 +40,12 @@
     <picture class="hero"><source media="(max-aspect-ratio: 3/4)" srcset="media/hero_t.webp"><img src="media/hero.webp" alt="Pavel Bach, magician" data-ru-alt="Павел Бах, иллюзионист" width="2560" height="1440" fetchpriority="high" decoding="async"></picture>
   </div>
 
-  <!-- «Ваш ход»: фокус через экран. В кадре стол с картами и предсказание рубашкой вверх; сам фокус идёт в окне #trick (там палец не листает фильм).
+  <!-- «Ваш ход»: фокус через экран. В кадре стол с вещами и конверт с предсказанием; сам фокус идёт в окне #trick (там страница не листается).
        Раскладка и логика — js/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick (js/main.js убирает её и возвращает форматам блик с зуба). -->
   <div class="shot phonk trickshot" data-scenes="trick" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
     <div class="ttable teaser" aria-hidden="true">
       <div class="tboard" id="trickTeaser"></div>
-      <div class="pcard"><div class="pin"><div class="pback"></div></div></div>
+      <div class="pcard env"><div class="pin"><div class="pback"><i class="seal">PB</i></div></div></div>
     </div>
   </div>
 
@@ -207,8 +207,8 @@
   <!-- ВАШ ХОД: фокус через экран -->
   <section class="chapter left trick-head" id="trickHead" data-scene="trick" data-in="0.1" data-out="0.9">
     <p class="tag"><span lang="en">Your Move</span><span lang="ru">Ваш ход</span></p>
-    <h2><span lang="en">A trick that works right through your screen</span><span lang="ru">Фокус, который работает прямо через экран</span></h2>
-    <p class="body"><span lang="en">Pavel has already chosen one card and placed it face down on the table. Every other choice is yours. It takes a minute</span><span lang="ru">Павел уже выбрал одну карту и положил её на стол рубашкой вверх. Все остальные решения — ваши. Займёт минуту</span></p>
+    <h2><span lang="en">Pavel will guess what you are about to do</span><span lang="ru">Павел попробует угадать, что вы сделаете</span></h2>
+    <p class="body"><span lang="en">On the table: the things guests hide first when Pavel walks in. You choose with your eyes only, and his prediction is already in the envelope. It takes a minute</span><span lang="ru">На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом, а его предсказание уже в конверте. Займёт минуту</span></p>
     <p class="trick-go"><button class="btn" type="button" id="trickGo"><span lang="en">Try the trick</span><span lang="ru">Попробовать фокус</span></button></p>
     <p class="tap-hint"><span lang="en">or keep scrolling to the formats</span><span lang="ru">или листайте дальше, к форматам</span></p>
   </section>
@@ -394,15 +394,20 @@
       <p class="trick-step" id="trickStep"></p>
       <p class="trick-say" id="trickSay" aria-live="polite"></p>
       <p class="trick-sub" id="trickSub"></p>
-      <div class="pcard" id="trickPred" aria-hidden="true"><div class="pin"><div class="pback"></div><div class="pface tcard" id="trickFace"></div></div></div>
+      <i class="trick-bar" id="trickBar" aria-hidden="true"></i>
       <p class="trick-btns"><button class="btn ghost" type="button" id="trickNext"></button></p>
       <p class="trick-btns" id="trickEnds" hidden>
         <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
         <a class="btn ghost" href="#formats" data-goto="formats" data-at="0.1"><span lang="en">Keep watching</span><span lang="ru">Смотреть дальше</span></a>
         <button class="btn ghost" type="button" id="trickAgain"><span lang="en">Once more</span><span lang="ru">Ещё раз</span></button>
       </p>
+      <div class="trick-host" id="trickHost" aria-hidden="true"><i class="smoke"></i><i class="lamp"></i></div>
     </div>
-    <div class="trick-table"><div class="tboard" id="trickBoard"></div></div>
+    <div class="trick-table">
+      <div class="tboard" id="trickBoard"></div>
+      <!-- предсказание: конверт лежит на столе с самого начала; в конце переворачивается — внутри красная помада -->
+      <div class="pcard env" id="trickPred" aria-hidden="true"><div class="pin"><div class="pback"><i class="seal">PB</i></div><div class="pface"><i class="titem kt"></i><b id="trickCard"></b></div></div></div>
+    </div>
   </div>
 </div>
 
