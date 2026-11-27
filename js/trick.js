@@ -4,14 +4,13 @@
 // Доска — 300×400 условных единиц, карта — 34×48. Если человек ошибся и встал на другую красную карту, открываем её: фокус всё равно сходится.
 
 const CARDS = [
-  [81.1, 255.7, 7.7, 'K', 'c'], [28.7, 365.5, -10.2, 'K', 'c'], [71.0, 313.4, 12.1, 'K', 's'], [129.7, 257.8, 8.2, 'K', 'c'],
-  [29.7, 313.5, -7.1, 'Q', 's'], [19.3, 251.5, -9.2, 'Q', 'c'], [122.1, 194.3, -1.4, 'Q', 's'], [68.4, 200.5, 0.2, '7', 'h'],
-  [28.7, 82.8, 1.2, 'Q', 'c'], [280.0, 368.2, 12.4, 'Q', 's'], [268.6, 88.2, -7.2, 'Q', 'c'],
-  [74.2, 31.2, -11.5, '2', 'd'], [19.9, 32.7, -5.2, '5', 'd'], [220.4, 143.4, 12.2, '8', 'd'], [178.1, 88.2, 9.8, '9', 'd'], [169.7, 26.6, -5.0, '4', 'h'],
-  [172.2, 258.2, -4.9, '3', 's'], [121.3, 82.5, 6.3, '6', 's'], [27.1, 203.5, 1.7, '9', 's'], [273.5, 196.0, -12.8, '4', 's'], [229.2, 84.7, 2.4, '2', 's'],
-  [24.9, 142.3, 12.0, '5', 's'], [275.0, 262.9, -8.5, '10', 's'], [225.3, 370.1, -12.0, 'A', 's'], [218.5, 25.5, -4.0, '5', 's'], [121.1, 142.4, 1.9, '5', 's'],
-  [180.4, 318.4, 2.4, '9', 's'], [274.9, 22.9, -10.3, '10', 's'],
-  [175.1, 372.5, -5.3, '9', 'c'], [68.4, 368.1, -12.6, '10', 'c'], [181.1, 141.9, 10.4, '9', 'c'], [227.8, 202.1, -8.9, '2', 'c'], [278.8, 314.8, 8.1, '8', 'c'], [223.2, 256.4, -4.2, '4', 'c'],
+  [74.7, 362.6, 0.0, 'K', 'c'], [127.1, 314.6, -7.2, 'K', 'c'], [29.4, 376.1, 2.6, 'K', 's'], [131.7, 260.0, 9.1, 'K', 's'], [31.3, 310.4, 1.5, 'Q', 's'],
+  [79.5, 250.3, -7.8, 'Q', 'c'], [126.9, 362.6, -7.0, 'Q', 's'], [76.8, 305.6, -3.2, '7', 'h'], [81.2, 151.7, 4.5, 'Q', 's'], [277.1, 314.9, -7.1, 'Q', 's'],
+  [16.5, 148.7, -2.1, 'Q', 's'], [165.0, 146.5, 5.4, '3', 'h'], [268.6, 258.9, 1.8, '4', 'h'], [29.4, 87.3, -8.2, '2', 'd'], [214.3, 248.5, 5.1, '10', 'h'],
+  [280.8, 148.1, -0.2, '8', 'd'], [216.3, 367.0, 2.4, 'A', 's'], [219.2, 144.3, 9.4, '8', 's'], [227.4, 310.2, 8.6, '4', 's'], [118.2, 33.8, -13.7, '6', 's'],
+  [275.6, 35.6, -6.4, '9', 's'], [20.6, 201.3, 10.1, '3', 's'], [166.7, 320.5, -3.1, '2', 's'], [286.0, 86.1, 4.9, 'A', 's'], [174.3, 24.6, -6.3, '4', 's'],
+  [215.3, 192.0, -14.0, '5', 's'], [75.3, 19.7, 0.3, '4', 's'], [119.4, 93.1, -2.9, '2', 's'], [284.5, 370.4, 13.7, '9', 'c'], [120.1, 145.2, -7.5, 'A', 'c'],
+  [15.6, 261.3, 2.2, '6', 'c'], [169.1, 265.2, -13.0, '3', 'c'], [233.9, 21.1, 12.0, '2', 'c'], [267.2, 208.8, -5.3, '4', 'c'],
 ].map(([x, y, r, rank, suit], i) => ({ i, x, y, r, rank, suit }));
 const TARGET = CARDS.find((c) => c.rank === '7' && c.suit === 'h');
 
@@ -111,7 +110,7 @@ if (box && go) {
     if (n === 0) {
       say(0, TX.intro);
       nextBtn.textContent = TX.start; nextBtn.hidden = false;
-      ends.hidden = true; againBtn.hidden = true;
+      ends.hidden = true;
       return;
     }
     if (n <= 4) {
@@ -126,7 +125,7 @@ if (box && go) {
     predFace.className = `pface tcard ${c.suit === 'h' || c.suit === 'd' ? 'red' : 'black'}`;
     say(5, TX.reveal(c));
     stepEl.textContent = TX.pred;
-    nextBtn.hidden = true; ends.hidden = false; againBtn.hidden = false;
+    nextBtn.hidden = true; ends.hidden = false;
     box.classList.add('done');
     setTimeout(() => pred.classList.add('open'), 350);
     track({ step: 'done', card: `${c.rank}${c.suit}`, forced: c === TARGET });
@@ -150,7 +149,7 @@ if (box && go) {
     if (step >= 1 && step <= 4) {
       const held = performance.now() - since;
       if (on && want[step - 1](on) && held > HOLD && on !== lastFrom) { lastFrom = on; setStep(step + 1); }
-      else if (on && !want[step - 1](on) && held > WRONG && !hinted) { hinted = true; say(step, [TX.steps[step - 1][0], TX.wrong[step - 1]], true); }
+      else if (on && on !== lastFrom && !want[step - 1](on) && held > WRONG && !hinted) { hinted = true; say(step, [TX.steps[step - 1][0], TX.wrong[step - 1]], true); }
     }
     timer = requestAnimationFrame(tick);
   }
@@ -180,7 +179,7 @@ if (box && go) {
     if (step >= 1 && step <= 4) { lastFrom = on; setStep(step + 1); }
   });
   againBtn.addEventListener('click', () => { box.classList.remove('done'); pred.classList.remove('open'); on = null; last = null; lastFrom = null; setStep(1); });
-  ends.querySelectorAll('a, button').forEach((a) => a.addEventListener('click', close)); // «Проверить дату» и «Смотреть дальше» ведут по фильму (js/main.js)
+  ends.querySelectorAll('a').forEach((a) => a.addEventListener('click', close)); // «Проверить дату» и «Смотреть дальше» ведут по фильму (js/main.js)
   board.addEventListener('pointermove', onMove);
   board.addEventListener('pointerdown', onMove);
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
