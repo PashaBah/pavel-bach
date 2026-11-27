@@ -40,6 +40,15 @@
     <picture class="hero"><source media="(max-aspect-ratio: 3/4)" srcset="media/hero_t.webp"><img src="media/hero.webp" alt="Pavel Bach, magician" data-ru-alt="Павел Бах, иллюзионист" width="2560" height="1440" fetchpriority="high" decoding="async"></picture>
   </div>
 
+  <!-- «Ваш ход»: фокус через экран. В кадре стол с картами и предсказание рубашкой вверх; сам фокус идёт в окне #trick (там палец не листает фильм).
+       Раскладка и логика — js/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick (js/main.js убирает её и возвращает форматам блик с зуба). -->
+  <div class="shot phonk trickshot" data-scenes="trick" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
+    <div class="ttable teaser" aria-hidden="true">
+      <div class="tboard" id="trickTeaser"></div>
+      <div class="pcard"><div class="pin"><div class="pback"></div></div></div>
+    </div>
+  </div>
+
   <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
     <div class="panels">
       <a class="panel" href="#card" data-goto="card" data-at="0.3" data-video="media/card.mp4" data-video-t="media/pv_card.mp4" style="--i:0;--ox:58%">
@@ -193,6 +202,15 @@
       </p>
       <p class="scroll-hint"><span lang="en">Scroll down</span><span lang="ru">Листайте вниз</span></p>
     </div>
+  </section>
+
+  <!-- ВАШ ХОД: фокус через экран -->
+  <section class="chapter left trick-head" id="trickHead" data-scene="trick" data-in="0.1" data-out="0.9">
+    <p class="tag"><span lang="en">Your Move</span><span lang="ru">Ваш ход</span></p>
+    <h2><span lang="en">A trick that works right through your screen</span><span lang="ru">Фокус, который работает прямо через экран</span></h2>
+    <p class="body"><span lang="en">Pavel has already chosen one card and placed it face down on the table. Every other choice is yours. It takes a minute</span><span lang="ru">Павел уже выбрал одну карту и положил её на стол рубашкой вверх. Все остальные решения — ваши. Займёт минуту</span></p>
+    <p class="trick-go"><button class="btn" type="button" id="trickGo"><span lang="en">Try the trick</span><span lang="ru">Попробовать фокус</span></button></p>
+    <p class="tap-hint"><span lang="en">or keep scrolling to the formats</span><span lang="ru">или листайте дальше, к форматам</span></p>
   </section>
 
   <!-- ТРИ ФОРМАТА: заголовок над тремя панелями -->
@@ -368,6 +386,28 @@
   </div>
 </div>
 
+<!-- «Ваш ход»: фокус через экран, окно поверх фильма. Логика и раскладка — js/trick.js -->
+<div class="trick" id="trick" hidden>
+  <div class="trick-in" role="dialog" aria-modal="true" aria-labelledby="trickSay">
+    <button class="modal-close" id="trickClose" type="button" aria-label="Close" data-ru-aria-label="Закрыть">×</button>
+    <div class="trick-side">
+      <p class="trick-step" id="trickStep"></p>
+      <p class="trick-say" id="trickSay" aria-live="polite"></p>
+      <p class="trick-sub" id="trickSub"></p>
+      <div class="pcard" id="trickPred" aria-hidden="true"><div class="pin"><div class="pback"></div><div class="pface tcard" id="trickFace"></div></div></div>
+      <p class="trick-btns">
+        <button class="btn ghost" type="button" id="trickNext"></button>
+        <button class="btn ghost" type="button" id="trickAgain" hidden><span lang="en">Once more</span><span lang="ru">Ещё раз</span></button>
+      </p>
+      <p class="trick-btns" id="trickEnds" hidden>
+        <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
+        <a class="btn ghost" href="#formats" data-goto="formats" data-at="0.1"><span lang="en">Keep watching</span><span lang="ru">Смотреть дальше</span></a>
+      </p>
+    </div>
+    <div class="trick-table"><div class="tboard" id="trickBoard"></div></div>
+  </div>
+</div>
+
 <!-- «Зачем это нужно?»: текст из <details class="why"> главы открывается здесь, поверх кадра.
      Раньше он раскрывался внутри главы: глава вырастала за край экрана, а прокрутка двигает фильм, поэтому дочитать было нельзя. -->
 <div class="modal why-modal" id="whyModal" hidden>
@@ -456,5 +496,6 @@
 
 <script type="module" src="js/site.js"></script>
 <script type="module" src="js/main.js"></script>
+<script type="module" src="js/trick.js"></script>
 </body>
 </html>

@@ -207,7 +207,7 @@ ${jsonld(lang, faq)}`;
   // русская готика (купленный шрифт): включается, только если файл лежит в fonts/ — см. конец css/style.css
   const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/brahms-gotisch-cyr.woff2'));
   if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/brahms-gotisch-cyr.woff2"');
-  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${ruGoth ? ' data-rugoth="brahms"' : ''}>`);
+  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${ruGoth ? ' data-rugoth="brahms"' : ''}${cfg.trick ? ' data-trick="on"' : ''}>`);
   h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
   h = typo(paths(stripComments(h), root), lang);
   h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);

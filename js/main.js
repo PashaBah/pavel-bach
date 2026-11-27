@@ -17,6 +17,16 @@ const SCENES = [
   { id: 'wine',    len: 4.8, base: '05:01:00.000', span: 160, name: { en: 'The ultimate flex', ru: 'Главный козырь' },     loc: { en: 'Last call',        ru: 'Последний тост' } },
   { id: 'booking', len: 2.2, base: '05:01:11.000', span: 60,  name: { en: 'Your date',       ru: 'Ваша дата' },         loc: { en: 'After the show',   ru: 'После шоу' } },
 ];
+// «Ваш ход» — фокус через экран (js/trick.js), сцена между обложкой и форматами.
+// Пока Павел её не утвердил, она есть только по ссылке с ?trick; для всех — data-trick="on" у <html> (build/build.mjs, config.json → trick)
+const TRICK = /[?&]trick\b/.test(location.search) || document.documentElement.dataset.trick === 'on';
+if (TRICK) {
+  SCENES.splice(1, 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Your move', ru: 'Ваш ход' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
+  const f = document.querySelector('.shot[data-scenes="formats"]');
+  if (f) f.dataset.tr = 'wash'; // блик с зуба теперь ведёт в «Ваш ход», а форматы проявляются из стола с картами
+} else {
+  document.querySelectorAll('[data-scenes="trick"], [data-scene="trick"], #trick').forEach((el) => el.remove());
+}
 
 const FADE = 0.16;   // ширина появления/ухода текста, в высотах экрана
 const DIP = 0.22;    // уход в чёрное

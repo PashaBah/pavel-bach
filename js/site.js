@@ -175,6 +175,8 @@ PB.track = function track(name, data = {}) {
     an('lead_error', { reason: data.reason });
   } else if (name === 'video') {
     an('video_open', { id: String(data.id || '').slice(0, 60) });
+  } else if (name === 'trick') { // фокус «Ваш ход»: открыли, начали, дошли до конца (какая карта открылась)
+    an(`trick_${data.step}`, data.card ? { card: data.card, forced: String(!!data.forced) } : {});
   }
 };
 // клик в WhatsApp или Telegram — где бы ни стояла ссылка
@@ -183,6 +185,7 @@ document.addEventListener('click', (e) => {
   if (a) PB.track('messenger_click', { channel: a.href.includes('wa.me') ? 'whatsapp' : 'telegram' });
 }, true);
 window.addEventListener('pb:video', (e) => PB.track('video', e.detail || {}));
+window.addEventListener('pb:trick', (e) => PB.track('trick', e.detail || {}));
 
 // ── 4. переключатель языка: та же страница другого языка, с метками из адреса и тем же местом в фильме ──
 const toggle = $('#langToggle');
