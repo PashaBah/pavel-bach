@@ -25,7 +25,7 @@ if (TRICK) {
   const f = document.querySelector('.shot[data-scenes="formats"]');
   if (f) f.dataset.tr = 'wash'; // блик с зуба теперь ведёт в «Ваш ход», а форматы проявляются из стола с картами
 } else {
-  document.querySelectorAll('[data-scenes="trick"], [data-scene="trick"], #trick').forEach((el) => el.remove());
+  document.querySelectorAll('[data-scenes="trick"], [data-scene="trick"], #trick, #mole, #moleGoWrap').forEach((el) => el.remove());
 }
 
 const FADE = 0.16;   // ширина появления/ухода текста, в высотах экрана

@@ -175,3 +175,60 @@ if (box && go) {
   box.addEventListener('wheel', hold, { passive: false });
   box.addEventListener('touchmove', hold, { passive: false });
 }
+
+// ── фокус с родинкой (на экране заявки): ролик с подписями по времени, в конце вопрос «Есть?» ──
+const mole = document.getElementById('mole'), moleGo = document.getElementById('moleGo');
+if (mole && moleGo) {
+  const vid = document.getElementById('moleVideo'), cap = document.getElementById('moleCap'), ask = document.getElementById('moleAsk');
+  const mSay = document.getElementById('moleSay'), mSub = document.getElementById('moleSub');
+  const yn = document.getElementById('moleYN'), end = document.getElementById('moleEnd');
+  // подписи привязаны к движениям в ролике (секунды)
+  const CAPS = RU ? [
+    [0, 'Секунду…'], [1.8, 'Видите родинку у меня на руке?'], [4.2, 'Снимаю её…'], [6.0, '…и отправляю вам'], [8.2, 'Посмотрите на свою левую руку. На то же место'],
+  ] : [
+    [0, 'One second…'], [1.8, 'See this mole on my arm?'], [4.2, 'I take it off…'], [6.0, '…and send it to you'], [8.2, 'Now look at your left arm. Same spot'],
+  ];
+  const T2 = RU ? {
+    q: ['Ну что, есть?', 'На левой руке, там же, где у Павла.'],
+    yes: ['Ну как, не в шоке?', 'Вам только что показал фокус сайт. Представьте, что будет вживую.'],
+    no: ['Взрослый человек, а в сказки верите? 😉', 'Настоящая магия — только вживую.'],
+  } : {
+    q: ['So, is it there?', 'On your left arm, in the same spot as Pavel’s.'],
+    yes: ['Not shocked yet?', 'A website just did a trick on you. Imagine it live.'],
+    no: ['A grown-up who believes in fairy tales? 😉', 'Real magic only happens live.'],
+  };
+  const track = (detail) => window.dispatchEvent(new CustomEvent('pb:trick', { detail }));
+  let shown = -1;
+  vid.addEventListener('timeupdate', () => {
+    let k = 0;
+    CAPS.forEach(([t], i) => { if (vid.currentTime >= t) k = i; });
+    if (k !== shown) { shown = k; cap.textContent = CAPS[k][1]; cap.classList.remove('pop'); void cap.offsetWidth; cap.classList.add('pop'); }
+  });
+  vid.addEventListener('ended', () => {
+    mSay.textContent = T2.q[0]; mSub.textContent = T2.q[1];
+    ask.hidden = false; yn.hidden = false; end.hidden = true; cap.textContent = '';
+  });
+  const answer = (yes) => {
+    const [a, b] = yes ? T2.yes : T2.no;
+    mSay.textContent = a; mSub.textContent = b; yn.hidden = true; end.hidden = false;
+    track({ step: yes ? 'mole_yes' : 'mole_no' });
+  };
+  document.getElementById('moleYes').addEventListener('click', () => answer(true));
+  document.getElementById('moleNo').addEventListener('click', () => answer(false));
+  function play() {
+    ask.hidden = true; shown = -1;
+    if (!vid.src) { vid.poster = V(vid.dataset.poster); vid.src = V(vid.dataset.src); }
+    vid.currentTime = 0;
+    vid.play().catch(() => {});
+  }
+  moleGo.addEventListener('click', () => { mole.hidden = false; play(); track({ step: 'mole_open' }); });
+  document.getElementById('moleAgain').addEventListener('click', play);
+  const closeMole = () => { if (mole.hidden) return; mole.hidden = true; vid.pause(); moleGo.focus({ preventScroll: true }); };
+  document.getElementById('moleClose').addEventListener('click', closeMole);
+  end.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMole));
+  mole.addEventListener('click', (e) => { if (e.target === mole) closeMole(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMole(); });
+  const holdM = (e) => e.preventDefault();
+  mole.addEventListener('wheel', holdM, { passive: false });
+  mole.addEventListener('touchmove', holdM, { passive: false });
+}

@@ -367,6 +367,8 @@
       <a data-tg href="https://t.me/+34627084012" rel="noopener" target="_blank">Telegram</a>
       <a href="https://instagram.com/itspaulbach" rel="noopener" target="_blank">Instagram</a>
     </p>
+    <!-- фокус с родинкой (окно #mole, js/trick.js); как и «Ваш ход», пока только по ссылке с ?trick -->
+    <p class="mole-go" id="moleGoWrap"><button type="button" id="moleGo"><span lang="en">Want one more trick, right now? Tap here</span><span lang="ru">Хотите ещё фокус прямо сейчас? Нажмите сюда</span></button></p>
   </section>
 
 </main>
@@ -407,6 +409,24 @@
       <div class="tboard" id="trickBoard"></div>
       <!-- предсказание: конверт лежит на столе с самого начала; в конце переворачивается — внутри красная помада -->
       <div class="pcard env" id="trickPred" aria-hidden="true"><div class="pin"><div class="pback"><i class="seal">PB</i></div><div class="pface"><i class="titem kt"></i><b id="trickCard"></b></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- фокус с родинкой: Павел показывает родинку на руке, «снимает» её и отправляет зрителю; подписи идут по времени ролика (js/trick.js).
+     В конце вопрос «Есть?» — ответ уходит в статистику, и на любой ответ есть смешная реплика. -->
+<div class="mole" id="mole" hidden>
+  <div class="mole-in" role="dialog" aria-modal="true" aria-labelledby="moleCap">
+    <button class="modal-close" id="moleClose" type="button" aria-label="Close" data-ru-aria-label="Закрыть">×</button>
+    <div class="mole-screen">
+      <video id="moleVideo" muted playsinline preload="none" data-src="media/trick_mole.mp4" data-poster="media/trick_mole.jpg"></video>
+      <p class="mole-cap" id="moleCap" aria-live="polite"></p>
+      <div class="mole-ask" id="moleAsk" hidden>
+        <p class="trick-say" id="moleSay"></p>
+        <p class="trick-sub" id="moleSub"></p>
+        <p class="trick-btns" id="moleYN"><button class="btn" type="button" id="moleYes"><span lang="en">Yes, it’s there 😳</span><span lang="ru">Есть 😳</span></button><button class="btn ghost" type="button" id="moleNo"><span lang="en">No</span><span lang="ru">Нет</span></button></p>
+        <p class="trick-btns" id="moleEnd" hidden><a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a><button class="btn ghost" type="button" id="moleAgain"><span lang="en">Watch again</span><span lang="ru">Ещё раз</span></button></p>
+      </div>
     </div>
   </div>
 </div>
