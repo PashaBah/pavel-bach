@@ -975,6 +975,13 @@ function flip(dir) {
 }
 deckPrev.addEventListener('click', () => flip(-1));
 deckNext.addEventListener('click', () => flip(1));
+// нажатие на карту с отзывом — следующий отзыв; после последнего — снова первый
+deck.addEventListener('click', (e) => {
+  if (deckShown < 0.6 || !e.target.closest('.rcard.front:not(.filler)')) return;
+  if (Math.round(deckPos) < N_REV - 1) return flip(1);
+  const rs = SCENES[byId.reviews];
+  window.scrollTo({ top: (rs.start + revLocal(0) * rs.len) * SH, behavior: 'smooth' });
+});
 function layDeck(local, vis) {
   if (Math.abs(vis - deckShown) > 0.001) {
     deckShown = vis;
@@ -1464,7 +1471,7 @@ function openModal(title, { yt, mp4, wide }) {
   window.dispatchEvent(new CustomEvent('pb:video', { detail: { title, id: yt || mp4 } })); // для аналитики (js/site.js)
 }
 const label = (b) => (b.querySelector('b') || b).innerText.trim();
-document.querySelectorAll('.scr, .play, .btn[data-mp4]').forEach((b) => b.addEventListener('click', (e) => {
+document.querySelectorAll('.scr, .play, .btn[data-mp4], .btn[data-yt]').forEach((b) => b.addEventListener('click', (e) => {
   e.preventDefault();
   openModal(label(b), { mp4: b.dataset.mp4, yt: b.dataset.yt || b.dataset.video, wide: 'wide' in b.dataset });
 }));
@@ -1472,6 +1479,34 @@ const closeModal = () => { modal.hidden = true; screen.replaceChildren(); };
 $('#tvClose').addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ── «Зачем это нужно?»: текст главы открывается окном поверх кадра, а не раскрывается внутри главы ──
+// (раскрытая глава не помещалась в экран, а прокрутка двигает фильм — дочитать было нельзя)
+const whyModal = $('#whyModal'), whyBox = $('#whyBox');
+let whyFrom = null;
+document.querySelectorAll('details.why').forEach((d) => {
+  const sum = d.querySelector('summary');
+  sum.setAttribute('aria-haspopup', 'dialog');
+  sum.addEventListener('click', (e) => {
+    e.preventDefault();
+    const ch = d.closest('.chapter');
+    $('#whyTag').textContent = ch ? ch.querySelector('.tag').textContent.trim() : '';
+    $('#whyTitle').textContent = sum.textContent.trim();
+    $('#whyText').replaceChildren(...[...d.querySelectorAll(':scope > p')].map((p) => p.cloneNode(true)));
+    whyFrom = sum;
+    whyModal.hidden = false;
+    whyBox.scrollTop = 0;
+    $('#whyClose').focus();
+  });
+});
+const closeWhy = () => { if (whyModal.hidden) return; whyModal.hidden = true; if (whyFrom) whyFrom.focus({ preventScroll: true }); };
+$('#whyClose').addEventListener('click', closeWhy);
+whyModal.addEventListener('click', (e) => { if (e.target === whyModal) closeWhy(); });
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWhy(); });
+// пока окно открыто, фильм под ним стоит: колесо и свайп листают только сам текст, если он длиннее окна
+const holdScroll = (e) => { if (!whyBox.contains(e.target) || whyBox.scrollHeight <= whyBox.clientHeight + 1) e.preventDefault(); };
+whyModal.addEventListener('wheel', holdScroll, { passive: false });
+whyModal.addEventListener('touchmove', holdScroll, { passive: false });
 
 // ── заявка, WhatsApp, метки и пиксели — в js/site.js (30-я редакция) ──
 
