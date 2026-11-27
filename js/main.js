@@ -21,7 +21,7 @@ const SCENES = [
 // Пока Павел её не утвердил, она есть только по ссылке с ?trick; для всех — data-trick="on" у <html> (build/build.mjs, config.json → trick)
 const TRICK = /[?&]trick\b/.test(location.search) || document.documentElement.dataset.trick === 'on';
 if (TRICK) {
-  SCENES.splice(1, 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Your move', ru: 'Ваш ход' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
+  SCENES.splice(1, 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Your move', ru: 'Фокус для вас' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
   const f = document.querySelector('.shot[data-scenes="formats"]');
   if (f) f.dataset.tr = 'wash'; // блик с зуба теперь ведёт в «Ваш ход», а форматы проявляются из стола с картами
 } else {
