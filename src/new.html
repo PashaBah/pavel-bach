@@ -42,16 +42,14 @@
 
   <!-- КРЮЧОК (новая редакция): вспышка из зуба — он достаёт из колоды короля червей (карта с его лицом), показывает: «Запомните эту карту».
        Щелбан — карта в слоу-мо крутится, камера летит за ней, смаз-панорама уводит в три формата. Развязка — в close-up (туз → этот король).
-       Ролик: черновик Seedance 480p, растянут до 1280×720 (gen/hook/). Клип: 0–40 % — показ, 40–50 % — стоп-кадр под надпись, 50–100 % — полёт карты. -->
-  <div class="shot phonk" data-scenes="hook" data-src="media/new_hook.mp4" data-tr="flash" data-cx="48.06%" data-cy="48.6%" data-ramp="0:0,0.3:0.4,0.56:0.5,1:1" data-mx="41%" data-mx2="74%" data-pan="0.56,0.96"></div>
+       Ролик (v4, 28.11.2026): настоящее видео Павла с картой (IMG_4951), переодетое Seedance 2.5 video_edit, + продолжение video_extension (щелчок и полёт карты),
+       черновик 480p, растянут до 1280×720 (gen/hook/v4_real/). Клип: 0–40 % — показ, 40–50 % — стоп-кадр под надпись, 50–100 % — щелчок и полёт карты. -->
+  <div class="shot phonk" data-scenes="hook" data-src="media/new_hook.mp4" data-tr="flash" data-cx="48.06%" data-cy="48.6%" data-ramp="0:0,0.3:0.4,0.56:0.5,1:1" data-mx="36%" data-mx2="45%" data-pan="0.56,0.96"></div>
 
-  <!-- «Ваш ход»: фокус через экран. В кадре стол с вещами; сам фокус идёт в окне #trick (там страница не листается).
-       Финал: зритель нажимает на Павла, тот щёлкает пальцами — всё, кроме загаданной вещи (красных очков), рассыпается в пепел.
-       Раскладка и логика — js/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick (js/main.js убирает её и возвращает форматам блик с зуба). -->
+  <!-- «Фокус сквозь экран»: в кадре фильма — Павел, который зовёт на фокус (Павел: «стол сразу показывать не надо — лучше меня, который приглашает»).
+       Сам фокус идёт в окне #trick (там страница не листается). Логика и раскладки — js/new/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick. -->
   <div class="shot phonk trickshot" data-scenes="trick" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
-    <div class="ttable teaser" aria-hidden="true">
-      <div class="tboard" id="trickTeaser"></div>
-    </div>
+    <div class="tinvite" aria-hidden="true"><img src="media/trick_invite.webp" srcset="media/trick_invite_m.webp 342w, media/trick_invite.webp 570w" sizes="(max-aspect-ratio: 3/4) 46vw, 30vw" width="570" height="960" alt="" loading="lazy" decoding="async"></div>
   </div>
 
   <div class="shot trip" data-scenes="formats" data-tr="wash" data-fade="0.32" data-cx="48.06%" data-cy="48.6%">
@@ -419,7 +417,6 @@
     </div>
     <div class="trick-table">
       <div class="tboard" id="trickBoard"></div>
-      <i class="tsweep" id="trickSweep" aria-hidden="true"></i>
     </div>
     <!-- ведущий: справа от стола (все его жесты — в сторону стола); позы сменяются наплывом, на телефоне — бюст справа над столом -->
     <div class="trick-host" id="trickHost" aria-hidden="true"><i class="pl"></i><i class="pl"></i></div>

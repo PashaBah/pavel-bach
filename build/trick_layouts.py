@@ -6,6 +6,7 @@
 #   2) любое кольцо → кошелёк → телефон → часы = Apple Watch (есть другие часы и вторые такие же Apple Watch)
 #   3) любой кошелёк → часы → кольцо → телефон = белый телефон (есть чёрные, красный и второй белый)
 # Доска 300×400 условных единиц. Печатает JS-массив VARIANTS для js/new/trick.js.
+# Места загаданной вещи разные (Павел: «слишком в одном месте, снизу по центру»): очки — ниже и правее центра, часы — выше, телефон — слева посередине.
 # Клетки карты media/trick_items.jpg (8×5): 0–7 часы (2 — Apple Watch, 5 — Rolex: не ставим), 8–15 кошельки, 16–21 кольца,
 # 22 жемчужные серьги, 23 кольца-серьги, 24 помада, 25 красный телефон, 26 красные серьги, 27 красный галстук, 28 красные очки,
 # 29 красный брелок, 30 красный паспорт (не ставим), 31 красные духи, 32 чёрный телефон, 33 белый телефон, 34 ключи,
@@ -28,13 +29,14 @@ def poisson(rnd, n_try=6000):
 def cells(pts, cols=3, rows=4):
     return len({(min(cols - 1, int(p[0] / (W / cols))), min(rows - 1, int(p[1] / (H / rows)))) for p in pts})
 
-def attempt(rnd, nD):
+def attempt(rnd, nD, box):
     P = poisson(rnd)
     if len(P) < 48: return None
     rnd.shuffle(P)
     free = list(P)
     take = lambda p: free.remove(p)
-    mids = [p for p in free if 80 < p[0] < 220 and 150 < p[1] < 290]
+    x0, x1, y0, y1 = box  # где на столе лежит загаданная вещь (у каждого варианта своё место)
+    mids = [p for p in free if x0 < p[0] < x1 and y0 < p[1] < y1]
     if not mids: return None
     T = rnd.choice(mids); take(T)
     # воронка: три вещи вида C вокруг T в разные стороны
@@ -96,10 +98,10 @@ def attempt(rnd, nD):
     spread = sum(d(p, (cx, cy)) for p in Bs) / 6
     return dict(T=T, T2=T2, F=F, Ds=Ds, Bs=Bs, Cs=Cs, Ss=Ss, other=free, worst=max(w1, w2), spread=spread)
 
-def solve(tries, nD, seed0):
+def solve(tries, nD, seed0, box):
     best = None
     for seed in range(seed0, seed0 + tries):
-        r = attempt(random.Random(seed), nD)
+        r = attempt(random.Random(seed), nD, box)
         if not r: continue
         score = r['worst'] - r['spread'] / 400
         if best is None or score < best[0]:
@@ -108,11 +110,11 @@ def solve(tries, nD, seed0):
 
 # 23 (серьги-кольца) не ставим: их можно принять за кольцо
 VARIANTS = [
-    dict(key='glasses', S='w', B='l', C='r', D='x', T=28, Dcells=[24, 25, 26, 27, 29, 31], Dk='x',
+    dict(key='glasses', box=(150, 220, 232, 292), S='w', B='l', C='r', D='x', T=28, Dcells=[24, 25, 26, 27, 29, 31], Dk='x',
          other=[22, 32, 33, 34, 35, 36, 37, 38, 35, 36, 32, 33, 34, 37, 38]),
-    dict(key='awatch', S='r', B='l', C='p', D='w', T=2, Dcells=[0, 1, 3, 4, 6, 7], Dk='w',
+    dict(key='awatch', box=(95, 205, 105, 165), S='r', B='l', C='p', D='w', T=2, Dcells=[0, 1, 3, 4, 6, 7], Dk='w',
          other=[22, 24, 26, 27, 28, 29, 31, 34, 35, 36, 37, 38, 28, 35, 22]),
-    dict(key='wphone', S='l', B='w', C='r', D='p', T=33, Dcells=[32, 25, 32, 25, 32, 25], Dk='p',
+    dict(key='wphone', box=(70, 140, 170, 235), S='l', B='w', C='r', D='p', T=33, Dcells=[32, 25, 32, 25, 32, 25], Dk='p',
          other=[22, 24, 26, 27, 28, 29, 31, 34, 35, 36, 37, 38, 28, 37, 22]),
 ]
 SCALE = {'w': 1.0, 'l': 1.1, 'r': 0.8, 'x': 1.0, 'p': 0.95, 'o': 0.95}
@@ -120,7 +122,7 @@ CELLS = {'w': [0, 1, 2, 3, 4, 6, 7], 'l': [8, 9, 10, 11, 12, 13, 14, 15], 'r': [
 
 out = []
 for vi, V in enumerate(VARIANTS):
-    best = solve(4000, len(V['Dcells']), 1 + vi * 10000)
+    best = solve(6000, len(V['Dcells']), 1 + vi * 10000, V['box'])
     if not best: sys.exit(f'нет решения для {V["key"]}')
     score, seed, L = best
     rnd = random.Random(seed * 7 + 1)
