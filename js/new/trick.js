@@ -76,7 +76,7 @@ const TX = RU ? {
   label: 'Фокус сквозь экран', step: (n) => `Шаг ${n} из 4`, last: 'Последний шаг',
   intro: ['Павел угадает, что вы сделаете', 'На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом.'],
   tap: ['Запомнили? Теперь нажмите на Павла', 'И не сводите глаз со своей вещи.'],
-  start: 'Начать', next: 'Дальше →', back: '← Назад', host: 'Павел: нажмите, чтобы он щёлкнул пальцами',
+  start: 'Начать', next: 'Дальше →', back: '← Назад', snap: 'Щёлкнуть пальцами', host: 'Павел: нажмите, чтобы он щёлкнул пальцами',
   v: {
     glasses: { steps: [
       ['Выберите взглядом любые часы', 'Любые. Никому не говорите какие.'],
@@ -101,7 +101,7 @@ const TX = RU ? {
   label: 'A trick through the screen', step: (n) => `Step ${n} of 4`, last: 'Last step',
   intro: ['Pavel will guess what you are about to do', 'On the table: the things guests hide first when Pavel walks in. You will choose with your eyes only.'],
   tap: ['Got it? Now tap Pavel', 'And keep your eyes on your thing.'],
-  start: 'Start', next: 'Next →', back: '← Back', host: 'Pavel: tap to make him snap his fingers',
+  start: 'Start', next: 'Next →', back: '← Back', snap: 'Snap his fingers', host: 'Pavel: tap to make him snap his fingers',
   v: {
     glasses: { steps: [
       ['Pick any watch with your eyes', 'Any one. Don’t tell anyone which.'],
@@ -410,7 +410,7 @@ if (box && go) {
     }
     if (n === 5) { // «нажмите на Павла»: ждём нажатия, сам шаг не уходит
       say(TX.last, TX.tap); pose('s0');
-      nextBtn.hidden = true; tappable(true);
+      nextBtn.textContent = TX.snap; nextBtn.hidden = false; tappable(true); // запасная кнопка — на случай, если нажатие на Павла не сработает
       // заранее: разобрать вещи на крупинки (тяжело) и подгрузить видео щелчка, чтобы по нажатию всё началось сразу
       prep = null; after(150, () => { if (step === 5) atlas().then(() => { if (step === 5) prep = prepAsh(board); }); });
       if (snapV && !snapV.getAttribute('src')) { snapV.src = V(SNAP.src); snapV.load(); }
@@ -483,10 +483,19 @@ if (box && go) {
   }
   go.addEventListener('click', open);
   document.getElementById('trickClose').addEventListener('click', close);
-  nextBtn.addEventListener('click', () => { if (step === 0) track({ step: 'start' }); if (step >= 0 && step <= 4) setStep(step + 1); });
+  nextBtn.addEventListener('click', () => { if (step === 0) track({ step: 'start' }); if (step >= 0 && step <= 4) setStep(step + 1); else if (step === 5) fire(); });
   backBtn.addEventListener('click', () => { if (step >= 2 && step <= 5) setStep(step - 1); });
   backBtn.textContent = TX.back;
   host.addEventListener('click', fire);
+  // на последнем шаге щелчок срабатывает от нажатия в любое место окна (кроме кнопок и ссылок): на телефоне это надёжнее
+  // (Павел, 29.11.2026: «с телефона нажатие на Павла не срабатывает»). pointerup — потому что iOS не шлёт click по «некликабельным» блокам.
+  let downAt = null;
+  box.addEventListener('pointerdown', (e) => { downAt = step === 5 ? [e.clientX, e.clientY] : null; });
+  box.addEventListener('pointerup', (e) => {
+    if (step !== 5 || !downAt || e.target.closest('button, a, .modal-close')) return;
+    if (Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 24) return; // это был жест, а не нажатие
+    downAt = null; fire();
+  });
   host.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
   againBtn.addEventListener('click', () => { reset(); useVariant(vi + 1); setStep(1); });
   ends.querySelectorAll('a').forEach((a) => a.addEventListener('click', close)); // «Проверить дату» и «Смотреть дальше» ведут по фильму (js/main.js)
