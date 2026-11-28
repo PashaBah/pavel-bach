@@ -4,7 +4,7 @@
 // len — длина сцены в высотах экрана; base — таймкод начала; span — сколько миллисекунд «проходит» за сцену
 const SCENES = [
   { id: 'cover',   len: 3.05, base: '03:33:00.000', span: 70,  name: { en: '',                ru: '' },                  loc: { en: 'After hours',      ru: 'После полуночи' } },
-  { id: 'hook',    len: 3.0, base: '03:33:05.000', span: 20,  name: { en: 'Remember the card', ru: 'Запомните карту' }, loc: { en: 'One card', ru: 'Одна карта' }, rail: false },
+  // сцена «Запомните эту карту» (hook) убрана 29.11.2026: Павел — «летящая карта пока не годится»; клип и разметка лежат в истории git (v60)
   { id: 'formats', len: 1.3, base: '03:33:07.100', span: 30,  name: { en: 'Three formats',   ru: 'Три формата' },       loc: { en: 'Tracklist',        ru: 'Трек-лист' } },
   { id: 'card',    len: 4.4, base: '03:41:12.400', span: 160, name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' } },
   { id: 'king',    len: 1.7, base: '03:41:12.560', span: 20,  name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' }, rail: false },
@@ -17,16 +17,12 @@ const SCENES = [
   { id: 'wine',    len: 3.4, base: '05:01:00.000', span: 160, name: { en: 'Your date', ru: 'Ваша дата' },     loc: { en: 'Last call',        ru: 'Последний тост' }, rail: false },
   { id: 'booking', len: 2.2, base: '05:01:11.000', span: 60,  name: { en: 'Your date',       ru: 'Ваша дата' },         loc: { en: 'After the show',   ru: 'После шоу' } },
 ];
-// «Ваш ход» — фокус через экран (js/trick.js), сцена между обложкой и форматами.
-// Пока Павел её не утвердил, она есть только по ссылке с ?trick; для всех — data-trick="on" у <html> (build/build.mjs, config.json → trick)
-const TRICK = /[?&]trick\b/.test(location.search) || document.documentElement.dataset.trick === 'on';
-if (TRICK) {
-  SCENES.splice(SCENES.findIndex((s) => s.id === 'formats'), 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Your move', ru: 'Фокус для вас' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
-  const f = document.querySelector('.shot[data-scenes="formats"]');
-  if (f) f.dataset.tr = 'wash'; // блик с зуба теперь ведёт в «Ваш ход», а форматы проявляются из стола с картами
-} else {
-  document.querySelectorAll('[data-scenes="trick"], [data-scene="trick"], #trick, #mole, #moleGoWrap').forEach((el) => el.remove());
-}
+// «Фокус сквозь экран» — фокус с вещами (js/new/trick.js), сцена между обложкой и форматами. С 29.11.2026 — для всех (Павел утвердил).
+// Фокус с родинкой пока только по ссылке с ?trick (или data-trick="on" у <html>: build/build.mjs, config.json → trick).
+const MOLE = /[?&]trick\b/.test(location.search) || document.documentElement.dataset.trick === 'on';
+SCENES.splice(SCENES.findIndex((s) => s.id === 'formats'), 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Through the screen', ru: 'Фокус сквозь экран' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
+{ const f = document.querySelector('.shot[data-scenes="formats"]'); if (f) f.dataset.tr = 'wash'; } // блик с зуба ведёт в фокус, форматы проявляются из него
+if (!MOLE) document.querySelectorAll('#mole, #moleGoWrap').forEach((el) => el.remove());
 
 const FADE = 0.16;   // ширина появления/ухода текста, в высотах экрана
 const DIP = 0.22;    // уход в чёрное
@@ -927,7 +923,7 @@ const menuBtns = [...document.querySelectorAll('[data-fly]')];
 const closeSheet = () => { menuSheet.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
 menuBtns.forEach((b) => b.addEventListener('click', () => { closeSheet(); flyTo(b.dataset.fly, parseFloat(b.dataset.at || 0.05)); }));
 menuBtn.addEventListener('click', () => { menuSheet.hidden = !menuSheet.hidden; menuBtn.setAttribute('aria-expanded', String(!menuSheet.hidden)); });
-const MENU_OF = { hook: 'formats', formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
+const MENU_OF = { trick: 'formats', formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
 
 document.querySelectorAll('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
   e.preventDefault();

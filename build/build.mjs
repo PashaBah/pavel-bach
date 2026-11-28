@@ -180,14 +180,15 @@ function minCss(c) {
 const STYLE = minCss(rd('css/style.css'));
 const STYLE_NEW = minCss(rd('css/new.css'));
 
-// ── главная ──
+// ── главная (с 29.11.2026 — новая редакция: src/new.html, css/new.css, js/new/) ──
+//    Павел: «перенеси новую версию на основной домен, старую тоже где-нибудь сохрани». Старая главная — /old/ и /old/ru/ (закрыта от поиска).
+//    /new/ и /new/ru/ остаются копией главной (по ним уже ходили ссылки), тоже закрыты от поиска, canonical — на главную.
 const SRC = rd('src/index.html');
-for (const lang of LANGS) {
-  const root = lang === 'ru' ? '../' : '';
-  let h = only(SRC, lang);
-  const faq = [...h.match(/<div class="faq">([\s\S]*?)<\/div>\s*<p class="roll-cta">/)[1].matchAll(/<summary>([\s\S]*?)<\/summary>\s*<p>([\s\S]*?)<\/p>/g)].map((m) => [text(m[1]), text(m[2])]);
-  const M = META[lang], url = pageUrl(lang);
-  const meta = `<title>${esc(M.title)}</title>
+const SRC_NEW = rd('src/new.html');
+function seoMeta(lang, h, url) {
+  const faq = [...(h.match(/<div class="faq">([\s\S]*?)<\/div>\s*<p class="roll-cta">/) || ['', ''])[1].matchAll(/<summary>([\s\S]*?)<\/summary>\s*<p>([\s\S]*?)<\/p>/g)].map((m) => [text(m[1]), text(m[2])]);
+  const M = META[lang];
+  return `<title>${esc(M.title)}</title>
 <meta name="description" content="${esc(M.description)}">
 <link rel="canonical" href="${url}">
 ${alternates('')}
@@ -204,41 +205,35 @@ ${robots}<meta property="og:type" content="website">
 <meta property="og:locale:alternate" content="${lang === 'ru' ? 'en_US' : 'ru_RU'}">
 <meta name="twitter:card" content="summary_large_image">
 ${jsonld(lang, faq)}`;
-  h = h.replace('<!--@meta-->', meta).replace('<!--@boot-->', boot(lang));
-  // русская готика (купленный шрифт): включается, только если файл лежит в fonts/ — см. конец css/style.css
-  const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/brahms-gotisch-cyr.woff2'));
-  if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/brahms-gotisch-cyr.woff2"');
-  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${ruGoth ? ' data-rugoth="brahms"' : ''}${cfg.trick ? ' data-trick="on"' : ''}>`);
-  h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
-  h = typo(paths(stripComments(h), root), lang);
-  h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
-  write(lang === 'ru' ? 'ru/index.html' : 'index.html', h);
 }
-
-// ── новая редакция главной (черновик, 28.11.2026): /new/ и /new/ru/. Свой исходник (src/new.html), стили (css/new.css) и скрипты (js/new/).
-//    Старая главная не меняется. Закрыта от поиска (noindex), canonical — на основную страницу. Юридические ссылки ведут на общие страницы.
-const SRC_NEW = rd('src/new.html');
-for (const lang of LANGS) {
-  const root = lang === 'ru' ? '../../' : '../';
-  let h = only(SRC_NEW, lang);
-  const M = META[lang];
-  const meta = `<title>${esc(M.title)}</title>
+const hiddenMeta = (lang) => { const M = META[lang]; return `<title>${esc(M.title)}</title>
 <meta name="description" content="${esc(M.description)}">
 <link rel="canonical" href="${pageUrl(lang)}">
 <meta name="robots" content="noindex">
 <meta property="og:type" content="website">
 <meta property="og:title" content="${esc(M.ogTitle)}">
 <meta property="og:description" content="${esc(M.ogDescription)}">
-<meta property="og:image" content="${ORIGIN}/media/og.jpg">`;
-  h = h.replace('<!--@meta-->', meta).replace('<!--@boot-->', boot(lang));
+<meta property="og:image" content="${ORIGIN}/media/og.jpg">`; };
+// одна сборка страницы: исходник, язык, папка, куда писать, мета, стиль
+function page(src, lang, dir, meta, style, cssFile, edition) {
+  const depth = dir.split('/').filter(Boolean).length + (lang === 'ru' ? 1 : 0);
+  const root = '../'.repeat(depth);
+  let h = only(src, lang);
+  h = h.replace('<!--@meta-->', meta(h)).replace('<!--@boot-->', boot(lang));
+  // русская готика (купленный шрифт): включается, только если файл лежит в fonts/ — см. конец css/style.css
   const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/brahms-gotisch-cyr.woff2'));
   if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/brahms-gotisch-cyr.woff2"');
-  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}" data-edition="new"${ruGoth ? ' data-rugoth="brahms"' : ''}${cfg.trick ? ' data-trick="on"' : ''}>`);
+  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}"${edition ? ' data-edition="new"' : ''}${ruGoth ? ' data-rugoth="brahms"' : ''}${cfg.trick ? ' data-trick="on"' : ''}>`);
   h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
-  h = h.replace(/href="(privacy|cookies|legal)\/"/g, (_, p) => `href="${BASE}${lang === 'ru' ? 'ru/' : ''}${p}/"`);
+  if (dir) h = h.replace(/href="(privacy|cookies|legal)\/"/g, (_, p) => `href="${BASE}${lang === 'ru' ? 'ru/' : ''}${p}/"`); // юридические страницы — общие
   h = typo(paths(stripComments(h), root), lang);
-  h = h.replace(/<link rel="stylesheet" href="[^"]*css\/new\.css[^"]*">/, () => `<style>${STYLE_NEW.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
-  write(lang === 'ru' ? 'new/ru/index.html' : 'new/index.html', h);
+  h = h.replace(new RegExp(`<link rel="stylesheet" href="[^"]*css\\/${cssFile}\\.css[^"]*">`), () => `<style>${style.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
+  write(`${dir ? dir + '/' : ''}${lang === 'ru' ? 'ru/' : ''}index.html`, h);
+}
+for (const lang of LANGS) {
+  page(SRC_NEW, lang, '', (h) => seoMeta(lang, h, pageUrl(lang)), STYLE_NEW, 'new', true);   // главная — новая редакция
+  page(SRC_NEW, lang, 'new', () => hiddenMeta(lang), STYLE_NEW, 'new', true);                 // /new/ — та же страница (старые ссылки)
+  page(SRC, lang, 'old', () => hiddenMeta(lang), STYLE, 'style', false);                       // /old/ — прежняя главная
 }
 
 // ── отдельные страницы: свой лёгкий стиль (css/page.css), без фильма и без пикселей ──

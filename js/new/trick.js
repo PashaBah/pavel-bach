@@ -287,7 +287,11 @@ function ashBoard(board, layer, from, onReveal, prep) {
   // чёткость пыли: на телефоне — в 2 раза мельче точки, на большом экране — 1:1 (не больше ~1,6 млн точек, чтобы не тормозило)
   const ds = Math.max(1, Math.min(2, window.devicePixelRatio || 1, Math.sqrt(1.6e6 / Math.max(1, lr.width * lr.height))));
   const DW = Math.max(1, Math.round(lr.width * ds)), DH = Math.max(1, Math.round(lr.height * ds));
-  dust.width = DW; dust.height = DH; layer.appendChild(dust);
+  dust.width = DW; dust.height = DH;
+  // пыль — внутри стола, ПОД загаданной вещью: соседние крупинки пролетают за ней, и она ни на миг не пропадает из виду
+  // (Павел, 29.11.2026: «нужно, чтобы тот предмет вообще не исчезал, вообще не растворялся ни разу»). Холст по размеру всего окна.
+  dust.style.cssText = `left:${-ox}px;top:${-oy}px;width:${lr.width}px;height:${lr.height}px`;
+  board.appendChild(dust);
   const dx = dust.getContext('2d'), img = dx.createImageData(DW, DH), buf = new Uint32Array(img.data.buffer);
   const rise = bw * 0.12;
   const revealAt = items.reduce((m, it) => Math.max(m, it.end), 0) + 0.25;
