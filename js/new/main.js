@@ -1226,26 +1226,25 @@ function deepFrame(sh, D, d) {
 // ── подлёт (новая редакция): регалии пролетают сквозь кадр, логотипы клиентов кружат вокруг него и уходят в бриллиант в зубе ──
 // Всё считается от прокрутки в «экранах» от начала обложки (a). Надписи висят в глубине на оси полёта камеры:
 // каждая приближается (растёт из точки схода), стоит перед зрителем, пока её читают, и пролетает мимо камеры.
-const credsEl = $('#creds'), credEls = [...document.querySelectorAll('.cred')], orbitEl = $('#orbit');
-const orbitLi = orbitEl ? [...orbitEl.querySelectorAll('li')] : [];
-const CRED = { a0: 0.30, step: 0.25, win: 0.46 };        // когда появляется первая, шаг между соседними, сколько живёт каждая
-const ORB = { a0: 1.84, end: 2.98, span: 0.6 };          // воронка логотипов: с a0 до end, каждый летит span «экранов»
+const credsEl = $('#creds'), credEls = [...document.querySelectorAll('.cred')];
+const CRED = { a0: 0.30, step: 0.25, win: 0.46, end: 0 };        // когда появляется первая, шаг между соседними, сколько живёт каждая
 const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
 goQueue.push(() => document.querySelectorAll('img[data-early]').forEach((im) => { im.src = V(im.dataset.early); }));
+CRED.end = credEls.reduce((m, el, i) => Math.max(m, CRED.a0 + i * CRED.step + CRED.win * (parseFloat(el.dataset.win) || 1)), 0); // когда улетает последняя
 let credsOn = null;
 function layCreds(a, now) {
   if (!credsEl) return;
-  const on = a > CRED.a0 - 0.05 && a < ORB.end + 0.1;
+  const on = a > CRED.a0 - 0.05 && a < CRED.end + 0.05;
   if (on !== credsOn) { credsOn = on; credsEl.style.visibility = on ? 'visible' : 'hidden'; }
   if (!on) return;
   const cov = shots[0];
   const tall = vw / vh < 0.8;
   const cx = vw / 2, cy = barH + (vh - barH - footH) * (tall ? 0.44 : 0.47); // точка схода — его лицо
   // подложка: чуть затемняет кадр под надписями, к логотипам уходит (лицо остаётся светлым)
-  const veil = smooth((a - CRED.a0) / 0.2) * (1 - smooth((a - ORB.a0) / 0.3));
+  const veil = smooth((a - CRED.a0) / 0.2) * (1 - smooth((a - CRED.end + 0.25) / 0.25));
   credsEl.style.setProperty('--veil', veil.toFixed(3));
   credEls.forEach((el, i) => {
-    const u = (a - CRED.a0 - i * CRED.step) / CRED.win;
+    const u = (a - CRED.a0 - i * CRED.step) / (CRED.win * (el._win || (el._win = parseFloat(el.dataset.win) || 1)));
     if (u <= 0 || u >= 1) { if (el._on !== false) { el._on = false; el.style.visibility = 'hidden'; } return; }
     if (el._on !== true) { el._on = true; el.style.visibility = ''; el._dx = parseFloat(el.style.getPropertyValue('--dx')) || 0; el._dy = parseFloat(el.style.getPropertyValue('--dy')) || 0; }
     let s, op;
@@ -1257,30 +1256,6 @@ function layCreds(a, now) {
     el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(4)}) rotate(${(el._dx * (s - 1) * 14).toFixed(2)}deg)`;
     el.style.opacity = op.toFixed(3);
     el.style.zIndex = Math.round(u * 100); // ближняя надпись — поверх дальней
-  });
-  // логотипы: воронка в 3D. Каждый вылетает из глубины — из его лица (точка схода в бриллианте), раскручивается по спирали
-  // и проносится мимо камеры, огромный, с поворотом в пространстве. Соседние идут через «золотой угол», поэтому спираль не повторяется.
-  const oa = a - ORB.a0;
-  if (oa <= -0.02 || !orbitLi.length || cov.el.style.display === 'none') { if (orbitEl._on !== false) { orbitEl._on = false; orbitEl.style.visibility = 'hidden'; } return; }
-  if (orbitEl._on !== true) { orbitEl._on = true; orbitEl.style.visibility = ''; } // пусто = как у слоя: когда слой спрятан, логотипы прячутся вместе с ним
-  const [gx, gy] = onScreen(cov, GEM[0], GEM[1]);
-  const n = orbitLi.length, gap = (ORB.end - ORB.a0 - ORB.span) / (n - 1);
-  const R = Math.hypot(vw, vh) * (tall ? 0.5 : 0.44);
-  const r0 = (tall ? vw * 0.3 : vh * 0.2);              // логотипы выходят из-за головы — кольцом вокруг неё, лицо остаётся открытым
-  orbitLi.forEach((el, j) => {
-    const u = (oa - j * gap) / ORB.span;
-    if (u <= 0 || u >= 1) { if (el._on !== false) { el._on = false; el.style.opacity = 0; } return; }
-    el._on = true;
-    const d = 1 - u;                                   // глубина: 1 — в точке схода, 0 — у самой камеры
-    const s = 0.16 / (d + 0.16);                       // перспектива: из глубины (0,14) — во весь экран (1)
-    const th = j * 2.39996 + u * 3.6 + oa * 0.8;       // золотой угол между логотипами + закрутка по ходу полёта
-    const rr = r0 + R * s;
-    const x = gx + Math.cos(th) * rr, y = gy + Math.sin(th) * rr * (tall ? 0.9 : 0.62);
-    const tiltY = Math.cos(th) * -48 * s, tiltX = Math.sin(th) * 30 * s; // повёрнут к оси полёта: как карта, пролетающая мимо
-    const op = smooth(u / 0.18) * (1 - smooth((u - 0.86) / 0.14));
-    el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) perspective(900px) rotateY(${tiltY.toFixed(1)}deg) rotateX(${tiltX.toFixed(1)}deg) rotateZ(${(Math.sin(th * 0.5) * 8).toFixed(1)}deg) scale(${(s * 2.6).toFixed(3)})`;
-    el.style.opacity = op.toFixed(3);
-    el.style.zIndex = Math.round(u * 100);
   });
 }
 
