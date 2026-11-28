@@ -1329,11 +1329,13 @@ function peek() { // один раз за визит: чуть промотат�
   if (touched || window.scrollY > 2 || reduced) return;
   try { if (sessionStorage.getItem('pb_peek')) return; sessionStorage.setItem('pb_peek', '1'); } catch (e) { /* без памяти — просто покажем */ }
   const t0 = performance.now(), top = 0.2 * SH, UP = 800, DOWN = 950;
+  let set = 0;
   const run = (t) => {
-    if (touched) return; // человек начал листать сам — не мешаем
+    if (touched || Math.abs(window.scrollY - set) > 6) return; // человек начал листать сам (в том числе полосой прокрутки) — не мешаем
     const d = t - t0;
     const q = d < UP ? inOut(d / UP) : 1 - inOut((d - UP) / DOWN);
-    window.scrollTo(0, Math.max(0, q) * top);
+    set = Math.round(Math.max(0, q) * top);
+    window.scrollTo(0, set);
     if (d < UP + DOWN) requestAnimationFrame(run); else window.scrollTo(0, 0);
   };
   requestAnimationFrame(run);
