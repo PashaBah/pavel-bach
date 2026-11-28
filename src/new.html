@@ -185,9 +185,9 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach — magician for corporate and private events</span><span lang="ru">Павел Бах (Pavel Bach) — иллюзионист для корпоративных и частных событий</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
-        <!-- новая редакция: «Иллюзионист» сидит в выемке над надписью (между высокими P и CH), тем же готическим шрифтом, что слоган; улетает вместе с ней -->
-        <img class="role" lang="en" src="media/new_role_en.png" srcset="media/new_role_en_m.png 480w, media/new_role_en.png 860w" sizes="(max-width: 760px) 50vw, 420px" width="860" height="371" alt="">
-        <img class="role" lang="ru" src="media/new_role_ru.png" srcset="media/new_role_ru_m.png 480w, media/new_role_ru.png 860w" sizes="(max-width: 760px) 54vw, 460px" width="860" height="368" alt="">
+        <!-- «Иллюзионист» — в выемке над надписью (между высокими P и CH), тем же шрифтом, что подпись «частные и корпоративные события» под ней
+             (бриллиантовая картинка-слово Павлу не подошла: другой цвет и шрифт, спорит с PAVEL BACH); улетает вместе с надписью -->
+        <p class="role eyebrow"><span lang="en">Magician</span><span lang="ru">Иллюзионист</span></p>
         <img class="ice-logo" data-late-src="media/ice_logo.webp" data-late-srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" alt="">
         <!-- надпись начинает качаться, когда главная картинка первого экрана (LCP) уже пришла: на медленной сети они больше не делят канал; появляется со своей анимацией -->
         <script>(function(){var l=document.querySelector('.chapter.cover .ice-logo'),h=document.querySelector('.shot .hero img'),d=0;function go(){if(d)return;d=1;if(!l.getAttribute('src')){l.srcset=l.getAttribute('data-late-srcset');l.src=l.getAttribute('data-late-src')}(l.decode?l.decode():Promise.resolve()).catch(function(){}).then(function(){l.parentNode.classList.add('in')})}if(!h||h.complete)go();else{h.addEventListener('load',go);h.addEventListener('error',go);setTimeout(go,3000)}})()</script>
@@ -219,7 +219,7 @@
       <li class="cred" style="--dx:0.03;--dy:-0.08"><small><span lang="en">On the road</span><span lang="ru">География</span></small><b><span lang="en">12 Countries</span><span lang="ru">12 стран</span></b><em><span lang="en">and counting</span><span lang="ru">и это не предел</span></em></li>
       <li class="cred" style="--dx:-0.03;--dy:0.09"><small><span lang="en">Awards</span><span lang="ru">Премия</span></small><b>Wedding Awards</b><em><span lang="en">finalist 2021 &amp; 2022 · Best Artist / Show</span><span lang="ru">финалист 2021 и 2022 · «Лучший артист / шоу»</span></em></li>
       <li class="cred" style="--dx:0.03;--dy:-0.12"><small><span lang="en">Television</span><span lang="ru">Телевидение</span></small><b><span lang="en">TV Projects</span><span lang="ru">ТВ-проекты</span></b><em><span lang="en">in Russia and the USA</span><span lang="ru">в России и США</span></em></li>
-      <li class="cred" style="--dx:0;--dy:0.14"><small><span lang="en">Magic consultant</span><span lang="ru">Консультант по иллюзии</span></small><b>America's Got Talent</b><em><span lang="en">behind the scenes of the show</span><span lang="ru">за кулисами шоу</span></em></li>
+      <li class="cred agt" style="--dx:0;--dy:0.14"><small><span lang="en">US television</span><span lang="ru">Телевидение США</span></small><b>America's Got Talent<i class="b2">Magic Consultant</i></b></li>
       <li class="cred wall" style="--dx:0;--dy:0" data-win="1.55"><small><span lang="en">Performed for</span><span lang="ru">Выступал для брендов</span></small>
         <ul class="wall-grid">
           <li style="--h:0.7;--ar:2.4"><img data-early="media/logos/dior.webp" alt="Dior"></li>
