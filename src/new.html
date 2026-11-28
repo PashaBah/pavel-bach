@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex" data-src-only>
+<!--@meta-->
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="media/apple-touch-icon.png">
+<link rel="dns-prefetch" href="https://res.cloudinary.com">
+<link rel="preload" as="image" href="media/hero.webp" media="(min-aspect-ratio: 3/4)" fetchpriority="high">
+<link rel="preload" as="image" href="media/hero_t.webp" media="(max-aspect-ratio: 3/4)" fetchpriority="high">
+<!-- шрифты лежат на самом сайте (папка fonts, описаны в начале css/style.css). Заранее грузим два файла первого экрана своего языка
+     (EN: Jost и готика Pirata One; RU: Jost и Tinos с кириллицей). Надпись PAVEL BACH грузится с низким приоритетом: сначала главная картинка (LCP). -->
+<link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/jost-latin.woff2" crossorigin>
+<link lang="en" rel="preload" as="font" type="font/woff2" href="fonts/pirata-one-400-latin.woff2" crossorigin>
+<link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/jost-cyrillic.woff2" crossorigin>
+<link lang="ru" rel="preload" as="font" type="font/woff2" href="fonts/tinos-400-cyrillic.woff2" crossorigin>
+<!--@boot-->
+<link rel="stylesheet" href="css/new.css?v=29">
+</head>
+<body>
+
+<!-- ФИЛЬМ: одна ночь, один дворец, превращённый в клуб. Скролл перематывает его.
+     Каждый .shot — клип (перематывается), кадр или сцена из разметки. Всё внутри .shot привязано к картинке.
+     data-tr — как сцена появляется:
+       flash  — блик на зубе: звезда, анаморфная полоса, кадр пересвечивается в белое
+       expand — сцена раскрывается из своей панели в трёх форматах
+       wash   — растворение;  iris — круг раскрывается из глаза короля на карте
+       whip   — резкая панорама вбок со смазом;  strobe — вспышки папарацци
+       burn   — засветка плёнки;  crt — предыдущий кадр гаснет, как выключенный телевизор
+     data-zoom="x,y,k" — в конце сцены камера наезжает в точку кадра.
+     data-ramp="p:t,…" — рапид и ускорение: доля сцены → доля клипа.
+     data-mx — какую точку кадра по ширине держать в центре вертикального экрана. -->
+<div id="film">
+  <!-- обложка: подлёт к нему, он улыбается, блик на зубе -->
+  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-src-t="media/cover_t.mp4" data-win="0.25,0.440625" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.8:1,1:1" data-mx="47%">
+    <!-- первый экран: тот же первый кадр, но резкий (tools/hero28.mjs — лицо из исходного кадра 2048 px); с началом прокрутки растворяется в ролике -->
+    <picture class="hero"><source media="(max-aspect-ratio: 3/4)" srcset="media/hero_t.webp"><img src="media/hero.webp" alt="Pavel Bach, magician" data-ru-alt="Павел Бах, иллюзионист" width="2560" height="1440" fetchpriority="high" decoding="async"></picture>
+  </div>
+
+  <!-- «Ваш ход»: фокус через экран. В кадре стол с вещами и конверт с предсказанием; сам фокус идёт в окне #trick (там страница не листается).
+       Раскладка и логика — js/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick (js/main.js убирает её и возвращает форматам блик с зуба). -->
+  <div class="shot phonk trickshot" data-scenes="trick" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
+    <div class="ttable teaser" aria-hidden="true">
+      <div class="tboard" id="trickTeaser"></div>
+      <div class="pcard env"><div class="pin"><div class="pback"><i class="seal">PB</i></div></div></div>
+    </div>
+  </div>
+
+  <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
+    <div class="panels">
+      <a class="panel" href="#card" data-goto="card" data-at="0.3" data-video="media/card.mp4" data-video-t="media/pv_card.mp4" style="--i:0;--ox:58%">
+        <span class="pnum">01</span>
+        <b class="ptag"><span lang="en">Close-up</span><span lang="ru">Микромагия</span></b>
+        <span class="pdesc"><span lang="en">Magic right in your guests' hands</span><span lang="ru">Фокусы прямо в руках у гостей</span></span>
+        <em><span lang="en">20–60 min</span><span lang="ru">20–60 минут</span></em>
+      </a>
+      <a class="panel" href="#stage" data-goto="stage" data-at="0.04" data-video="media/door.mp4" data-video-t="media/pv_door.mp4" style="--i:1;--ox:50%">
+        <span class="pnum">02</span>
+        <b class="ptag"><span lang="en">Stage Show</span><span lang="ru">Шоу на сцене</span></b>
+        <span class="pdesc"><span lang="en">A comedy show for the whole room</span><span lang="ru">Комедийное шоу для всего зала</span></span>
+        <em><span lang="en">25 min</span><span lang="ru">25 минут</span></em>
+      </a>
+      <a class="panel" href="#incog" data-goto="incog" data-at="0.04" data-video="media/waiter.mp4" data-video-t="media/pv_waiter.mp4" style="--i:2;--ox:38%">
+        <span class="pnum">03</span>
+        <b class="ptag"><span lang="en">Incognito</span><span lang="ru">Инкогнито</span></b>
+        <span class="pdesc"><span lang="en">Nobody knows he is a magician</span><span lang="ru">Никто не знает, что он фокусник</span></span>
+        <em><span lang="en">all evening</span><span lang="ru">весь вечер</span></em>
+      </a>
+    </div>
+  </div>
+
+  <!-- close-up: из-за плеча, облёт в рапиде, туз; вспышка из руки — в руке король с его лицом.
+       Дальше один непрерывный влёт (сцена king): камера срывается к карте (в смазе карта из клипа подменяется ею же в полном качестве, .kcard)
+       и влетает в глаз короля; в глазу уже идёт следующая сцена (data-tr="eye" у сцены с дверью). data-card — где карта лежит в последнем кадре клипа: центр x,y и ширина в % кадра, наклон в градусах. -->
+  <div class="shot phonk dive" data-scenes="card king" data-src="media/card.mp4" data-src-t="media/card_t.mp4" data-win="0.25,0.440625" data-tr="expand" data-ramp="0:0,0.7213:1,1:1" data-mx="47%" data-card="39.96,58.85,10.8,-2.7">
+    <div class="kcard"><div class="kin"><img data-src="media/king.webp" alt=""></div><i class="ktint"></i></div>
+    <!-- макро-снимки глаза короля для глубокого влёта (рисует холст #deep); data-rect — где снимок лежит на карте, в долях её ширины и высоты -->
+    <div class="deepsrc" hidden>
+      <img data-src="media/eye2.webp" data-rect="0.40365,0.20302,0.47978,0.25870" alt="">
+    </div>
+  </div>
+  <canvas class="deep" id="deep" aria-hidden="true"></canvas>
+  <!-- шоу на сцене: дверь открыта, девушка закрывает её и обходит, через дверь летят вещи, дверь открывается — там он; шаг вперёд, приветствие -->
+  <div class="shot phonk" data-scenes="stage" data-src="media/door.mp4" data-src-t="media/door_t.mp4" data-win="0.3203125,0.6203125" data-tr="eye" data-mx="72%" data-mx2="54%" data-pan="0.05,0.2"></div>
+  <!-- инкогнито: «официант» отпускает поднос, поднос висит в воздухе -->
+  <div class="shot phonk" data-scenes="incog" data-src="media/waiter.mp4" data-src-m="media/waiter_m.mp4" data-tr="whip" data-mx="40%"></div>
+  <!-- видео: камера выезжает из-за спины дворецкого к креслу и стене телевизоров; когда доехала (60% сцены), кадр подъезжает к телевизорам (data-fit)
+       и поверх клипа проявляется .tvlive: тот же кадр в полном качестве, в кинескопах (маска tvs_mask.png) крутятся его ролики, сверху — кнопки.
+       Рамки экранов считает tools/tvmask.py. data-so — с какой секунды ролика идёт превью, data-oy — какую часть вертикального ролика показывать.
+       Если у экрана есть и data-mp4, и data-yt: в кинескопе крутится превью с Cloudinary, а по нажатию открывается YouTube (так у шоурилов сцены и close-up). -->
+  <div class="shot phonk tvwall" data-scenes="tv" data-src="media/tv.mp4" data-src-t="media/tv_t.mp4" data-win="0.05,0.7796875" data-tr="burn" data-ramp="0:0,0.6:1,1:1" data-mx="27%" data-mx2="46%" data-pan="0.04,0.38" data-fit="51.5,15.2,81.8,77,0.6,0.74">
+    <div class="tvlive">
+      <img class="tvbg" data-src="media/tvs.webp" alt="">
+      <div class="tubes"></div>
+      <div class="screens">
+        <button class="scr" type="button" data-mp4="v1771093676/CLOSE-UP_1_oiw12t" data-yt="OYS7VGTzuhA" data-ru-data-yt="0x03efYslco" data-so="4" data-oy="17%" style="left:53.67%;top:17.36%;width:10.31%;height:14.31%"><b>Close-up showreel</b></button>
+        <button class="scr" type="button" data-mp4="v1771094733/STAGE_MAGIC_1_go9ljb" data-yt="KnucqaUPHE0" data-ru-data-yt="4EIKEGrkC4o" data-so="4" data-oy="50%" style="left:69.38%;top:18.06%;width:10.86%;height:14.58%"><b>Stage showreel</b></button>
+        <button class="scr" type="button" data-mp4="v1771244778/%D0%A8%D0%9E%D0%A3%D0%A0%D0%98%D0%9B_2_1_rncumr" data-so="8" data-oy="21%" style="left:53.20%;top:40.00%;width:9.84%;height:13.61%"><b><span lang="en">Showreel</span><span lang="ru">Шоурил</span></b></button>
+        <button class="scr" type="button" data-mp4="v1771094556/PABLO_STARK_%D0%A0%D0%95%D0%90%D0%9A%D0%A6%D0%98%D0%98_1_phflu2" data-so="14" data-oy="14%" style="left:68.20%;top:41.39%;width:10.39%;height:14.03%"><b><span lang="en">Guest reactions</span><span lang="ru">Реакции гостей</span></b></button>
+        <button class="scr" type="button" data-mp4="v1771094407/PABLO_STARK_%D0%9F%D0%A0%D0%9E%D0%9C%D0%9E_1_cfu14e" data-so="8" data-oy="4%" style="left:52.97%;top:61.11%;width:9.14%;height:12.64%"><b><span lang="en">Promo</span><span lang="ru">Промо</span></b></button>
+        <button class="scr" type="button" data-yt="VkF0sFzCOm8" style="left:66.95%;top:62.22%;width:9.92%;height:13.33%"><b><span lang="en">AGT backstage</span><span lang="ru">Бэкстейдж AGT</span></b></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shot phonk dimmed" data-scenes="feat" data-src="media/crowd.webp" data-tr="wash"></div>
+  <!-- регалии: настоящий снимок Павла на площадке America's Got Talent (неоновый логотип шоу — в самом кадре) -->
+  <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.webp" data-tr="wash" data-fade="0.4" data-mx="66%"></div>
+  <!-- география: карта (tools/geomap.py вставляется из media/map.svg), маршрут рисуется при прокрутке, по нему летит самолёт -->
+  <div class="shot phonk geo" data-scenes="geo" data-tr="whip" data-mx="30%" data-mx2="72%" data-pan="0.054,0.37"><div class="geo-map" id="geoMap"></div></div>
+  <!-- отзывы: одна организаторка шепчет другой на ухо (клип перематывается скроллом); от них к зрителю спиралью летят карты (.deck внутри кадра,
+       под той же плёночной обработкой, что и съёмка) -->
+  <div class="shot phonk girls" data-scenes="reviews" data-src="media/girls.mp4" data-tr="wash" data-fade="0.22" data-mx="33%">
+    <div class="deck" id="deck">
+      <article class="rcard"><span class="pip">A<i>♠</i></span><p><span lang="en">“Last year we booked Pavel seven times — and we are already planning to book him again. His performance is consistently one of the highlights of our events”.</span><span lang="ru">«За прошлый год мы приглашали Павла семь раз и уже планируем следующие события. Его выступление неизменно становится одним из главных моментов вечера».</span></p><footer><b>Justin Joy Events</b><span lang="en">Cyprus</span><span lang="ru">Кипр</span></footer><span class="pip btm">A<i>♠</i></span></article>
+      <article class="rcard red"><span class="pip">K<i>♥</i></span><p><span lang="en">“The humor is genuinely funny, his presence confident and charismatic, and the show works equally well for a very demanding audience”.</span><span lang="ru">«Юмор по-настоящему смешной, подача уверенная и харизматичная, а шоу одинаково хорошо работает и на очень требовательную публику».</span></p><footer><b>Elegant Moment Events</b><span lang="en">Dubai</span><span lang="ru">Дубай</span></footer><span class="pip btm">K<i>♥</i></span></article>
+      <article class="rcard"><span class="pip">Q<i>♣</i></span><p><span lang="en">“We work with Pavel because he’s always reliable. He arrives early, everything is prepared in advance, and there is never any risk with timing or logistics”.</span><span lang="ru">«Мы работаем с Павлом, потому что он всегда надёжен. Приезжает заранее, всё готово заблаговременно, и никогда нет риска по таймингу или логистике».</span></p><footer><b>ShopShow Event</b><span lang="en">Monaco</span><span lang="ru">Монако</span></footer><span class="pip btm">Q<i>♣</i></span></article>
+      <article class="rcard red"><span class="pip">J<i>♦</i></span><p><span lang="en">“For a long time, we believed magic didn’t belong at contemporary events. Pavel proved us wrong”.</span><span lang="ru">«Мы долго считали, что фокусам не место на современных событиях. Павел доказал обратное».</span></p><footer><b>Kate &amp; Leo Events</b><span lang="en">Moscow</span><span lang="ru">Москва</span></footer><span class="pip btm">J<i>♦</i></span></article>
+      <article class="rcard"><span class="pip">10<i>♠</i></span><p><span lang="en">“No one even suspects that they’re about to experience something they’ll remember for a lifetime”.</span><span lang="ru">«Никто даже не подозревает, что сейчас увидит то, что запомнит на всю жизнь».</span></p><footer><b>Natalia Ivleva Events</b><span lang="en">Spain</span><span lang="ru">Испания</span></footer><span class="pip btm">10<i>♠</i></span></article>
+      <article class="rcard red"><span class="pip">9<i>♥</i></span><p><span lang="en">“He doesn’t have a single one-size-fits-all performance, but will always create something unique for each event style and concept”.</span><span lang="ru">«У него нет одной программы на все случаи: под стиль и концепцию каждого события он создаёт что-то своё».</span></p><footer><b>Lillo Events</b><span lang="en">Cyprus</span><span lang="ru">Кипр</span></footer><span class="pip btm">9<i>♥</i></span></article>
+    </div>
+  </div>
+  <!-- вода в вино: наливает при всех, взбалтывает — вино, лицо невозмутимое; сдержанный тост в камеру; камера уходит в бокал -->
+  <!-- новая редакция: тост и заявка — один кадр. Клип доигрывает к началу заявки (ramp), потом стоит; поверх него темнеет подложка (--dim) и проявляется форма -->
+  <div class="shot phonk wineshot" data-scenes="wine booking" data-src="media/wine.mp4" data-src-t="media/wine_t.mp4" data-win="0.25,0.440625" data-tr="whip" data-ramp="0:0,0.219:0.17,0.364:0.45,0.413:0.6,0.437:0.72,0.486:0.8,0.607:1,1:1" data-dim="booking" data-mx="47%"><i class="dim"></i></div>
+</div>
+
+<!-- эффекты переходов -->
+<svg class="defs" aria-hidden="true">
+  <filter id="whipblur" x="-5%" y="0" width="110%" height="100%"><feGaussianBlur id="whipDev" stdDeviation="0 0"/></filter>
+</svg>
+<canvas class="glint-fx" id="glintFx" aria-hidden="true"></canvas>
+<div class="whiteout" id="whiteout" aria-hidden="true"></div>
+<div class="strobe" id="strobe" aria-hidden="true"></div>
+<div class="burn" id="burn" aria-hidden="true"></div>
+<div class="grade" aria-hidden="true"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<!-- быстрая перемотка между разделами: полосы, как на видеокассете, и значок ▶▶ -->
+<div class="ff" id="ff" aria-hidden="true"><b></b></div>
+<div class="menu-sheet" id="menuSheet" hidden></div>
+<!-- айфон в режиме энергосбережения не запускает видео сам: одно касание — и ролики оживают -->
+
+<!-- верхняя киношная полоса -->
+<header class="bar bar-top">
+  <a class="brand" href="#cover" data-goto="cover">Pavel Bach</a>
+  <!-- меню: нажатие быстро перематывает фильм до нужного места (flyTo в main.js); на телефоне оно открывается кнопкой в нижней полосе -->
+  <nav class="menu" id="menu" aria-label="Sections">
+    <button type="button" data-fly="formats" data-at="0.3"><span lang="en">Formats</span><span lang="ru">Форматы</span></button>
+    <button type="button" data-fly="tv" data-at="0.78"><span lang="en">Video</span><span lang="ru">Видео</span></button>
+    <button type="button" data-fly="feat" data-at="0.5"><span lang="en">Clients</span><span lang="ru">Клиенты</span></button>
+    <button type="button" data-fly="titles" data-at="0.5"><span lang="en">Credits</span><span lang="ru">Регалии</span></button>
+    <button type="button" data-fly="geo" data-at="0.6"><span lang="en">Map</span><span lang="ru">География</span></button>
+    <button type="button" data-fly="reviews" data-at="0.1"><span lang="en">Reviews</span><span lang="ru">Отзывы</span></button>
+    <button type="button" data-fly="booking" data-at="0.5"><span lang="en">Date</span><span lang="ru">Дата</span></button>
+    <button type="button" data-faq>FAQ</button>
+  </nav>
+  <span class="sr-only" id="chapterName" aria-live="polite"></span>
+  <div class="bar-actions">
+    <a class="lang" id="langToggle" href="@other" hreflang="@otherlang" aria-label="Русская версия" data-ru-aria-label="English version">
+      <span data-l="en">EN</span><i></i><span data-l="ru">RU</span>
+    </a>
+    <a class="wa-top" data-wa href="https://wa.me/34627084012" rel="noopener" target="_blank">WhatsApp</a>
+    <a class="cta-top" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
+  </div>
+</header>
+
+<!-- низ экрана: рейка глав на прозрачном фоне (на узких экранах слева кнопка меню) -->
+<footer class="bar bar-bottom">
+  <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false"><i></i><span lang="en">Menu</span><span lang="ru">Меню</span></button>
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+  <a class="wa-bottom" data-wa href="https://wa.me/34627084012" rel="noopener" target="_blank">WhatsApp</a>
+</footer>
+
+<main id="chapters">
+
+  <!-- ОБЛОЖКА: при прокрутке камера пролетает сквозь бриллиантовые буквы -->
+  <section class="chapter center hero cover" data-scene="cover" data-in="-1" data-out="0.4">
+    <h1 class="sr-only"><span lang="en">Pavel Bach — magician for corporate and private events</span><span lang="ru">Павел Бах (Pavel Bach) — иллюзионист для корпоративных и частных событий</span></h1>
+    <div class="ice-fly">
+      <div class="ice" aria-hidden="true">
+        <img class="ice-logo" data-late-src="media/ice_logo.webp" data-late-srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" alt="">
+        <!-- надпись начинает качаться, когда главная картинка первого экрана (LCP) уже пришла: на медленной сети они больше не делят канал; появляется со своей анимацией -->
+        <script>(function(){var l=document.querySelector('.chapter.cover .ice-logo'),h=document.querySelector('.shot .hero img'),d=0;function go(){if(d)return;d=1;if(!l.getAttribute('src')){l.srcset=l.getAttribute('data-late-srcset');l.src=l.getAttribute('data-late-src')}(l.decode?l.decode():Promise.resolve()).catch(function(){}).then(function(){l.parentNode.classList.add('in')})}if(!h||h.complete)go();else{h.addEventListener('load',go);h.addEventListener('error',go);setTimeout(go,3000)}})()</script>
+        <i class="ice-shine"></i>
+        <i class="glint" style="--gx:14%;--gy:38%;--gd:0s"></i>
+        <i class="glint" style="--gx:37%;--gy:62%;--gd:.9s"></i>
+        <i class="glint" style="--gx:58%;--gy:30%;--gd:1.7s"></i>
+        <i class="glint" style="--gx:81%;--gy:55%;--gd:2.4s"></i>
+        <i class="glint big" style="--gx:46%;--gy:44%;--gd:3.1s"></i>
+      </div>
+    </div>
+    <p class="eyebrow kicker"><span lang="en">Magician<span class="kdot"> · </span><span class="kline">private and corporate events</span><span class="kdot"> · </span><span class="kline">Europe and worldwide</span></span><span lang="ru">Иллюзионист<span class="kdot"> · </span><span class="kline">частные и корпоративные события</span><span class="kdot"> · </span><span class="kline">Европа и мир</span></span></p>
+    <div class="cover-text">
+      <p class="lede"><span lang="en">Making your event impossible to forget</span><span lang="ru">Чтобы забыть ваш вечер не было шансов</span></p>
+      <p class="hero-actions">
+        <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
+        <a class="btn ghost reel-btn" href="https://www.youtube.com/shorts/9mxUTvzCMNU" data-ru-href="https://www.youtube.com/shorts/6YKqLwvMQ-w" data-yt="9mxUTvzCMNU" data-ru-data-yt="6YKqLwvMQ-w"><i aria-hidden="true"></i><span lang="en">Watch the showreel</span><span lang="ru">Смотреть шоурил</span></a>
+      </p>
+      <p class="scroll-hint"><span lang="en">Scroll down</span><span lang="ru">Листайте вниз</span></p>
+    </div>
+  </section>
+
+  <!-- ВАШ ХОД: фокус через экран -->
+  <section class="chapter left trick-head" id="trickHead" data-scene="trick" data-in="0.1" data-out="0.9">
+    <p class="tag"><span lang="en">Your Move</span><span lang="ru">Фокус для вас</span></p>
+    <h2><span lang="en">Pavel will guess what you are about to do</span><span lang="ru">Павел попробует угадать, что вы сделаете</span></h2>
+    <p class="body"><span lang="en">On the table: the things guests hide first when Pavel walks in. You choose with your eyes only, and his prediction is already in the envelope. It takes a minute</span><span lang="ru">На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом, а его предсказание уже в конверте. Займёт минуту</span></p>
+    <p class="trick-go"><button class="btn" type="button" id="trickGo"><span lang="en">Try the trick</span><span lang="ru">Попробовать фокус</span></button></p>
+    <p class="tap-hint"><span lang="en">or keep scrolling to the formats</span><span lang="ru">или листайте дальше, к форматам</span></p>
+  </section>
+
+  <!-- ТРИ ФОРМАТА: заголовок над тремя панелями -->
+  <section class="chapter center formats-head" data-scene="formats" data-in="0.04" data-out="0.6">
+    <p class="tag"><span lang="en">Three Formats</span><span lang="ru">Три формата</span></p>
+    <p class="fmt-hint"><span lang="en">What you can book<br>scroll — each one is shown next</span><span lang="ru">Что можно заказать<br>листайте — дальше каждый по очереди</span></p>
+  </section>
+
+  <!-- 01 CLOSE-UP: текст появляется после облёта, чтобы не закрывать лица гостей; стоит справа — слева он поднимает карту -->
+  <section class="chapter left" data-scene="card" data-in="0.32" data-out="0.74">
+    <p class="tag"><span lang="en">Close-up Magic</span><span lang="ru">Микромагия</span></p>
+    <h2><span lang="en">Magic that happens in your guests' hands</span><span lang="ru">Магия на расстоянии вытянутой руки</span></h2>
+    <p class="body"><span lang="en">Pavel moves between small groups of guests and works up close, one conversation at a time. He'll guess your phone passcode, put your watch inside a glass bottle, and your favourite film will turn up printed on his T-shirt. Watch the video</span><span lang="ru">Павел перемещается между небольшими группами гостей и работает в формате личного общения. Он угадает ваш пароль от телефона, ваши часы поместит в стеклянную бутылку, а на его футболке окажется напечатан ваш любимый фильм. Посмотрите видео</span></p>
+    <ul class="facts">
+      <li><b><span lang="en">up to 60 min</span><span lang="ru">до 60 минут</span></b><span lang="en">at the welcome drinks, while guests arrive</span><span lang="ru">на фуршете, пока гости собираются</span></li>
+      <li><b><span lang="en">20–40 min</span><span lang="ru">20–40 минут</span></b><span lang="en">at the dinner, between courses</span><span lang="ru">на банкете, между подачами блюд</span></li>
+    </ul>
+    <details class="why"><summary><span lang="en">Why it matters</span><span lang="ru">Зачем это нужно?</span></summary><p><span lang="en">While guests are still arriving, the evening hasn’t found its rhythm yet: some are here, some are on their way, everyone has a glass in hand and the conversation hasn’t quite started. Pavel walks up to each group and lifts the mood. A trick is a strong emotion: it breaks through people’s social armour and sets them up for the celebration. It is also a true “ice-breaker”: guests who don’t know each other start talking about what they just saw</span><span lang="ru">Пока гости собираются, вечер ещё не набрал ход: кто-то уже пришёл, кто-то ещё в пути, у всех в руках бокалы, а общий разговор пока не завязался. Павел подходит к компаниям и разряжает обстановку. Фокус — сильная эмоция: она пробивает социальный щит и сразу настраивает на праздник. А ещё это настоящий «ice-breaker»: незнакомые гости начинают обсуждать увиденное и знакомятся друг с другом</span></p></details>
+    <!-- шоурил close-up (YouTube): на английской странице английский ролик, на русской — русский -->
+    <button class="play reel" type="button" data-yt="OYS7VGTzuhA" data-ru-data-yt="0x03efYslco"><i></i><span lang="en">Close-up showreel</span><span lang="ru">Шоурил close-up</span></button>
+  </section>
+
+  <!-- 02 ШОУ НА СЦЕНЕ -->
+  <section class="chapter left top" data-scene="stage" data-in="0.66" data-out="0.97" data-in-m="0.03">
+    <p class="tag"><span lang="en">Stage Show</span><span lang="ru">Шоу на сцене</span></p>
+    <h2><span lang="en">One moment the whole room shares</span><span lang="ru">Один экспириенс на всех</span></h2>
+    <p class="body"><span lang="en">An interactive stand-up magic show for the whole room at once: comedy, strong effects, tight direction and a style of its own. Everyone gets involved. Usually runs during dinner</span><span lang="ru">Интерактивное шоу в жанре stand-up magic для всех гостей сразу: юмор, сильные эффекты, продуманная режиссура и свой стиль. В номерах участвует весь зал. Обычно идёт во время банкетной части вечера</span></p>
+    <ul class="facts">
+      <li><b><span lang="en">25 min</span><span lang="ru">25 минут</span></b><span lang="en">one set</span><span lang="ru">один блок</span></li>
+      <li><b><span lang="en">2 × 25 min</span><span lang="ru">2 × 25 минут</span></b><span lang="en">two sets in one evening</span><span lang="ru">два блока за вечер</span></li>
+    </ul>
+    <details class="why"><summary><span lang="en">Why it matters</span><span lang="ru">Зачем это нужно?</span></summary><p><span lang="en">The stage show is the core of any illusionist’s work, the thing he builds his whole life: half an hour of the most impossible things he can do. It is usually one of the highlights of the night: guests keep asking each other what just happened and remember the evening by it. And a practical bonus: if the backline has to be changed between two headliners, the 25-minute show holds the room while the crew works</span><span lang="ru">Шоу на сцене — главный номер любого иллюзиониста, над ним работают всю жизнь: за полчаса показать самое невероятное, на что ты способен. Обычно это один из хайлайтов вечера: гости потом обсуждают, что это вообще было, и вспоминают праздник. И практичный плюс: если между хедлайнерами нужно сменить бэклайн, 25 минут шоу держат внимание зала, пока техники работают</span></p></details>
+    <!-- шоурил сцены (YouTube, открывается по нажатию): на английской странице английский ролик, на русской — русский (data-ru-yt) -->
+    <button class="play reel" type="button" data-yt="KnucqaUPHE0" data-ru-data-yt="4EIKEGrkC4o"><i></i><span lang="en">Stage showreel</span><span lang="ru">Шоурил шоу на сцене</span></button>
+    <!-- живое выступление целиком (YouTube, горизонтальное): только на русской -->
+    <button class="play reel" lang="ru" type="button" data-yt="4LQQsjNAnuU" data-wide><i></i>Шоу вживую</button>
+  </section>
+
+  <!-- 03 ИНКОГНИТО -->
+  <section class="chapter left" data-scene="incog" data-in="0.08" data-out="0.92">
+    <p class="tag"><span lang="en">Incognito</span><span lang="ru">Инкогнито</span></p>
+    <h2><span lang="en">All evening among your guests — nobody knows who he is</span><span lang="ru">Весь вечер среди гостей — никто не знает, кто он</span></h2>
+    <p class="body"><span lang="en">Pavel acts like any other guest at your event: he mingles, he chats, and then, mid-conversation, the impossible happens. The most playful, prank-style format of the three</span><span lang="ru">Павел ведёт себя как обычный гость вашего мероприятия: знакомится, общается — и посреди разговора случается невозможное. Самый пранковый и развлекательный формат из трёх</span></p>
+    <!-- видео про формат (YouTube, вертикальное): только на русской -->
+    <button class="play reel" lang="ru" type="button" data-yt="p8XuB8XtH6o"><i></i>Видео про инкогнито</button>
+  </section>
+
+  <!-- ВИДЕО -->
+  <section class="chapter left tv-head" data-scene="tv" data-in="0.1" data-out="0.86">
+    <p class="tag"><span lang="en">Video Gallery</span><span lang="ru">Видеогалерея</span></p>
+    <h2><span lang="en">Seeing is believing. Press play</span><span lang="ru">Не верьте на слово. Включайте</span></h2>
+    <p class="tap-hint"><span lang="en">Every screen is a video of Pavel at work<br>tap to watch</span><span lang="ru">На каждом экране — видео Павла в работе<br>нажмите, чтобы посмотреть</span></p>
+  </section>
+
+  <!-- КЛИЕНТЫ -->
+  <section class="chapter center feat" data-scene="feat" data-in="0.1" data-out="0.9">
+    <p class="tag big"><span lang="en">feat.</span><span lang="ru">фит.</span></p>
+    <h2><span lang="en">Brands that have already booked him</span><span lang="ru">Бренды, которые его уже приглашали</span></h2>
+    <ul class="logos">
+      <li style="--h:0.7;--ar:2.4;translate:0 -18%"><img data-lz="media/logos/dior.webp" alt="Dior"></li>
+      <li style="--h:0.74;--ar:2.87"><img data-lz="media/logos/cartier.webp" alt="Cartier"></li>
+      <li style="--h:0.86;--ar:1.73"><img data-lz="media/logos/mercedes.webp" alt="Mercedes-Benz"></li>
+      <li style="--h:0.48;--ar:4.36"><img data-lz="media/logos/motorola.svg" alt="Motorola"></li>
+      <li style="--h:0.36;--ar:7.5"><img data-lz="media/logos/bulgari.webp" alt="Bulgari"></li>
+      <li class="br" aria-hidden="true"></li>
+      <li style="--h:0.95;--ar:1.24"><img data-lz="media/logos/ritz.webp" alt="The Ritz-Carlton"></li>
+      <li style="--h:0.64;--ar:1.92"><img data-lz="media/logos/nike.webp" alt="Nike"></li>
+      <li style="--h:0.53;--ar:3.05"><img data-lz="media/logos/cocacola.webp" alt="Coca-Cola"></li>
+      <li style="--h:0.36;--ar:5.56"><img data-lz="media/logos/xiaomi.webp" alt="Xiaomi"></li>
+      <li style="--h:0.4;--ar:5.43"><img data-lz="media/logos/raiffeisen.webp" alt="Raiffeisen Bank"></li>
+    </ul>
+    <p class="body small"><span lang="en">Spain · France · Monaco · Portugal · Cyprus · Dubai</span><span lang="ru">Испания · Франция · Монако · Португалия · Кипр · Дубай</span></p>
+  </section>
+
+  <!-- РЕГАЛИИ: коротко и по делу, рядом с настоящим снимком -->
+  <section class="chapter left titles-head" data-scene="titles" data-in="0.1" data-out="0.92">
+    <p class="tag"><span lang="en">Credits</span><span lang="ru">Послужной список</span></p>
+    <ul class="credits">
+      <li><b>America's Got Talent</b><span lang="en">magic consultant on the show</span><span lang="ru">консультант шоу по иллюзии</span></li>
+      <li><b><span lang="en">National Champion</span><span lang="ru">Чемпион России</span></b><span lang="en">in the art of illusion</span><span lang="ru">по иллюзионному искусству</span></li>
+      <li><b>Stand-up Magic Show Tour</b><span lang="en">his own tour: 10 European cities, sold out</span><span lang="ru">собственный тур: 10 городов Европы, sold out</span></li>
+      <li><b>Wedding Awards</b><span lang="en">finalist 2021 and 2022, Best Artist / Show</span><span lang="ru">финалист 2021 и 2022, «Лучший артист / шоу»</span></li>
+      <li><b><span lang="en">Television</span><span lang="ru">Телевидение</span></b><span lang="en">TV projects in Russia and the USA</span><span lang="ru">телепроекты в России и США</span></li>
+    </ul>
+  </section>
+
+  <!-- ГЕОГРАФИЯ -->
+  <section class="chapter center geo-head" data-scene="geo" data-in="0.08" data-out="0.99">
+    <p class="tag"><span lang="en">On Tour</span><span lang="ru">География выступлений</span></p>
+    <h2><span lang="en">Teleportation is still in rehearsal — for now, he uses plane magic</span><span lang="ru">Телепортацию ещё репетирует — пока летает самолётами</span></h2>
+    <p class="body"><span lang="en">And he flies a lot: here's where he performs regularly</span><span lang="ru">Но летает часто: вот где он выступает регулярно</span></p>
+    <p class="geo-hint"><span lang="en">Your turn: tap the map<br>and send him anywhere</span><span lang="ru">Ваш ход: нажмите на карту<br>и отправьте его куда угодно</span></p>
+    <p class="geo-say" id="geoSay"></p>
+    <p class="geo-score" id="geoScore"></p>
+  </section>
+
+  <!-- ОТЗЫВЫ: заголовок слева внизу, под девушками; отзывы — на картах, летящих от них -->
+  <section class="chapter left reviews-head" data-scene="reviews" data-in="0.02" data-out="0.97">
+    <p class="tag"><span lang="en">Reviews</span><span lang="ru">Отзывы</span></p>
+    <h2><span lang="en">What event planners say about Pavel</span><span lang="ru">Что организаторы говорят о Павле</span></h2>
+    <p class="tap-hint"><span lang="en">Each card is a review<br>tap a card to read the next</span><span lang="ru">На каждой карте — отзыв<br>нажмите на карту, чтобы листать</span></p>
+  </section>
+
+  <!-- ЗАЯВКА: из бокала — бриллиантовые буквы и приглашение -->
+  <section class="chapter center booking" id="booking" data-scene="booking" data-in="0.04" data-out="2">
+    <div class="ice small" aria-hidden="true">
+      <img class="ice-logo" data-same-as-cover width="1100" height="404" alt="">
+      <i class="ice-shine"></i>
+      <i class="glint" style="--gx:20%;--gy:40%;--gd:.4s"></i>
+      <i class="glint big" style="--gx:62%;--gy:46%;--gd:1.9s"></i>
+    </div>
+    <p class="cta-sub"><span lang="en">Send the date and the city. Pavel replies personally</span><span lang="ru">Напишите дату и город — Павел ответит лично</span></p>
+    <form id="bookForm" novalidate>
+      <label><span lang="en">Name</span><span lang="ru">Имя</span><input name="name" autocomplete="name" required maxlength="100"></label>
+      <label><span lang="en">WhatsApp, phone or e-mail</span><span lang="ru">WhatsApp, телефон или e-mail</span><input name="contact" autocomplete="tel" required maxlength="120"></label>
+      <div class="fdate">
+        <label><span lang="en">Date</span><span lang="ru">Дата</span><input name="date" type="date"></label>
+        <label class="unk"><input type="checkbox" name="dateUnknown"><span lang="en">not sure yet</span><span lang="ru">пока не знаю</span></label>
+      </div>
+      <label><span lang="en">City, country</span><span lang="ru">Город, страна</span><input name="city" autocomplete="address-level2" required maxlength="100"></label>
+      <label class="ftype"><span lang="en">Type of event</span><span lang="ru">Тип события</span><select name="type" required>
+        <option value="" selected disabled hidden lang="en">Choose</option><option value="" selected disabled hidden lang="ru">Выберите</option>
+        <option value="corporate" lang="en">Corporate event</option><option value="corporate" lang="ru">Корпоратив</option>
+        <option value="wedding" lang="en">Wedding</option><option value="wedding" lang="ru">Свадьба</option>
+        <option value="private" lang="en">Private party</option><option value="private" lang="ru">Частный праздник</option>
+        <option value="other" lang="en">Other</option><option value="other" lang="ru">Другое</option>
+      </select></label>
+      <details class="more">
+        <summary><span lang="en">+ Guests and a comment (optional)</span><span lang="ru">+ Гости и комментарий (по желанию)</span></summary>
+        <div class="more-in">
+          <label><span lang="en">Number of guests</span><span lang="ru">Число гостей</span><input name="guests" inputmode="numeric" maxlength="7"></label>
+          <label class="wide"><span lang="en">Comment</span><span lang="ru">Комментарий</span><textarea name="comment" rows="2" maxlength="1000"></textarea></label>
+        </div>
+      </details>
+      <label class="hp" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off"></label>
+      <button type="submit"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></button>
+    </form>
+    <div class="sent" id="bookSent" hidden tabindex="-1">
+      <p class="sent-title"><span lang="en">Thank you! Your request is in</span><span lang="ru">Спасибо! Заявка у Павла</span></p>
+      <p><span lang="en">Pavel reads every request personally.</span><span lang="ru">Павел лично читает каждую заявку.</span></p>
+      <p class="sent-act"><a class="btn" data-wa href="https://wa.me/34627084012" rel="noopener" target="_blank"><span lang="en">Message on WhatsApp now</span><span lang="ru">Написать в WhatsApp сейчас</span></a></p>
+    </div>
+    <p class="form-note" id="formNote" aria-live="polite"></p>
+    <p class="form-legal"><span lang="en">Your details are used only to reply to you.</span><span lang="ru">Данные нужны только для ответа вам.</span> <a href="privacy/"><span lang="en">Privacy policy</span><span lang="ru">Политика конфиденциальности</span></a></p>
+    <p class="contacts">
+      <a data-wa href="https://wa.me/34627084012" rel="noopener" target="_blank">WhatsApp</a>
+      <a data-tg href="https://t.me/+34627084012" rel="noopener" target="_blank">Telegram</a>
+      <a href="https://instagram.com/itspaulbach" rel="noopener" target="_blank">Instagram</a>
+    </p>
+    <!-- фокус с родинкой (окно #mole, js/trick.js); как и «Ваш ход», пока только по ссылке с ?trick -->
+    <p class="mole-go" id="moleGoWrap"><button type="button" id="moleGo"><span lang="en">Want one more trick, right now? Tap here</span><span lang="ru">Хотите ещё фокус прямо сейчас? Нажмите сюда</span></button></p>
+  </section>
+
+</main>
+
+<!-- отзывы: карты летят спиралью от организаторов к зрителю; ближняя карта — отзыв, кнопки листают -->
+<div class="deck-nav" id="deckNav">
+  <button id="deckPrev" type="button" aria-label="Previous review">←</button>
+  <span id="deckCount">1 / 6</span>
+  <button id="deckNext" type="button" aria-label="Next review">→</button>
+</div>
+<!-- модалка с видео -->
+<div class="modal" id="tvModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="tvTitle">
+    <button class="modal-close" id="tvClose" type="button" aria-label="Close">×</button>
+    <p class="eyebrow" id="tvTitle"></p>
+    <div class="modal-screen" id="modalScreen"></div>
+  </div>
+</div>
+
+<!-- «Ваш ход»: фокус через экран, окно поверх фильма. Логика и раскладка — js/trick.js -->
+<div class="trick" id="trick" hidden>
+  <div class="trick-in" role="dialog" aria-modal="true" aria-labelledby="trickSay">
+    <button class="modal-close" id="trickClose" type="button" aria-label="Close" data-ru-aria-label="Закрыть">×</button>
+    <div class="trick-side">
+      <p class="trick-step" id="trickStep"></p>
+      <p class="trick-say" id="trickSay" aria-live="polite"></p>
+      <p class="trick-sub" id="trickSub"></p>
+      <i class="trick-bar" id="trickBar" aria-hidden="true"></i>
+      <p class="trick-btns"><button class="btn ghost" type="button" id="trickNext"></button></p>
+      <p class="trick-btns" id="trickEnds" hidden>
+        <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
+        <a class="btn ghost" href="#formats" data-goto="formats" data-at="0.1"><span lang="en">Keep watching</span><span lang="ru">Смотреть дальше</span></a>
+        <button class="btn ghost" type="button" id="trickAgain"><span lang="en">Once more</span><span lang="ru">Ещё раз</span></button>
+      </p>
+      <div class="trick-host" id="trickHost" aria-hidden="true"><i class="smoke"></i><i class="lamp"></i></div>
+    </div>
+    <div class="trick-table">
+      <div class="tboard" id="trickBoard"></div>
+      <!-- предсказание: конверт лежит на столе с самого начала; в конце переворачивается — внутри красная помада -->
+      <div class="pcard env" id="trickPred" aria-hidden="true"><div class="pin"><div class="pback"><i class="seal">PB</i></div><div class="pface"><i class="titem kt"></i><b id="trickCard"></b></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- фокус с родинкой: Павел показывает родинку на руке, «снимает» её и отправляет зрителю; подписи идут по времени ролика (js/trick.js).
+     В конце вопрос «Есть?» — ответ уходит в статистику, и на любой ответ есть смешная реплика. -->
+<div class="mole" id="mole" hidden>
+  <div class="mole-in" role="dialog" aria-modal="true" aria-labelledby="moleCap">
+    <button class="modal-close" id="moleClose" type="button" aria-label="Close" data-ru-aria-label="Закрыть">×</button>
+    <div class="mole-screen">
+      <video id="moleVideo" muted playsinline preload="none" data-src="media/trick_mole.mp4" data-poster="media/trick_mole.jpg"></video>
+      <p class="mole-cap" id="moleCap" aria-live="polite"></p>
+      <div class="mole-ask" id="moleAsk" hidden>
+        <p class="trick-say" id="moleSay"></p>
+        <p class="trick-sub" id="moleSub"></p>
+        <p class="trick-btns" id="moleYN"><button class="btn" type="button" id="moleYes"><span lang="en">Yes, it’s there 😳</span><span lang="ru">Есть 😳</span></button><button class="btn ghost" type="button" id="moleNo"><span lang="en">No</span><span lang="ru">Нет</span></button></p>
+        <p class="trick-btns" id="moleEnd" hidden><a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a><button class="btn ghost" type="button" id="moleAgain"><span lang="en">Watch again</span><span lang="ru">Ещё раз</span></button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- «Зачем это нужно?»: текст из <details class="why"> главы открывается здесь, поверх кадра.
+     Раньше он раскрывался внутри главы: глава вырастала за край экрана, а прокрутка двигает фильм, поэтому дочитать было нельзя. -->
+<div class="modal why-modal" id="whyModal" hidden>
+  <div class="modal-box why-box" id="whyBox" role="dialog" aria-modal="true" aria-labelledby="whyTitle">
+    <button class="modal-close" id="whyClose" type="button" aria-label="Close" data-ru-aria-label="Закрыть">×</button>
+    <p class="why-tag" id="whyTag"></p>
+    <h3 class="why-title" id="whyTitle"></h3>
+    <div class="why-text" id="whyText"></div>
+  </div>
+</div>
+
+<div id="scrollSpace" aria-hidden="true"></div>
+
+<!-- ТИТРЫ после фильма: короткие вопросы и ответы (те же ответы — в разметке FAQPage для поиска) и подвал с юридическими страницами.
+     Обычный поток страницы: когда до них долистали, они накрывают последний кадр. -->
+<section class="roll" id="faq" aria-labelledby="faqTitle">
+  <div class="roll-in">
+    <p class="tag">FAQ</p>
+    <h2 id="faqTitle"><span lang="en">Before you book</span><span lang="ru">Перед бронированием</span></h2>
+    <div class="faq">
+      <details>
+        <summary><span lang="en">Why have a magician at an event?</span><span lang="ru">Зачем фокусник на празднике?</span></summary>
+        <p><span lang="en">Magic is a strong emotion, and it works for the whole evening. Close-up at the start entertains guests while everyone arrives, breaks the ice and gives strangers a reason to talk. The stage show becomes one of the highlights of the night, the moment people discuss and remember.</span><span lang="ru">Фокусы — сильная эмоция, и она работает на весь вечер. Микромагия в начале развлекает гостей, пока все собираются, ломает лёд и даёт незнакомым людям повод заговорить. Шоу на сцене становится одним из главных моментов вечера: его потом обсуждают и вспоминают.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">What formats can I book?</span><span lang="ru">Какие форматы можно заказать?</span></summary>
+        <p><span lang="en"><b>Close-up</b> — magic right in your guests’ hands, as Pavel moves from one group to the next.<br><b>Immersive close-up</b> — a separate magic zone where guests come in two to four at a time for a personal magic experience.<br><b>Parlour magic</b> — between close-up and stage: guests gather around Pavel and the magic happens in front of everyone.<br><b>Stage show</b> — an interactive show for the whole room.<br><b>After Party Magic</b> — magic at the party, when everyone is already dancing.<br><b>Incognito</b> — all evening among the guests, and nobody knows he is a magician.</span><span lang="ru"><b>Микромагия</b> — фокусы прямо в руках у гостей, Павел переходит от одной компании к другой.<br><b>Иммерсивная микромагия</b> — для Павла выделяют отдельную магическую зону, гости заходят по 2–4 человека и получают персональный magic experience.<br><b>Салонная магия</b> — между микромагией и сценой: гости собираются вокруг Павла, и фокусы происходят у всех на глазах.<br><b>Шоу на сцене</b> — интерактивное шоу для всего зала.<br><b>After Party Magic</b> — фокусы на вечеринке, когда все уже танцуют.<br><b>Инкогнито</b> — весь вечер среди гостей, и никто не знает, что он фокусник.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">How long is a performance?</span><span lang="ru">Сколько длится выступление?</span></summary>
+        <p><span lang="en">Typically: close-up up to 60 minutes, though some evenings Pavel works for several hours straight; immersive close-up about an hour; the stage show 25 minutes; After Party Magic about 40 minutes; Incognito all evening. These are typical times, and they are adjusted to your event.</span><span lang="ru">Обычно так: микромагия — до 60 минут, но бывают вечера, когда Павел работает несколько часов подряд; иммерсивная микромагия — около часа; шоу на сцене — 25 минут; After Party Magic — около 40 минут; Инкогнито — весь вечер. Это среднее время, его подбирают под ваше мероприятие.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">When in the evening does magic work best?</span><span lang="ru">В какой момент вечера лучше выступать?</span></summary>
+        <p><span lang="en">Close-up works best at the start, at the welcome drinks, and later between dinner courses. The stage show fits the dinner part, ideally the second or third block, when all the guests are in the room. After Party Magic belongs to the party, when everyone is dancing.</span><span lang="ru">Микромагия лучше всего работает в начале, в welcome-зоне, и потом в перерывах банкета. Шоу на сцене — во время банкетной части, лучше всего во втором или третьем блоке, когда собрались все гости. After Party Magic — на вечеринке, когда все танцуют.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">Can you make a trick specially for our company?</span><span lang="ru">Можно ли сделать фокус специально для нашей компании?</span></summary>
+        <p><span lang="en">Yes. The magic adapts to the theme of the event: at a corporate event, a routine about your company; at a birthday, one about the birthday person’s date of birth; at a wedding, one about the couple’s love story. These routines land hardest, because guests can see the show was made for them.</span><span lang="ru">Да. Фокусы подстраиваются под тему праздника: на корпоративе — номер про вашу компанию, на дне рождения — про дату рождения именинника, на свадьбе — про историю любви пары. Такие номера впечатляют сильнее всего: гости видят, что шоу сделано именно для них.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">What language is the show in?</span><span lang="ru">На каком языке шоу?</span></summary>
+        <p><span lang="en">English or Russian.</span><span lang="ru">На русском или на английском.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">Does Pavel travel to other countries?</span><span lang="ru">Выезжает ли Павел в другие страны?</span></summary>
+        <p><span lang="en">Yes, and it is no hassle at all: Pavel is constantly on the move and the logistics are well rehearsed. He performs regularly in Spain, France, Monaco, Portugal, Cyprus and Dubai, and travels to events worldwide.</span><span lang="ru">Да, и это вообще не проблема: Павел постоянно в разъездах, логистика давно отлажена. Он регулярно выступает в Испании, Франции, Монако, Португалии, на Кипре и в Дубае и выезжает на события по всему миру.</span></p>
+      </details>
+      <details>
+        <summary><span lang="en">How do I book?</span><span lang="ru">Как забронировать?</span></summary>
+        <p><span lang="en">Send the date, the city and the type of event through the form or on WhatsApp. Pavel reads every request personally and replies himself.</span><span lang="ru">Напишите дату, город и тип события через форму или в WhatsApp. Павел лично читает каждую заявку и отвечает сам.</span></p>
+      </details>
+    </div>
+    <p class="roll-cta">
+      <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
+      <a class="btn ghost" data-wa href="https://wa.me/34627084012" rel="noopener" target="_blank">WhatsApp</a>
+    </p>
+  </div>
+  <footer class="site-foot">
+    <nav aria-label="Legal" data-ru-aria-label="Документы">
+      <a href="privacy/"><span lang="en">Privacy policy</span><span lang="ru">Политика конфиденциальности</span></a>
+      <a href="cookies/"><span lang="en">Cookie policy</span><span lang="ru">Политика cookies</span></a>
+      <a href="legal/"><span lang="en">Legal notice</span><span lang="ru">Правовая информация</span></a>
+      <button type="button" data-cookie-settings><span lang="en">Cookie settings</span><span lang="ru">Настройки cookies</span></button>
+    </nav>
+    <p>© 2026 Pavel Bach · <a href="https://instagram.com/itspaulbach" rel="noopener" target="_blank">Instagram</a></p>
+  </footer>
+</section>
+
+<!-- согласие на cookies: только для посетителей из ЕЭЗ, Великобритании и Швейцарии (флаг NEEDS_CONSENT ставит сервер, functions/_middleware.js).
+     «Принять» и «Отклонить» — одинаковые кнопки в первом слое, «Настроить» открывает выбор (как требует испанское AEPD). Плашка поверх страницы: вёрстка не сдвигается. -->
+<div class="consent" id="consent" role="dialog" aria-labelledby="consentText" hidden>
+  <p id="consentText"><span lang="en">We use cookies to measure our ads (Meta, OpenAI) and visits. You can say no — the site works the same.</span><span lang="ru">Мы используем cookies, чтобы измерять рекламу (Meta, OpenAI) и посещения. Можно отказаться — сайт работает так же.</span> <a href="cookies/"><span lang="en">Cookie policy</span><span lang="ru">Политика cookies</span></a></p>
+  <div class="consent-opts" id="consentOpts" hidden>
+    <label><input type="checkbox" checked disabled><span lang="en">Necessary</span><span lang="ru">Необходимые</span></label>
+    <label><input type="checkbox" id="cAnalytics"><span lang="en">Analytics</span><span lang="ru">Аналитика</span></label>
+    <label><input type="checkbox" id="cAds"><span lang="en">Advertising</span><span lang="ru">Реклама</span></label>
+  </div>
+  <div class="consent-btns">
+    <button type="button" data-consent="reject"><span lang="en">Reject</span><span lang="ru">Отклонить</span></button>
+    <button type="button" data-consent="accept"><span lang="en">Accept</span><span lang="ru">Принять</span></button>
+    <button type="button" class="consent-more" data-consent="settings"><span lang="en">Settings</span><span lang="ru">Настроить</span></button>
+    <button type="button" class="consent-save" data-consent="save" hidden><span lang="en">Save my choice</span><span lang="ru">Сохранить выбор</span></button>
+  </div>
+</div>
+
+<script type="module" src="js/new/site.js"></script>
+<script type="module" src="js/new/main.js"></script>
+<script type="module" src="js/new/trick.js"></script>
+</body>
+</html>

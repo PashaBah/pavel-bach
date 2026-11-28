@@ -163,7 +163,7 @@ function boot(lang) {
 }
 
 // ── стили: номер выкладки в адресах картинок и шрифтов (тот же, что у предзагрузки в <head>) ──
-for (const f of ['css/style.css', 'css/page.css']) {
+for (const f of ['css/style.css', 'css/new.css', 'css/page.css']) {
   const p = path.join(SITE, f);
   if (!fs.existsSync(p)) continue;
   const c = fs.readFileSync(p, 'utf8').replace(/url\((\.\.\/(?:media|fonts)\/[^)?]+)(\?v=[^)]*)?\)/g, (_, u) => `url(${u}?v=${VER})`);
@@ -178,6 +178,7 @@ function minCss(c) {
   return c.replace(/\u0000(\d+)\u0000/g, (_, i) => keep[+i]);
 }
 const STYLE = minCss(rd('css/style.css'));
+const STYLE_NEW = minCss(rd('css/new.css'));
 
 // ── главная ──
 const SRC = rd('src/index.html');
@@ -212,6 +213,32 @@ ${jsonld(lang, faq)}`;
   h = typo(paths(stripComments(h), root), lang);
   h = h.replace(/<link rel="stylesheet" href="[^"]*css\/style\.css[^"]*">/, () => `<style>${STYLE.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
   write(lang === 'ru' ? 'ru/index.html' : 'index.html', h);
+}
+
+// ── новая редакция главной (черновик, 28.11.2026): /new/ и /new/ru/. Свой исходник (src/new.html), стили (css/new.css) и скрипты (js/new/).
+//    Старая главная не меняется. Закрыта от поиска (noindex), canonical — на основную страницу. Юридические ссылки ведут на общие страницы.
+const SRC_NEW = rd('src/new.html');
+for (const lang of LANGS) {
+  const root = lang === 'ru' ? '../../' : '../';
+  let h = only(SRC_NEW, lang);
+  const M = META[lang];
+  const meta = `<title>${esc(M.title)}</title>
+<meta name="description" content="${esc(M.description)}">
+<link rel="canonical" href="${pageUrl(lang)}">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(M.ogTitle)}">
+<meta property="og:description" content="${esc(M.ogDescription)}">
+<meta property="og:image" content="${ORIGIN}/media/og.jpg">`;
+  h = h.replace('<!--@meta-->', meta).replace('<!--@boot-->', boot(lang));
+  const ruGoth = lang === 'ru' && fs.existsSync(path.join(SITE, 'fonts/brahms-gotisch-cyr.woff2'));
+  if (ruGoth) h = h.replace('href="fonts/tinos-400-cyrillic.woff2"', 'href="fonts/brahms-gotisch-cyr.woff2"');
+  h = h.replace(/<html[^>]*>/, `<html lang="${lang}" data-lang="${lang}" data-v="${VER}" data-root="${root}" data-edition="new"${ruGoth ? ' data-rugoth="brahms"' : ''}${cfg.trick ? ' data-trick="on"' : ''}>`);
+  h = h.replace(/href="@other"/g, `href="${lang === 'ru' ? '../' : 'ru/'}"`).replace(/hreflang="@otherlang"/g, `hreflang="${lang === 'ru' ? 'en' : 'ru'}"`);
+  h = h.replace(/href="(privacy|cookies|legal)\/"/g, (_, p) => `href="${BASE}${lang === 'ru' ? 'ru/' : ''}${p}/"`);
+  h = typo(paths(stripComments(h), root), lang);
+  h = h.replace(/<link rel="stylesheet" href="[^"]*css\/new\.css[^"]*">/, () => `<style>${STYLE_NEW.replace(/url\(\.\.\//g, `url(${root}`)}</style>`);
+  write(lang === 'ru' ? 'new/ru/index.html' : 'new/index.html', h);
 }
 
 // ── отдельные страницы: свой лёгкий стиль (css/page.css), без фильма и без пикселей ──
