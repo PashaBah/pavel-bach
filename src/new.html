@@ -40,6 +40,11 @@
     <picture class="hero"><source media="(max-aspect-ratio: 3/4)" srcset="media/hero_t.webp"><img src="media/hero.webp" alt="Pavel Bach, magician" data-ru-alt="Павел Бах, иллюзионист" width="2560" height="1440" fetchpriority="high" decoding="async"></picture>
   </div>
 
+  <!-- КРЮЧОК (новая редакция): вспышка из зуба — он достаёт из колоды короля червей (карта с его лицом), показывает: «Запомните эту карту».
+       Щелбан — карта в слоу-мо крутится, камера летит за ней, смаз-панорама уводит в три формата. Развязка — в close-up (туз → этот король).
+       Ролик: черновик Seedance 480p, растянут до 1280×720 (gen/hook/). Клип: 0–40 % — показ, 40–50 % — стоп-кадр под надпись, 50–100 % — полёт карты. -->
+  <div class="shot phonk" data-scenes="hook" data-src="media/new_hook.mp4" data-tr="flash" data-cx="48.06%" data-cy="48.6%" data-ramp="0:0,0.3:0.4,0.56:0.5,1:1" data-mx="41%" data-mx2="74%" data-pan="0.56,0.96"></div>
+
   <!-- «Ваш ход»: фокус через экран. В кадре стол с вещами и конверт с предсказанием; сам фокус идёт в окне #trick (там страница не листается).
        Раскладка и логика — js/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick (js/main.js убирает её и возвращает форматам блик с зуба). -->
   <div class="shot phonk trickshot" data-scenes="trick" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
@@ -49,7 +54,7 @@
     </div>
   </div>
 
-  <div class="shot trip" data-scenes="formats" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
+  <div class="shot trip" data-scenes="formats" data-tr="wash" data-fade="0.32" data-cx="48.06%" data-cy="48.6%">
     <div class="panels">
       <a class="panel" href="#card" data-goto="card" data-at="0.3" data-video="media/card.mp4" data-video-t="media/pv_card.mp4" style="--i:0;--ox:58%">
         <span class="pnum">01</span>
@@ -180,6 +185,8 @@
     <h1 class="sr-only"><span lang="en">Pavel Bach — magician for corporate and private events</span><span lang="ru">Павел Бах (Pavel Bach) — иллюзионист для корпоративных и частных событий</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
+        <!-- новая редакция: «Иллюзионист» сидит в выемке над надписью (между высокими P и CH), тем же готическим шрифтом, что слоган; улетает вместе с ней -->
+        <p class="role"><span lang="en">Magician</span><span lang="ru">Иллюзионист</span></p>
         <img class="ice-logo" data-late-src="media/ice_logo.webp" data-late-srcset="media/ice_logo_m.webp 700w, media/ice_logo.webp 1100w" sizes="(max-width: 760px) 340px, 1040px" width="1100" height="404" alt="">
         <!-- надпись начинает качаться, когда главная картинка первого экрана (LCP) уже пришла: на медленной сети они больше не делят канал; появляется со своей анимацией -->
         <script>(function(){var l=document.querySelector('.chapter.cover .ice-logo'),h=document.querySelector('.shot .hero img'),d=0;function go(){if(d)return;d=1;if(!l.getAttribute('src')){l.srcset=l.getAttribute('data-late-srcset');l.src=l.getAttribute('data-late-src')}(l.decode?l.decode():Promise.resolve()).catch(function(){}).then(function(){l.parentNode.classList.add('in')})}if(!h||h.complete)go();else{h.addEventListener('load',go);h.addEventListener('error',go);setTimeout(go,3000)}})()</script>
@@ -190,10 +197,8 @@
         <i class="glint" style="--gx:81%;--gy:55%;--gd:2.4s"></i>
         <i class="glint big" style="--gx:46%;--gy:44%;--gd:3.1s"></i>
       </div>
-      <!-- новая редакция: «Иллюзионист» — вторая строка логотипа. Буквы растянуты на ширину надписи (js/new/main.js режет слово на буквы), улетает вместе с ней -->
-      <p class="role"><span lang="en">Magician</span><span lang="ru">Иллюзионист</span></p>
     </div>
-    <p class="eyebrow kicker"><span lang="en"><span class="kline">private and corporate events</span><span class="kdot"> · </span><span class="kline">Europe and worldwide</span></span><span lang="ru"><span class="kline">частные и корпоративные события</span><span class="kdot"> · </span><span class="kline">Европа и мир</span></span></p>
+    <p class="eyebrow kicker"><span lang="en"><span class="kline">private and corporate events</span><span class="kline">Europe and worldwide</span></span><span lang="ru"><span class="kline">частные и корпоративные события</span><span class="kline">Европа и мир</span></span></p>
     <div class="cover-text">
       <p class="lede"><span lang="en">Making your event impossible to forget</span><span lang="ru">Чтобы забыть ваш вечер не было шансов</span></p>
       <p class="hero-actions">
@@ -229,8 +234,12 @@
         <li style="--h:0.36;--ar:5.56"><img data-early="media/logos/xiaomi.webp" alt="Xiaomi"></li>
         <li style="--h:0.4;--ar:5.43"><img data-early="media/logos/raiffeisen.webp" alt="Raiffeisen Bank"></li>
       </ul>
-      <p class="orbit-cap"><b><span lang="en">feat.</span><span lang="ru">фит.</span></b><em><span lang="en">Brands that have already booked him</span><span lang="ru">Бренды, которые его уже приглашали</span></em></p>
     </div>
+  </section>
+
+  <!-- КРЮЧОК: одна надпись, пока он держит карту -->
+  <section class="chapter center hook-head" data-scene="hook" data-in="0.2" data-out="0.6">
+    <p class="tag"><span lang="en">Remember this card</span><span lang="ru">Запомните эту карту</span></p>
   </section>
 
   <!-- ВАШ ХОД: фокус через экран -->

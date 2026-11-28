@@ -1,13 +1,13 @@
 /* шрифты сайта (26-я редакция): файлы в папке fonts, взяты с Google Fonts, только латиница и кириллица */
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-cyrillic.woff2?v=52) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Pirata One"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/pirata-one-400-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-cyrillic.woff2?v=52) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-cyrillic.woff2?v=52) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "UnifrakturMaguntia"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/unifrakturmaguntia-400-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 600; font-display: swap; src: url(../fonts/grenze-gotisch-600-x.woff2?v=52) format("woff2"); unicode-range: U+78; }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-cyrillic.woff2?v=53) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Jost"; font-style: normal; font-weight: 200 600; font-display: swap; src: url(../fonts/jost-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Pirata One"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/pirata-one-400-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-cyrillic.woff2?v=53) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/tinos-400-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-cyrillic.woff2?v=53) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/tinos-700-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "UnifrakturMaguntia"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/unifrakturmaguntia-400-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 600; font-display: swap; src: url(../fonts/grenze-gotisch-600-x.woff2?v=53) format("woff2"); unicode-range: U+78; }
 :root {
   --ink: #040507;
   --paper: #ece6da;
@@ -687,7 +687,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 /* блеск, пробегающий по камням (маска — сами буквы) */
 .ice-shine {
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url(../media/ice_logo.webp?v=52) center / 100% 100% no-repeat; mask: url(../media/ice_logo.webp?v=52) center / 100% 100% no-repeat;
+  -webkit-mask: url(../media/ice_logo.webp?v=53) center / 100% 100% no-repeat; mask: url(../media/ice_logo.webp?v=53) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .95) 50%, rgba(200, 230, 255, .0) 58%, transparent 62%);
   background-size: 260% 100%; background-position: 130% 0; mix-blend-mode: screen; animation: shine 4.2s 1.2s ease-in-out infinite;
 }
@@ -809,7 +809,7 @@ html[data-logo="on"] .brand { opacity: 0; pointer-events: none; }
 .tvbg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.22) saturate(1.35) brightness(.92); }
 .tubes {
   position: absolute; inset: 0; filter: contrast(1.12) saturate(1.25) brightness(.96);
-  -webkit-mask: url(../media/tvs_mask.png?v=52) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=52) 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url(../media/tvs_mask.png?v=53) 0 0 / 100% 100% no-repeat; mask: url(../media/tvs_mask.png?v=53) 0 0 / 100% 100% no-repeat;
 }
 .tube { position: absolute; overflow: hidden; background: #06080c; scale: 1.1; }
 .tube video, .tube img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -995,7 +995,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .rcard .pip.btm { left: auto; top: auto; right: calc(var(--u) * 4.6); bottom: calc(var(--u) * 4); }
 .rcard p { position: relative; z-index: 1; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(70, 45, 35, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(255, 90, 130, .2); }
-.rcard.filler { background: #f4efe4 url(../media/cardback.webp?v=52) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
+.rcard.filler { background: #f4efe4 url(../media/cardback.webp?v=53) center / 100% 100% no-repeat; box-shadow: 0 0 0 1px rgba(70, 45, 35, .35), 0 calc(var(--u) * 5) calc(var(--u) * 13) rgba(0, 0, 0, .62); }
 
 @media (max-width: 760px) {
   .chapter.titles-head { max-width: none; bottom: calc(var(--foot) + 3vh); }
@@ -1046,7 +1046,7 @@ html[data-ff] .chapter, html[data-ff] .deck-nav { opacity: 0 !important; }
 .tap-video i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ff4f6d; display: grid; place-items: center; }
 .tap-video i::after { content: ""; border-left: 7px solid #fff; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
 @media (max-width: 760px) {
-  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.webp?v=52); mask-image: url(../media/ice_logo_m.webp?v=52); }
+  .ice-shine { -webkit-mask-image: url(../media/ice_logo_m.webp?v=53); mask-image: url(../media/ice_logo_m.webp?v=53); }
 }
 
 /* ── телефон: раскладка считается от видимой высоты (--vh ставит скрипт): у Safari на айфоне она меньше 100vh, пока видны панели ── */
@@ -1522,7 +1522,7 @@ form button { white-space: nowrap; }
 .rcard footer b, .rcard .pip { color: #1a1311; }
 .rcard.red .pip { color: #a41d1a; }
 .rcard.front { box-shadow: 0 0 0 1px rgba(64, 34, 31, .4), 0 calc(var(--u) * 8) calc(var(--u) * 20) rgba(0, 0, 0, .7), 0 0 calc(var(--u) * 26) rgba(234, 68, 113, .2); }
-.rcard.filler { background: url(../media/cardback.webp?v=52) center / 100% 100% no-repeat, rgb(234, 191, 222); background-blend-mode: multiply; }
+.rcard.filler { background: url(../media/cardback.webp?v=53) center / 100% 100% no-repeat, rgb(234, 191, 222); background-blend-mode: multiply; }
 /* три формата: ролики те же, что в фильме (свет уже в них); панель чуть темнее кадра — чёрным слоем, а не фильтром */
 .panel video, .panel img.poster { filter: none; }
 .panel::before {
@@ -1550,8 +1550,8 @@ html[data-logo="on"] .brand { opacity: 1; pointer-events: auto; }
 .ice-fly { will-change: auto; }
 .chapter.cover.fly .ice-fly { will-change: transform, opacity; }
 .ice-logo { filter: none; position: relative; }
-.ice::before { content: ""; position: absolute; left: -9.62%; right: -9.62%; top: -26.13%; bottom: -26.13%; background: url(../media/glow_d.webp?v=52) center / 100% 100% no-repeat; pointer-events: none; }
-@media (max-width: 760px) { .ice::before { left: -27.78%; right: -27.78%; top: -75.5%; bottom: -75.5%; background-image: url(../media/glow_m.webp?v=52); } }
+.ice::before { content: ""; position: absolute; left: -9.62%; right: -9.62%; top: -26.13%; bottom: -26.13%; background: url(../media/glow_d.webp?v=53) center / 100% 100% no-repeat; pointer-events: none; }
+@media (max-width: 760px) { .ice::before { left: -27.78%; right: -27.78%; top: -75.5%; bottom: -75.5%; background-image: url(../media/glow_m.webp?v=53); } }
 /* ролик-середина для вертикального экрана стоит на своём месте кадра */
 .shot.win > video, .shot.win > canvas.wcv, .shot.win > img.poster { left: var(--wx); right: auto; width: var(--ww); }
 
@@ -1696,9 +1696,9 @@ html:not(.ld) .tubes { -webkit-mask: none; mask: none; } /* маска кине�
       читается сразу). Хром и красное свечение — как были, и в русской версии тоже (там фраза под надписью была просто белой — выглядело ошибкой).
    2) Четыре уровня, каждый везде одинаковый: готика-заголовок (один размер во всех главах) → подзаголовок (Jost 400, белый) →
       основной текст (Jost 300, кремовый) → подписи (Jost 500, прописные, разрядка; акцентные — один розовый, служебные — серые). */
-@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/grenze-gotisch-700-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-cyrillic.woff2?v=52) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Grenze Gotisch"; font-style: normal; font-weight: 700; font-display: swap; src: url(../fonts/grenze-gotisch-700-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-cyrillic.woff2?v=53) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Monomakh"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/monomakh-400-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root {
   --gothic: "Grenze Gotisch", "Times New Roman", serif; --gothic-w: 700;
   --pink: #ff4f6d; --body-c: #d6d0c4;
@@ -1755,8 +1755,8 @@ html[data-lang] main .chapter.titles-head .credits li b span { font: inherit; co
       подзаголовки, жирные. Цитаты на картах отзывов — той же антиквой: на странице три семейства, а не пять.
    3) Один размер основного текста (15 px) и один размер подписей (11 px) на всех экранах; всё в полосах — одного размера (12 px).
    4) На телефоне заголовки крупнее (иерархия читается сразу); в телевизорах значок play стоит над подписью с одинаковым отступом. */
-@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-cyrillic.woff2?v=52) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
-@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-latin.woff2?v=52) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-cyrillic.woff2?v=53) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Playfair Display"; font-style: normal; font-weight: 400 900; font-display: swap; src: url(../fonts/playfair-normal-latin.woff2?v=53) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 :root { --gothic: "Pirata One", "Times New Roman", serif; --gothic-w: 400; --sub: "Playfair Display", "Times New Roman", serif; --t-body: 15px; --t-cap: 11px; --t-ui: 12px; }
 html[data-lang="ru"] { --gothic: "Monomakh", "Times New Roman", serif; --gothic-w: 400; }
 @media (max-width: 760px) { :root { --t-tag: 38px; --t-ptag: 21px; --t-lede: 24px; --t-sub: 19px; --t-body: 15px; --t-cap: 11px; } }
@@ -1795,7 +1795,7 @@ html[data-lang="ru"] .menu-sheet button { font-size: 15px; }
 html:not(.ld) main .chapter:not(.cover) { content-visibility: hidden; }
 .roll { content-visibility: auto; contain-intrinsic-size: auto 1400px; }
 /* лёгкие картинки (32-я редакция): блик по буквам надписи — по своей маске 600 px (19 КБ), а не по второй копии логотипа (110–260 КБ); рубашка карт — WebP */
-.ice-shine, html.ld .ice-shine { -webkit-mask: url(../media/ice_mask.webp?v=52) center / 100% 100% no-repeat; mask: url(../media/ice_mask.webp?v=52) center / 100% 100% no-repeat; }
+.ice-shine, html.ld .ice-shine { -webkit-mask: url(../media/ice_mask.webp?v=53) center / 100% 100% no-repeat; mask: url(../media/ice_mask.webp?v=53) center / 100% 100% no-repeat; }
 html:not(.ld) .ice-shine { -webkit-mask: none; mask: none; }
 
 /* ══ ТРИДЦАТЬ ЧЕТВЁРТАЯ РЕДАКЦИЯ ════════════════════════════════════════════════════════════════════════════════
@@ -1815,7 +1815,7 @@ html[data-lang="ru"] main .chapter[data-scene] .tag, html[data-lang="ru"] .roll 
 /* ══ Русская готика: Brahms Gotisch Cyr (Саша Павленко, лицензия SIL OFL 1.1, бесплатная) — выбор Павла 20.11.2026 ══════════════
    Покупать Moyenage Павел передумал. Сборка (build/build.mjs) ставит русской странице data-rugoth="brahms", когда файл шрифта на месте.
    Вид — как у английской готики: строчные с прописной, то же оформление, что у заголовков (см. --chrome). */
-@font-face { font-family: "Brahms Gotisch Cyr"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/brahms-gotisch-cyr.woff2?v=52) format("woff2"); }
+@font-face { font-family: "Brahms Gotisch Cyr"; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/brahms-gotisch-cyr.woff2?v=53) format("woff2"); }
 html[data-lang="ru"][data-rugoth="brahms"] { --gothic: "Brahms Gotisch Cyr", "Times New Roman", serif; --gothic-w: 400; --t-tag: clamp(40px, 4.2vw, 66px); --t-lede: clamp(26px, 3vw, 48px); }
 /* строчные у этой готики ниже, чем у Pirata One: на телефоне кегль крупнее английского, но «География выступлений» (9,4 кегля) ещё в одну строку */
 @media (max-width: 760px) { html[data-lang="ru"][data-rugoth="brahms"] { --t-tag: 36px; --t-lede: 27px; } }
@@ -1994,23 +1994,25 @@ html.trick-atlas .titem { opacity: 1; }
 
 /* ══ НОВАЯ РЕДАКЦИЯ (28.11.2026) ═════════════════════════════════════════════════════════════════════ */
 
-/* «Иллюзионист» — вторая строка логотипа: тонкие разряженные капители на всю ширину бриллиантовой надписи */
+/* «Иллюзионист» — над надписью, в выемке между высокими P и CH; тот же готический шрифт с хромом, что у слогана (уровень 1) */
 .chapter.cover { --ice-w: min(1040px, 92vw, 104vh); }
 .chapter.cover .ice { width: var(--ice-w); }
+.chapter.cover .ice-fly { margin-top: calc(var(--ice-w) * .055); }
 .chapter.cover .role {
-  position: relative; margin: clamp(0px, .4vh, 6px) auto 0; width: calc(var(--ice-w) * .88); padding: 0;
-  font-family: var(--sub, "Playfair Display", serif); font-weight: 800; font-style: normal; font-size: calc(var(--ice-w) * .072); line-height: 1.1;
-  text-transform: uppercase; letter-spacing: .5em; text-align: center; color: #fff;
-  background: linear-gradient(180deg, #fff 0%, #f1f5fa 38%, #b9c6d6 56%, #fff 78%, #dfe7f0 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .9)) drop-shadow(0 0 18px rgba(255, 60, 100, .55));
+  position: absolute; z-index: 2; left: 50%; top: 0; translate: -50% -58%; margin: 0; white-space: nowrap; pointer-events: none;
+  font-family: var(--gothic); font-weight: var(--gothic-w); font-style: normal; font-size: calc(var(--ice-w) * .088); line-height: 1; letter-spacing: .02em; padding: 0 .08em .06em;
+  background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 1px #000) drop-shadow(0 0 22px rgba(255, 40, 80, .6));
 }
-.chapter.cover .role.split { letter-spacing: 0; }
-html[lang="en"] .chapter.cover .role { width: calc(var(--ice-w) * .74); }
-.chapter.cover .role.split > span { display: flex; justify-content: space-between; }
-.chapter.cover .role i { font-style: normal; }
+/* подпись под надписью: крупнее, в две строки */
+.chapter.cover .kicker { margin: clamp(6px, 1.4vh, 16px) 0 auto; display: grid; justify-items: center; gap: .35em;
+  font-size: clamp(13px, 1.3vw, 19px); letter-spacing: .22em; line-height: 1.25; color: #ffe6ea; text-shadow: 0 0 8px rgba(0, 0, 0, .95), 0 0 18px rgba(255, 40, 80, .6); }
+.chapter.cover .kicker > span { display: grid; justify-items: center; gap: .35em; }
+.chapter.cover .kicker .kline { display: block; margin: 0; }
+.chapter.cover .kicker .kline + .kline { font-size: .86em; color: #ff9db0; }
 @media (max-width: 760px) {
   .chapter.cover { --ice-w: 96vw; }
-  .chapter.cover .role { width: 92vw; font-size: clamp(24px, 7.6vw, 34px); margin-top: 0; }
+  .chapter.cover .kicker { font-size: 12.5px; letter-spacing: .16em; }
 }
 
 /* подсказка «листайте вниз»: значок мыши с бегущим колёсиком (на телефоне — палец, который тянет вверх) и подпись */
@@ -2048,16 +2050,12 @@ html[lang="en"] .chapter.cover .role { width: calc(var(--ice-w) * .74); }
   .cred em { font-size: 17px; }
   .cred small { font-size: 10.5px; letter-spacing: .28em; margin-right: -.28em; }
 }
-/* логотипы на орбите */
+/* логотипы: воронка в 3D (место, поворот и размер ставит layCreds); база — высота при подлёте к камере, дальше масштаб */
 .orbit { position: absolute; inset: 0; }
-.orbit ul { --k: clamp(34px, 6.2vh, 62px); }
-.orbit li { position: absolute; left: 0; top: 0; height: calc(var(--k) * var(--h)); width: calc(var(--k) * var(--h) * var(--ar)); opacity: 0; will-change: transform, opacity; }
-.orbit img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .9)) drop-shadow(0 0 14px rgba(255, 255, 255, .3)); }
-.orbit-cap { position: absolute; left: 50%; bottom: calc(var(--foot) + 3.4vh); translate: -50% 0; margin: 0; width: max-content; max-width: 92vw; display: grid; justify-items: center; gap: 0; text-align: center; opacity: 0; }
-.orbit-cap b { font-family: var(--gothic); font-weight: var(--gothic-w); font-size: clamp(34px, 4.6vw, 66px); line-height: 1; padding: 0 .1em .06em;
-  background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 24px rgba(255, 40, 80, .6)); }
-.orbit-cap em { font: italic 400 clamp(15px, 1.5vw, 21px)/1.3 var(--sub, "Playfair Display", serif); color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, .95); }
-@media (max-width: 760px) { .orbit ul { --k: 31px; } .orbit-cap { bottom: calc(var(--foot) + 2.4vh); } .orbit-cap b { font-size: 36px; } }
+.orbit ul { --k: clamp(70px, 13vh, 150px); }
+.orbit li { position: absolute; left: 0; top: 0; height: calc(var(--k) * var(--h)); width: calc(var(--k) * var(--h) * var(--ar)); opacity: 0; will-change: transform, opacity; backface-visibility: hidden; }
+.orbit img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .9)) drop-shadow(0 0 18px rgba(255, 255, 255, .45)) drop-shadow(0 0 40px rgba(255, 60, 110, .35)); }
+@media (max-width: 760px) { .orbit ul { --k: 64px; } }
 
 /* название формата сразу (close-up, шоу на сцене): сначала одно название — внизу блока, потом поднимается, и под ним раскрывается текст */
 html[data-edition] main .chapter[data-tag-in] > :not(.tag) { opacity: var(--rest, 1); }
@@ -2067,3 +2065,9 @@ html[data-edition] main .chapter[data-tag-in]:not(.top) > .tag { transform: tran
 
 /* послужной список: строка «Клиенты» — названия через точку, чуть мельче */
 .chapter.titles-head .credits li:last-child span { font-size: .94em; line-height: 1.5; }
+
+/* крючок: надпись внизу по центру, под картой и лицом */
+.chapter.hook-head { left: 50%; top: auto; bottom: calc(var(--foot) + 7vh); translate: -50% 0; width: max-content; max-width: 92vw; text-align: center; }
+html[data-lang] main .chapter.hook-head .tag:not(.big) { font-size: clamp(40px, 5.6vw, 88px); margin: 0; }
+.chapter.hook-head::before { inset: -40px -90px; }
+@media (max-width: 760px) { .chapter.hook-head { bottom: calc(var(--foot) + 5vh); } html[data-lang] main .chapter.hook-head .tag:not(.big) { font-size: 38px; } }

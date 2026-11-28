@@ -4,6 +4,7 @@
 // len — длина сцены в высотах экрана; base — таймкод начала; span — сколько миллисекунд «проходит» за сцену
 const SCENES = [
   { id: 'cover',   len: 3.05, base: '03:33:00.000', span: 70,  name: { en: '',                ru: '' },                  loc: { en: 'After hours',      ru: 'После полуночи' } },
+  { id: 'hook',    len: 3.0, base: '03:33:05.000', span: 20,  name: { en: 'Remember the card', ru: 'Запомните карту' }, loc: { en: 'One card', ru: 'Одна карта' }, rail: false },
   { id: 'formats', len: 1.3, base: '03:33:07.100', span: 30,  name: { en: 'Three formats',   ru: 'Три формата' },       loc: { en: 'Tracklist',        ru: 'Трек-лист' } },
   { id: 'card',    len: 4.4, base: '03:41:12.400', span: 160, name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' } },
   { id: 'king',    len: 1.7, base: '03:41:12.560', span: 20,  name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' }, rail: false },
@@ -20,7 +21,7 @@ const SCENES = [
 // Пока Павел её не утвердил, она есть только по ссылке с ?trick; для всех — data-trick="on" у <html> (build/build.mjs, config.json → trick)
 const TRICK = /[?&]trick\b/.test(location.search) || document.documentElement.dataset.trick === 'on';
 if (TRICK) {
-  SCENES.splice(1, 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Your move', ru: 'Фокус для вас' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
+  SCENES.splice(SCENES.findIndex((s) => s.id === 'formats'), 0, { id: 'trick', len: 1.7, base: '03:33:04.000', span: 20, name: { en: 'Your move', ru: 'Фокус для вас' }, loc: { en: 'Interactive', ru: 'Интерактив' } });
   const f = document.querySelector('.shot[data-scenes="formats"]');
   if (f) f.dataset.tr = 'wash'; // блик с зуба теперь ведёт в «Ваш ход», а форматы проявляются из стола с картами
 } else {
@@ -926,7 +927,7 @@ const menuBtns = [...document.querySelectorAll('[data-fly]')];
 const closeSheet = () => { menuSheet.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
 menuBtns.forEach((b) => b.addEventListener('click', () => { closeSheet(); flyTo(b.dataset.fly, parseFloat(b.dataset.at || 0.05)); }));
 menuBtn.addEventListener('click', () => { menuSheet.hidden = !menuSheet.hidden; menuBtn.setAttribute('aria-expanded', String(!menuSheet.hidden)); });
-const MENU_OF = { formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
+const MENU_OF = { hook: 'formats', formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
 
 document.querySelectorAll('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
   e.preventDefault();
@@ -1226,10 +1227,9 @@ function deepFrame(sh, D, d) {
 // Всё считается от прокрутки в «экранах» от начала обложки (a). Надписи висят в глубине на оси полёта камеры:
 // каждая приближается (растёт из точки схода), стоит перед зрителем, пока её читают, и пролетает мимо камеры.
 const credsEl = $('#creds'), credEls = [...document.querySelectorAll('.cred')], orbitEl = $('#orbit');
-const orbitLi = orbitEl ? [...orbitEl.querySelectorAll('li')] : [], orbitCap = $('.orbit-cap');
+const orbitLi = orbitEl ? [...orbitEl.querySelectorAll('li')] : [];
 const CRED = { a0: 0.30, step: 0.25, win: 0.46 };        // когда появляется первая, шаг между соседними, сколько живёт каждая
-const ORB = { a0: 1.82, fold: 2.58, end: 2.9 };          // логотипы слетаются, с fold — закручиваются в зуб
-const NECK = [0.4806, 0.6];                              // вокруг чего кружат логотипы: шея (доли кадра 16:9); к концу центр переходит в бриллиант
+const ORB = { a0: 1.84, end: 2.98, span: 0.6 };          // воронка логотипов: с a0 до end, каждый летит span «экранов»
 const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
 goQueue.push(() => document.querySelectorAll('img[data-early]').forEach((im) => { im.src = V(im.dataset.early); }));
 let credsOn = null;
@@ -1258,35 +1258,30 @@ function layCreds(a, now) {
     el.style.opacity = op.toFixed(3);
     el.style.zIndex = Math.round(u * 100); // ближняя надпись — поверх дальней
   });
-  // логотипы: слетаются снаружи на наклонную орбиту вокруг шеи; дальняя часть уходит за голову; в конце — по спирали в бриллиант
+  // логотипы: воронка в 3D. Каждый вылетает из глубины — из его лица (точка схода в бриллианте), раскручивается по спирали
+  // и проносится мимо камеры, огромный, с поворотом в пространстве. Соседние идут через «золотой угол», поэтому спираль не повторяется.
   const oa = a - ORB.a0;
   if (oa <= -0.02 || !orbitLi.length || cov.el.style.display === 'none') { if (orbitEl._on !== false) { orbitEl._on = false; orbitEl.style.visibility = 'hidden'; } return; }
   if (orbitEl._on !== true) { orbitEl._on = true; orbitEl.style.visibility = ''; } // пусто = как у слоя: когда слой спрятан, логотипы прячутся вместе с ним
-  const fold = smooth((a - ORB.fold) / (ORB.end - ORB.fold));
-  const [nx, ny] = onScreen(cov, NECK[0], NECK[1]), [gx, gy] = onScreen(cov, GEM[0], GEM[1]);
-  const Rx = tall ? vw * 0.4 : Math.min(vw * 0.38, vh * 0.72);
-  // ближняя дуга проходит по груди и не опускается на подпись «фит.»: на низком экране кольцо становится площе
-  const capTop = orbitCap.offsetTop - (tall ? 22 : 30);
-  const oy0 = Math.min(ny, capTop - 44);
-  const Ry = clamp(capTop - oy0, 44, Rx * (tall ? 0.42 : 0.27));
-  const ox = nx + (gx - nx) * fold, oy = oy0 * (1 - fold) + gy * fold;
-  const spin = oa * 2.6 + now * 0.00022;
-  const n = orbitLi.length;
+  const [gx, gy] = onScreen(cov, GEM[0], GEM[1]);
+  const n = orbitLi.length, gap = (ORB.end - ORB.a0 - ORB.span) / (n - 1);
+  const R = Math.hypot(vw, vh) * (tall ? 0.5 : 0.44);
+  const r0 = (tall ? vw * 0.3 : vh * 0.2);              // логотипы выходят из-за головы — кольцом вокруг неё, лицо остаётся открытым
   orbitLi.forEach((el, j) => {
-    const inq = easeOut((oa - j * 0.022) / 0.3);
-    if (inq <= 0) { el.style.opacity = 0; return; }
-    const th = (j / n) * Math.PI * 2 + spin + fold * 3.4 + (1 - inq) * 1.6;
-    const r = (1 + (1 - inq) * 1.3) * (1 - fold);
-    const sn = Math.sin(th), cs_ = Math.cos(th);
-    const x = ox + Rx * r * cs_, y = oy + Ry * r * sn;
-    const depth = 0.78 + 0.3 * sn;                                   // ближняя дуга крупнее
-    const behind = sn < 0 ? smooth((Math.abs(cs_) - 0.34) / 0.3) * (0.4 + 0.6 * (1 + sn)) : 1; // за головой логотипа не видно
-    const op = inq * (behind + (1 - behind) * fold) * (1 - fold * fold * fold);
-    el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${(depth * (1 - fold * 0.82)).toFixed(3)})`;
+    const u = (oa - j * gap) / ORB.span;
+    if (u <= 0 || u >= 1) { if (el._on !== false) { el._on = false; el.style.opacity = 0; } return; }
+    el._on = true;
+    const d = 1 - u;                                   // глубина: 1 — в точке схода, 0 — у самой камеры
+    const s = 0.16 / (d + 0.16);                       // перспектива: из глубины (0,14) — во весь экран (1)
+    const th = j * 2.39996 + u * 3.6 + oa * 0.8;       // золотой угол между логотипами + закрутка по ходу полёта
+    const rr = r0 + R * s;
+    const x = gx + Math.cos(th) * rr, y = gy + Math.sin(th) * rr * (tall ? 0.9 : 0.62);
+    const tiltY = Math.cos(th) * -48 * s, tiltX = Math.sin(th) * 30 * s; // повёрнут к оси полёта: как карта, пролетающая мимо
+    const op = smooth(u / 0.18) * (1 - smooth((u - 0.86) / 0.14));
+    el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) perspective(900px) rotateY(${tiltY.toFixed(1)}deg) rotateX(${tiltX.toFixed(1)}deg) rotateZ(${(Math.sin(th * 0.5) * 8).toFixed(1)}deg) scale(${(s * 2.6).toFixed(3)})`;
     el.style.opacity = op.toFixed(3);
-    el.style.zIndex = sn > 0 ? 2 : 0;
+    el.style.zIndex = Math.round(u * 100);
   });
-  orbitCap.style.opacity = (smooth((oa - 0.12) / 0.2) * (1 - smooth((a - ORB.fold + 0.1) / 0.16))).toFixed(3);
 }
 
 // ── подсказка «листайте вниз» (новая редакция) ──
@@ -1342,13 +1337,7 @@ function peek() { // один раз за визит: чуть промотат�
 }
 if (!/^#at=/.test(location.hash)) setTimeout(peek, 3600);
 
-// «Иллюзионист» под надписью: слово режется на буквы, и они встают на всю ширину строки
-document.querySelectorAll('.role').forEach((p) => {
-  const w = p.querySelector('span') || p, t = w.textContent.trim();
-  p.setAttribute('aria-label', t);
-  w.replaceChildren(...[...t].map((ch) => { const s = document.createElement('i'); s.textContent = ch; s.setAttribute('aria-hidden', 'true'); return s; }));
-  p.classList.add('split');
-});
+
 
 // ── кадр ────────────────────────────────────────
 const film = $('#film'), whiteout = $('#whiteout'), strobeEl = $('#strobe'), burnEl = $('#burn'), whipDev = $('#whipDev');
