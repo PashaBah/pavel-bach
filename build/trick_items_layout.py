@@ -1,5 +1,5 @@
 # Раскладка фокуса «Ваш ход» с вещами (по принципу AGT: мячи → слоны → ангелы → красное).
-# Взглядом: любые часы → ближайший кошелёк → ближайшее кольцо → ближайшая красная вещь = красная помада.
+# Взглядом: любые часы → ближайший кошелёк → ближайшее кольцо → ближайшая красная вещь = красные очки (с 28.11.2026; раньше помада).
 # Чтобы секрет не читался: стол плотный (≈50 вещей), часы, кольца и красные вещи — по всему столу,
 # кошельки — широкой полосой по середине (не кучкой), между ними много посторонних вещей.
 # Доска 300×400 условных единиц. Печатает JSON: [{x, y, r, s, kind, sprite}], s — масштаб.
@@ -102,12 +102,12 @@ if not best: sys.exit('нет решения')
 score, seed, L = best
 rnd = random.Random(seed * 7 + 1)
 WATCH = [f'w{i}' for i in range(8)]; WAL = [f'l{i}' for i in range(8)]; RING = [f'r{i}' for i in range(6)]
-RED = ['red_phone', 'red_earrings', 'red_tie', 'red_glasses', 'red_keys', 'red_passport', 'red_perfume']
+RED = ['red_phone', 'red_earrings', 'red_tie', 'lipstick', 'red_keys', 'red_passport', 'red_perfume']  # паспорт на сайте не ставим
 OTHER = ['e_pearl', 'e_hoops', 'phone_black', 'phone_white', 'keys', 'glasses_black', 'glasses_tortoise', 'perfume', 'earbuds', 'card']
 items = []
 def add(p, kind, sprite, s=1.0):
     items.append(dict(x=round(p[0], 1), y=round(p[1], 1), r=round(rnd.uniform(-28, 28)), s=round(s * rnd.uniform(0.92, 1.08), 2), kind=kind, sprite=sprite))
-add(L['T'], 'target', 'lipstick')
+add(L['T'], 'target', 'red_glasses')
 for i, p in enumerate(L['watches']): add(p, 'watch', WATCH[i % len(WATCH)])
 for i, p in enumerate(L['wal']): add(p, 'wallet', WAL[(i * 3) % len(WAL)])
 for i, p in enumerate(L['R3'] + L['rings']): add(p, 'ring', RING[i % len(RING)], 0.8)
