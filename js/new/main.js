@@ -3,14 +3,13 @@
 
 // len — длина сцены в высотах экрана; base — таймкод начала; span — сколько миллисекунд «проходит» за сцену
 const SCENES = [
-  { id: 'cover',   len: 1.15, base: '03:33:00.000', span: 70,  name: { en: '',                ru: '' },                  loc: { en: 'After hours',      ru: 'После полуночи' } },
+  { id: 'cover',   len: 3.05, base: '03:33:00.000', span: 70,  name: { en: '',                ru: '' },                  loc: { en: 'After hours',      ru: 'После полуночи' } },
   { id: 'formats', len: 1.3, base: '03:33:07.100', span: 30,  name: { en: 'Three formats',   ru: 'Три формата' },       loc: { en: 'Tracklist',        ru: 'Трек-лист' } },
   { id: 'card',    len: 4.4, base: '03:41:12.400', span: 160, name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' } },
   { id: 'king',    len: 1.7, base: '03:41:12.560', span: 20,  name: { en: '01 — Close-up',   ru: '01 — Close-up' },     loc: { en: 'Among the guests', ru: 'Среди гостей' }, rail: false },
   { id: 'stage',   len: 6.2, base: '03:52:47.120', span: 160, name: { en: '02 — Stage show', ru: '02 — Шоу на сцене' }, loc: { en: 'Main stage',       ru: 'Главная сцена' } },
   { id: 'incog',   len: 2.8, base: '04:05:30.000', span: 90,  name: { en: '03 — Incognito',  ru: '03 — Инкогнито' },    loc: { en: 'The party',        ru: 'Вечеринка' } },
   { id: 'tv',      len: 3.6, base: '04:20:00.000', span: 60,  name: { en: 'Video',           ru: 'Видео' },             loc: { en: 'On air',           ru: 'В эфире' } },
-  { id: 'feat',    len: 2.0, base: '04:31:00.000', span: 40,  name: { en: 'Clients',         ru: 'Клиенты' },           loc: { en: 'Featuring',        ru: 'При участии' } },
   { id: 'titles',  len: 2.2, base: '04:36:00.000', span: 40,  name: { en: 'Credits',         ru: 'Регалии' },           loc: { en: 'On the record',    ru: 'Для протокола' } },
   { id: 'geo',     len: 2.8, base: '04:38:00.000', span: 60,  name: { en: 'Map',             ru: 'География' },         loc: { en: 'On tour',          ru: 'В дороге' } },
   { id: 'reviews', len: 3.6, base: '04:40:00.000', span: 90,  name: { en: 'Reviews',         ru: 'Отзывы' },            loc: { en: 'Shout-outs',       ru: 'Респект' } },
@@ -927,7 +926,7 @@ const menuBtns = [...document.querySelectorAll('[data-fly]')];
 const closeSheet = () => { menuSheet.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
 menuBtns.forEach((b) => b.addEventListener('click', () => { closeSheet(); flyTo(b.dataset.fly, parseFloat(b.dataset.at || 0.05)); }));
 menuBtn.addEventListener('click', () => { menuSheet.hidden = !menuSheet.hidden; menuBtn.setAttribute('aria-expanded', String(!menuSheet.hidden)); });
-const MENU_OF = { formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', feat: 'feat', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
+const MENU_OF = { formats: 'formats', card: 'formats', king: 'formats', stage: 'formats', incog: 'formats', tv: 'tv', titles: 'titles', geo: 'geo', reviews: 'reviews', wine: 'booking', booking: 'booking' };
 
 document.querySelectorAll('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
   e.preventDefault();
@@ -943,8 +942,20 @@ const chapters = [...document.querySelectorAll('.chapter')].map((el) => {
   const s = SCENES[byId[el.dataset.scene]];
   const m = vw < 761; // на телефоне у части глав другое время: текст стоит под кадром-полосой всю сцену
   const a = parseFloat((m && el.dataset.inM) || el.dataset.in), b = parseFloat((m && el.dataset.outM) || el.dataset.out);
-  return { el, from: a < 0 ? -Infinity : s.start + a * s.len, to: b > 1 ? Infinity : s.start + b * s.len, shown: -1 };
+  const from = a < 0 ? -Infinity : s.start + a * s.len;
+  // новая редакция: data-tag-in — название формата видно с самого начала сцены, остальной текст раскрывается под ним позже (--rest)
+  const tagFrom = el.dataset.tagIn ? s.start + parseFloat(el.dataset.tagIn) * s.len : NaN;
+  return { el, from, to: b > 1 ? Infinity : s.start + b * s.len, shown: -1, tagFrom: tagFrom < from ? tagFrom : undefined, rest: -1, tag: el.querySelector('.tag') };
 });
+// насколько название опущено, пока оно одно: стоит на нижней строке блока, потом поднимается на своё место
+function measureTag(c) {
+  if (c.tagFrom === undefined || !c.tag || c.el.classList.contains('top')) return;
+  c.el.style.setProperty('--rest-h', `${Math.max(0, c.el.offsetHeight - c.tag.offsetTop - c.tag.offsetHeight)}px`);
+}
+function measureTags() { chapters.forEach(measureTag); }
+{ const base = placeAll; placeAll = () => { base(); measureTags(); }; }
+measureTags();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureTags);
 const coverEl = $('.chapter.cover');
 let lqShown = -1;
 
@@ -1211,6 +1222,132 @@ function deepFrame(sh, D, d) {
   sh.el.style.visibility = hide ? 'hidden' : '';
 }
 
+// ── подлёт (новая редакция): регалии пролетают сквозь кадр, логотипы клиентов кружат вокруг него и уходят в бриллиант в зубе ──
+// Всё считается от прокрутки в «экранах» от начала обложки (a). Надписи висят в глубине на оси полёта камеры:
+// каждая приближается (растёт из точки схода), стоит перед зрителем, пока её читают, и пролетает мимо камеры.
+const credsEl = $('#creds'), credEls = [...document.querySelectorAll('.cred')], orbitEl = $('#orbit');
+const orbitLi = orbitEl ? [...orbitEl.querySelectorAll('li')] : [], orbitCap = $('.orbit-cap');
+const CRED = { a0: 0.30, step: 0.25, win: 0.46 };        // когда появляется первая, шаг между соседними, сколько живёт каждая
+const ORB = { a0: 1.82, fold: 2.58, end: 2.9 };          // логотипы слетаются, с fold — закручиваются в зуб
+const NECK = [0.4806, 0.6];                              // вокруг чего кружат логотипы: шея (доли кадра 16:9); к концу центр переходит в бриллиант
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+goQueue.push(() => document.querySelectorAll('img[data-early]').forEach((im) => { im.src = V(im.dataset.early); }));
+let credsOn = null;
+function layCreds(a, now) {
+  if (!credsEl) return;
+  const on = a > CRED.a0 - 0.05 && a < ORB.end + 0.1;
+  if (on !== credsOn) { credsOn = on; credsEl.style.visibility = on ? 'visible' : 'hidden'; }
+  if (!on) return;
+  const cov = shots[0];
+  const tall = vw / vh < 0.8;
+  const cx = vw / 2, cy = barH + (vh - barH - footH) * (tall ? 0.44 : 0.47); // точка схода — его лицо
+  // подложка: чуть затемняет кадр под надписями, к логотипам уходит (лицо остаётся светлым)
+  const veil = smooth((a - CRED.a0) / 0.2) * (1 - smooth((a - ORB.a0) / 0.3));
+  credsEl.style.setProperty('--veil', veil.toFixed(3));
+  credEls.forEach((el, i) => {
+    const u = (a - CRED.a0 - i * CRED.step) / CRED.win;
+    if (u <= 0 || u >= 1) { if (el._on !== false) { el._on = false; el.style.visibility = 'hidden'; } return; }
+    if (el._on !== true) { el._on = true; el.style.visibility = ''; el._dx = parseFloat(el.style.getPropertyValue('--dx')) || 0; el._dy = parseFloat(el.style.getPropertyValue('--dy')) || 0; }
+    let s, op;
+    if (u < 0.24) { const q = u / 0.24; s = 0.1 + 0.9 * (1 - (1 - q) * (1 - q)); op = q * q; }          // подлетает из глубины (пока далеко — едва видна)
+    else if (u < 0.64) { s = 1 + 0.12 * (u - 0.24) / 0.4; op = 1; }                                     // стоит перед зрителем
+    else { const q = (u - 0.64) / 0.36; s = 1.12 + 5 * q * q + 4 * q * q * q; op = 1 - clamp(q / 0.5); } // пролетает мимо камеры
+    // на узком экране надписи почти на оси (сбоку им некуда улетать), зато дальше разнесены по высоте: строк больше
+    const x = cx + el._dx * (tall ? 0.5 : 1) * vw * s, y = cy + el._dy * (tall ? 1.55 : 1) * vh * s;
+    el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(4)}) rotate(${(el._dx * (s - 1) * 14).toFixed(2)}deg)`;
+    el.style.opacity = op.toFixed(3);
+    el.style.zIndex = Math.round(u * 100); // ближняя надпись — поверх дальней
+  });
+  // логотипы: слетаются снаружи на наклонную орбиту вокруг шеи; дальняя часть уходит за голову; в конце — по спирали в бриллиант
+  const oa = a - ORB.a0;
+  if (oa <= -0.02 || !orbitLi.length || cov.el.style.display === 'none') { if (orbitEl._on !== false) { orbitEl._on = false; orbitEl.style.visibility = 'hidden'; } return; }
+  if (orbitEl._on !== true) { orbitEl._on = true; orbitEl.style.visibility = ''; } // пусто = как у слоя: когда слой спрятан, логотипы прячутся вместе с ним
+  const fold = smooth((a - ORB.fold) / (ORB.end - ORB.fold));
+  const [nx, ny] = onScreen(cov, NECK[0], NECK[1]), [gx, gy] = onScreen(cov, GEM[0], GEM[1]);
+  const Rx = tall ? vw * 0.4 : Math.min(vw * 0.38, vh * 0.72);
+  // ближняя дуга проходит по груди и не опускается на подпись «фит.»: на низком экране кольцо становится площе
+  const capTop = orbitCap.offsetTop - (tall ? 22 : 30);
+  const oy0 = Math.min(ny, capTop - 44);
+  const Ry = clamp(capTop - oy0, 44, Rx * (tall ? 0.42 : 0.27));
+  const ox = nx + (gx - nx) * fold, oy = oy0 * (1 - fold) + gy * fold;
+  const spin = oa * 2.6 + now * 0.00022;
+  const n = orbitLi.length;
+  orbitLi.forEach((el, j) => {
+    const inq = easeOut((oa - j * 0.022) / 0.3);
+    if (inq <= 0) { el.style.opacity = 0; return; }
+    const th = (j / n) * Math.PI * 2 + spin + fold * 3.4 + (1 - inq) * 1.6;
+    const r = (1 + (1 - inq) * 1.3) * (1 - fold);
+    const sn = Math.sin(th), cs_ = Math.cos(th);
+    const x = ox + Rx * r * cs_, y = oy + Ry * r * sn;
+    const depth = 0.78 + 0.3 * sn;                                   // ближняя дуга крупнее
+    const behind = sn < 0 ? smooth((Math.abs(cs_) - 0.34) / 0.3) * (0.4 + 0.6 * (1 + sn)) : 1; // за головой логотипа не видно
+    const op = inq * (behind + (1 - behind) * fold) * (1 - fold * fold * fold);
+    el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${(depth * (1 - fold * 0.82)).toFixed(3)})`;
+    el.style.opacity = op.toFixed(3);
+    el.style.zIndex = sn > 0 ? 2 : 0;
+  });
+  orbitCap.style.opacity = (smooth((oa - 0.12) / 0.2) * (1 - smooth((a - ORB.fold + 0.1) / 0.16))).toFixed(3);
+}
+
+// ── подсказка «листайте вниз» (новая редакция) ──
+// 1) если на первом экране несколько секунд никто не листает, страница сама чуть проматывается и возвращается: видно, что фильм идёт от прокрутки;
+// 2) посреди фильма после паузы появляется значок с подписью; 3) свайп или колесо вбок и стрелки ← → тоже листают фильм.
+const cueEl = $('#cue');
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const NO_SWIPE = '.booking, .roll, .modal, .trick, .mole, .geo-map, .menu-sheet, input, textarea, select';
+let lastMove = performance.now(), touched = false, cueOn = false, cueUntil = 0;
+const moved = () => { lastMove = performance.now(); };
+window.addEventListener('scroll', moved, { passive: true });
+for (const t of ['wheel', 'touchstart', 'pointerdown', 'keydown']) window.addEventListener(t, () => { touched = true; moved(); }, { passive: true });
+function layCue(now) {
+  if (!cueEl) return;
+  const idle = now - lastMove > 5200 || now < cueUntil;
+  const bs = SCENES[byId.booking];
+  const want = idle && cur > 0.5 && cur < bs.start - 0.3 && deckShown < 0.3
+    && !document.querySelector('.modal:not([hidden]), .trick:not([hidden]), .mole:not([hidden])');
+  if (want !== cueOn) { cueOn = want; cueEl.classList.toggle('on', want); }
+}
+const step = (dir) => { window.scrollBy({ top: dir * 0.62 * vh, behavior: 'smooth' }); cueUntil = performance.now() + 2600; };
+let sw0 = null;
+window.addEventListener('touchstart', (e) => { sw0 = e.touches.length === 1 && !e.target.closest(NO_SWIPE) ? [e.touches[0].clientX, e.touches[0].clientY] : null; }, { passive: true });
+window.addEventListener('touchend', (e) => {
+  if (!sw0 || deckShown > 0.6) { sw0 = null; return; } // в отзывах свайп вбок листает карты
+  const dx = e.changedTouches[0].clientX - sw0[0], dy = e.changedTouches[0].clientY - sw0[1];
+  sw0 = null;
+  if (Math.abs(dx) > 56 && Math.abs(dx) > 2 * Math.abs(dy)) step(dx < 0 ? 1 : -1);
+}, { passive: true });
+window.addEventListener('wheel', (e) => { // тачпад: жест вбок листает фильм так же, как вниз
+  if (e.ctrlKey || Math.abs(e.deltaX) < 4 || Math.abs(e.deltaX) < Math.abs(e.deltaY) * 1.5 || deckShown > 0.6 || e.target.closest(NO_SWIPE)) return;
+  window.scrollBy(0, e.deltaX);
+}, { passive: true });
+window.addEventListener('keydown', (e) => {
+  if (deckShown > 0.6 || e.target.closest('input, textarea, select, [contenteditable]') || document.querySelector('.modal:not([hidden]), .trick:not([hidden]), .mole:not([hidden])')) return;
+  if (e.key === 'ArrowRight') step(1);
+  if (e.key === 'ArrowLeft') step(-1);
+});
+function peek() { // один раз за визит: чуть промотать и вернуть
+  if (touched || window.scrollY > 2 || reduced) return;
+  try { if (sessionStorage.getItem('pb_peek')) return; sessionStorage.setItem('pb_peek', '1'); } catch (e) { /* без памяти — просто покажем */ }
+  const t0 = performance.now(), top = 0.2 * SH, UP = 800, DOWN = 950;
+  const run = (t) => {
+    if (touched) return; // человек начал листать сам — не мешаем
+    const d = t - t0;
+    const q = d < UP ? inOut(d / UP) : 1 - inOut((d - UP) / DOWN);
+    window.scrollTo(0, Math.max(0, q) * top);
+    if (d < UP + DOWN) requestAnimationFrame(run); else window.scrollTo(0, 0);
+  };
+  requestAnimationFrame(run);
+}
+if (!/^#at=/.test(location.hash)) setTimeout(peek, 3600);
+
+// «Иллюзионист» под надписью: слово режется на буквы, и они встают на всю ширину строки
+document.querySelectorAll('.role').forEach((p) => {
+  const w = p.querySelector('span') || p, t = w.textContent.trim();
+  p.setAttribute('aria-label', t);
+  w.replaceChildren(...[...t].map((ch) => { const s = document.createElement('i'); s.textContent = ch; s.setAttribute('aria-hidden', 'true'); return s; }));
+  p.classList.add('split');
+});
+
 // ── кадр ────────────────────────────────────────
 const film = $('#film'), whiteout = $('#whiteout'), strobeEl = $('#strobe'), burnEl = $('#burn'), whipDev = $('#whipDev');
 let last = performance.now();
@@ -1386,7 +1523,7 @@ function frame(now, snap) {
   let gf = 0, gxy = null;
   if (cov.shown > 0.01 && cov.el.style.display !== 'none') {
     const pc = clamp((cur - cov.from) / (cov.to - cov.from));
-    const tw = 0.16 * Math.sin(Math.PI * clamp((pc - 0.74) / 0.12));
+    const tw = 0.16 * Math.sin(Math.PI * clamp((pc - 0.85) / 0.09));
     gf = Math.max(tw, flashBefore ? flashA : 0);
     if (gf > 0.002) gxy = onScreen(cov, GEM[0], GEM[1]);
   }
@@ -1413,7 +1550,7 @@ function frame(now, snap) {
 
   // обложка: камера пролетает сквозь бриллиантовые буквы; имя в углу появляется, когда буквы улетели
   const cs = SCENES[0];
-  const lq = clamp((cur - cs.start - 0.02 * cs.len) / (0.32 * cs.len));
+  const lq = clamp((cur - cs.start - 0.023) / 0.368); // новая редакция: сцена длиннее, поэтому в «экранах», а не в долях сцены
   if (Math.abs(lq - lqShown) > 0.0005) {
     lqShown = lq;
     coverEl.style.setProperty('--lq', lq.toFixed(4));
@@ -1421,6 +1558,9 @@ function frame(now, snap) {
     coverEl.classList.toggle('fly', lq > 0.42); // размытие пролёта — только когда буквы уже близко, до того надпись чёткая и блестит
     html.dataset.logo = lq < 0.85 ? 'on' : 'off';
   }
+
+  layCreds(cur - cs.start, now);
+  layCue(now);
 
   // живые клипы играют, только пока их видно
   const tripOn = !!tripShot && tripShot.shown > 0.01;
@@ -1440,8 +1580,14 @@ function frame(now, snap) {
   railMarks.forEach((b, k) => b && b.style.setProperty('--p', clamp((cur - SCENES[k].start) / SCENES[k].len)));
 
   for (const c of chapters) {
-    const vis = smooth((cur - c.from) / FADE + (c.from === -Infinity ? 1 : 0)) * (1 - smooth((cur - c.to) / FADE + 1));
+    const inAt = c.tagFrom === undefined ? c.from : c.tagFrom;
+    const vis = smooth((cur - inAt) / FADE + (inAt === -Infinity ? 1 : 0)) * (1 - smooth((cur - c.to) / FADE + 1));
+    if (c.tagFrom !== undefined) {
+      const rest = smooth((cur - c.from) / FADE);
+      if (Math.abs(rest - c.rest) > 0.001) { c.rest = rest; c.el.style.setProperty('--rest', rest.toFixed(3)); c.el.classList.toggle('rest-on', rest > 0.6); }
+    }
     if (Math.abs(vis - c.shown) < 0.001) continue;
+    if (c.shown < 0.01 && vis >= 0.01) measureTag(c); // глава появляется — мерим заново: шрифты и высота окна могли смениться
     c.shown = vis;
     const leaving = cur > c.to - FADE;
     c.el.style.opacity = vis;

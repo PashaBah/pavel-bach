@@ -35,7 +35,7 @@
      data-mx — какую точку кадра по ширине держать в центре вертикального экрана. -->
 <div id="film">
   <!-- обложка: подлёт к нему, он улыбается, блик на зубе -->
-  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-src-t="media/cover_t.mp4" data-win="0.25,0.440625" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.8:1,1:1" data-mx="47%">
+  <div class="shot phonk" data-scenes="cover" data-src="media/cover.mp4" data-src-t="media/cover_t.mp4" data-win="0.25,0.440625" data-zoom="48.06%,48.6%,1.9" data-ramp="0:0,0.128:0.1,0.66:0.6,0.89:1,1:1" data-mx="47%">
     <!-- первый экран: тот же первый кадр, но резкий (tools/hero28.mjs — лицо из исходного кадра 2048 px); с началом прокрутки растворяется в ролике -->
     <picture class="hero"><source media="(max-aspect-ratio: 3/4)" srcset="media/hero_t.webp"><img src="media/hero.webp" alt="Pavel Bach, magician" data-ru-alt="Павел Бах, иллюзионист" width="2560" height="1440" fetchpriority="high" decoding="async"></picture>
   </div>
@@ -106,7 +106,6 @@
     </div>
   </div>
 
-  <div class="shot phonk dimmed" data-scenes="feat" data-src="media/crowd.webp" data-tr="wash"></div>
   <!-- регалии: настоящий снимок Павла на площадке America's Got Talent (неоновый логотип шоу — в самом кадре) -->
   <div class="shot phonk titles" data-scenes="titles" data-src="media/agt.webp" data-tr="wash" data-fade="0.4" data-mx="66%"></div>
   <!-- география: карта (tools/geomap.py вставляется из media/map.svg), маршрут рисуется при прокрутке, по нему летит самолёт -->
@@ -151,7 +150,6 @@
   <nav class="menu" id="menu" aria-label="Sections">
     <button type="button" data-fly="formats" data-at="0.3"><span lang="en">Formats</span><span lang="ru">Форматы</span></button>
     <button type="button" data-fly="tv" data-at="0.78"><span lang="en">Video</span><span lang="ru">Видео</span></button>
-    <button type="button" data-fly="feat" data-at="0.5"><span lang="en">Clients</span><span lang="ru">Клиенты</span></button>
     <button type="button" data-fly="titles" data-at="0.5"><span lang="en">Credits</span><span lang="ru">Регалии</span></button>
     <button type="button" data-fly="geo" data-at="0.6"><span lang="en">Map</span><span lang="ru">География</span></button>
     <button type="button" data-fly="reviews" data-at="0.1"><span lang="en">Reviews</span><span lang="ru">Отзывы</span></button>
@@ -178,7 +176,7 @@
 <main id="chapters">
 
   <!-- ОБЛОЖКА: при прокрутке камера пролетает сквозь бриллиантовые буквы -->
-  <section class="chapter center hero cover" data-scene="cover" data-in="-1" data-out="0.4">
+  <section class="chapter center hero cover" data-scene="cover" data-in="-1" data-out="0.15">
     <h1 class="sr-only"><span lang="en">Pavel Bach — magician for corporate and private events</span><span lang="ru">Павел Бах (Pavel Bach) — иллюзионист для корпоративных и частных событий</span></h1>
     <div class="ice-fly">
       <div class="ice" aria-hidden="true">
@@ -192,15 +190,46 @@
         <i class="glint" style="--gx:81%;--gy:55%;--gd:2.4s"></i>
         <i class="glint big" style="--gx:46%;--gy:44%;--gd:3.1s"></i>
       </div>
+      <!-- новая редакция: «Иллюзионист» — вторая строка логотипа. Буквы растянуты на ширину надписи (js/new/main.js режет слово на буквы), улетает вместе с ней -->
+      <p class="role"><span lang="en">Magician</span><span lang="ru">Иллюзионист</span></p>
     </div>
-    <p class="eyebrow kicker"><span lang="en">Magician<span class="kdot"> · </span><span class="kline">private and corporate events</span><span class="kdot"> · </span><span class="kline">Europe and worldwide</span></span><span lang="ru">Иллюзионист<span class="kdot"> · </span><span class="kline">частные и корпоративные события</span><span class="kdot"> · </span><span class="kline">Европа и мир</span></span></p>
+    <p class="eyebrow kicker"><span lang="en"><span class="kline">private and corporate events</span><span class="kdot"> · </span><span class="kline">Europe and worldwide</span></span><span lang="ru"><span class="kline">частные и корпоративные события</span><span class="kdot"> · </span><span class="kline">Европа и мир</span></span></p>
     <div class="cover-text">
       <p class="lede"><span lang="en">Making your event impossible to forget</span><span lang="ru">Чтобы забыть ваш вечер не было шансов</span></p>
       <p class="hero-actions">
         <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
         <a class="btn ghost reel-btn" href="https://www.youtube.com/shorts/9mxUTvzCMNU" data-ru-href="https://www.youtube.com/shorts/6YKqLwvMQ-w" data-yt="9mxUTvzCMNU" data-ru-data-yt="6YKqLwvMQ-w"><i aria-hidden="true"></i><span lang="en">Watch the showreel</span><span lang="ru">Смотреть шоурил</span></a>
       </p>
-      <p class="scroll-hint"><span lang="en">Scroll down</span><span lang="ru">Листайте вниз</span></p>
+      <p class="cue on"><i aria-hidden="true"></i><b><span lang="en">Scroll down</span><span lang="ru">Листайте вниз</span></b></p>
+    </div>
+  </section>
+
+  <!-- ПОДЛЁТ (новая редакция): пока камера летит от надписи к лицу, регалии по одной пролетают сквозь кадр,
+       потом логотипы клиентов слетаются на орбиту вокруг него и по спирали уходят в бриллиант в зубе. Раскладку считает layCreds (js/new/main.js).
+       --dx, --dy — с какой стороны от оси полёта висит надпись (доли экрана); у логотипов --h и --ar — высота и пропорции, как в прежней сцене «фит.» -->
+  <section class="creds" id="creds" aria-label="Credits" data-ru-aria-label="Регалии">
+    <ul class="creds-list">
+      <li class="cred" style="--dx:0.02;--dy:-0.07"><small><span lang="en">Title</span><span lang="ru">Титул</span></small><b><span lang="en">National Champion</span><span lang="ru">Чемпион России</span></b><em><span lang="en">in the art of illusion</span><span lang="ru">по иллюзионному искусству</span></em></li>
+      <li class="cred" style="--dx:-0.03;--dy:0.08"><small><span lang="en">His own tour</span><span lang="ru">Собственный тур</span></small><b><span lang="en">10 European Cities</span><span lang="ru">10 городов Европы</span></b><em>Stand-up Magic Show Tour · sold out</em></li>
+      <li class="cred" style="--dx:0.03;--dy:-0.08"><small><span lang="en">On the road</span><span lang="ru">География</span></small><b><span lang="en">12 Countries</span><span lang="ru">12 стран</span></b><em><span lang="en">and counting</span><span lang="ru">и это не предел</span></em></li>
+      <li class="cred" style="--dx:-0.03;--dy:0.09"><small><span lang="en">Awards</span><span lang="ru">Премия</span></small><b>Wedding Awards</b><em><span lang="en">finalist 2021 &amp; 2022 · Best Artist / Show</span><span lang="ru">финалист 2021 и 2022 · «Лучший артист / шоу»</span></em></li>
+      <li class="cred" style="--dx:0.03;--dy:-0.12"><small><span lang="en">Television</span><span lang="ru">Телевидение</span></small><b><span lang="en">TV Projects</span><span lang="ru">ТВ-проекты</span></b><em><span lang="en">in Russia and the USA</span><span lang="ru">в России и США</span></em></li>
+      <li class="cred" style="--dx:0;--dy:0.14"><small><span lang="en">Magic consultant</span><span lang="ru">Консультант по иллюзии</span></small><b>America's Got Talent</b><em><span lang="en">behind the scenes of the show</span><span lang="ru">за кулисами шоу</span></em></li>
+    </ul>
+    <div class="orbit" id="orbit">
+      <ul>
+        <li style="--h:0.7;--ar:2.4"><img data-early="media/logos/dior.webp" alt="Dior"></li>
+        <li style="--h:0.86;--ar:1.73"><img data-early="media/logos/mercedes.webp" alt="Mercedes-Benz"></li>
+        <li style="--h:0.74;--ar:2.87"><img data-early="media/logos/cartier.webp" alt="Cartier"></li>
+        <li style="--h:0.64;--ar:1.92"><img data-early="media/logos/nike.webp" alt="Nike"></li>
+        <li style="--h:0.36;--ar:7.5"><img data-early="media/logos/bulgari.webp" alt="Bulgari"></li>
+        <li style="--h:0.95;--ar:1.24"><img data-early="media/logos/ritz.webp" alt="The Ritz-Carlton"></li>
+        <li style="--h:0.53;--ar:3.05"><img data-early="media/logos/cocacola.webp" alt="Coca-Cola"></li>
+        <li style="--h:0.48;--ar:4.36"><img data-early="media/logos/motorola.svg" alt="Motorola"></li>
+        <li style="--h:0.36;--ar:5.56"><img data-early="media/logos/xiaomi.webp" alt="Xiaomi"></li>
+        <li style="--h:0.4;--ar:5.43"><img data-early="media/logos/raiffeisen.webp" alt="Raiffeisen Bank"></li>
+      </ul>
+      <p class="orbit-cap"><b><span lang="en">feat.</span><span lang="ru">фит.</span></b><em><span lang="en">Brands that have already booked him</span><span lang="ru">Бренды, которые его уже приглашали</span></em></p>
     </div>
   </section>
 
@@ -220,7 +249,7 @@
   </section>
 
   <!-- 01 CLOSE-UP: текст появляется после облёта, чтобы не закрывать лица гостей; стоит справа — слева он поднимает карту -->
-  <section class="chapter left" data-scene="card" data-in="0.32" data-out="0.74">
+  <section class="chapter left" data-scene="card" data-in="0.32" data-out="0.74" data-tag-in="0.03">
     <p class="tag"><span lang="en">Close-up Magic</span><span lang="ru">Микромагия</span></p>
     <h2><span lang="en">Magic that happens in your guests' hands</span><span lang="ru">Магия на расстоянии вытянутой руки</span></h2>
     <p class="body"><span lang="en">Pavel moves between small groups of guests and works up close, one conversation at a time. He'll guess your phone passcode, put your watch inside a glass bottle, and your favourite film will turn up printed on his T-shirt. Watch the video</span><span lang="ru">Павел перемещается между небольшими группами гостей и работает в формате личного общения. Он угадает ваш пароль от телефона, ваши часы поместит в стеклянную бутылку, а на его футболке окажется напечатан ваш любимый фильм. Посмотрите видео</span></p>
@@ -234,7 +263,7 @@
   </section>
 
   <!-- 02 ШОУ НА СЦЕНЕ -->
-  <section class="chapter left top" data-scene="stage" data-in="0.66" data-out="0.97" data-in-m="0.03">
+  <section class="chapter left top" data-scene="stage" data-in="0.66" data-out="0.97" data-in-m="0.03" data-tag-in="0.05">
     <p class="tag"><span lang="en">Stage Show</span><span lang="ru">Шоу на сцене</span></p>
     <h2><span lang="en">One moment the whole room shares</span><span lang="ru">Один экспириенс на всех</span></h2>
     <p class="body"><span lang="en">An interactive stand-up magic show for the whole room at once: comedy, strong effects, tight direction and a style of its own. Everyone gets involved. Usually runs during dinner</span><span lang="ru">Интерактивное шоу в жанре stand-up magic для всех гостей сразу: юмор, сильные эффекты, продуманная режиссура и свой стиль. В номерах участвует весь зал. Обычно идёт во время банкетной части вечера</span></p>
@@ -265,26 +294,6 @@
     <p class="tap-hint"><span lang="en">Every screen is a video of Pavel at work<br>tap to watch</span><span lang="ru">На каждом экране — видео Павла в работе<br>нажмите, чтобы посмотреть</span></p>
   </section>
 
-  <!-- КЛИЕНТЫ -->
-  <section class="chapter center feat" data-scene="feat" data-in="0.1" data-out="0.9">
-    <p class="tag big"><span lang="en">feat.</span><span lang="ru">фит.</span></p>
-    <h2><span lang="en">Brands that have already booked him</span><span lang="ru">Бренды, которые его уже приглашали</span></h2>
-    <ul class="logos">
-      <li style="--h:0.7;--ar:2.4;translate:0 -18%"><img data-lz="media/logos/dior.webp" alt="Dior"></li>
-      <li style="--h:0.74;--ar:2.87"><img data-lz="media/logos/cartier.webp" alt="Cartier"></li>
-      <li style="--h:0.86;--ar:1.73"><img data-lz="media/logos/mercedes.webp" alt="Mercedes-Benz"></li>
-      <li style="--h:0.48;--ar:4.36"><img data-lz="media/logos/motorola.svg" alt="Motorola"></li>
-      <li style="--h:0.36;--ar:7.5"><img data-lz="media/logos/bulgari.webp" alt="Bulgari"></li>
-      <li class="br" aria-hidden="true"></li>
-      <li style="--h:0.95;--ar:1.24"><img data-lz="media/logos/ritz.webp" alt="The Ritz-Carlton"></li>
-      <li style="--h:0.64;--ar:1.92"><img data-lz="media/logos/nike.webp" alt="Nike"></li>
-      <li style="--h:0.53;--ar:3.05"><img data-lz="media/logos/cocacola.webp" alt="Coca-Cola"></li>
-      <li style="--h:0.36;--ar:5.56"><img data-lz="media/logos/xiaomi.webp" alt="Xiaomi"></li>
-      <li style="--h:0.4;--ar:5.43"><img data-lz="media/logos/raiffeisen.webp" alt="Raiffeisen Bank"></li>
-    </ul>
-    <p class="body small"><span lang="en">Spain · France · Monaco · Portugal · Cyprus · Dubai</span><span lang="ru">Испания · Франция · Монако · Португалия · Кипр · Дубай</span></p>
-  </section>
-
   <!-- РЕГАЛИИ: коротко и по делу, рядом с настоящим снимком -->
   <section class="chapter left titles-head" data-scene="titles" data-in="0.1" data-out="0.92">
     <p class="tag"><span lang="en">Credits</span><span lang="ru">Послужной список</span></p>
@@ -294,14 +303,15 @@
       <li><b>Stand-up Magic Show Tour</b><span lang="en">his own tour: 10 European cities, sold out</span><span lang="ru">собственный тур: 10 городов Европы, sold out</span></li>
       <li><b>Wedding Awards</b><span lang="en">finalist 2021 and 2022, Best Artist / Show</span><span lang="ru">финалист 2021 и 2022, «Лучший артист / шоу»</span></li>
       <li><b><span lang="en">Television</span><span lang="ru">Телевидение</span></b><span lang="en">TV projects in Russia and the USA</span><span lang="ru">телепроекты в России и США</span></li>
+      <li><b><span lang="en">Clients</span><span lang="ru">Клиенты</span></b><span>Dior · Cartier · Mercedes-Benz · Bulgari · The Ritz-Carlton · Nike · Coca-Cola · Motorola · Xiaomi · Raiffeisen</span></li>
     </ul>
   </section>
 
   <!-- ГЕОГРАФИЯ -->
   <section class="chapter center geo-head" data-scene="geo" data-in="0.08" data-out="0.99">
-    <p class="tag"><span lang="en">On Tour</span><span lang="ru">География выступлений</span></p>
-    <h2><span lang="en">Teleportation is still in rehearsal — for now, he uses plane magic</span><span lang="ru">Телепортацию ещё репетирует — пока летает самолётами</span></h2>
-    <p class="body"><span lang="en">And he flies a lot: here's where he performs regularly</span><span lang="ru">Но летает часто: вот где он выступает регулярно</span></p>
+    <p class="tag"><span lang="en">12 Countries</span><span lang="ru">12 стран</span></p>
+    <h2><span lang="en">Pavel performs in 12 countries and gladly flies to new ones</span><span lang="ru">Павел выступает в 12 странах и охотно летит в новые</span></h2>
+    <p class="body"><span lang="en">Open to offers anywhere in the world. Here is where he works regularly</span><span lang="ru">Открыт к предложениям в любой точке мира. Вот где он работает регулярно</span></p>
     <p class="geo-hint"><span lang="en">Your turn: tap the map<br>and send him anywhere</span><span lang="ru">Ваш ход: нажмите на карту<br>и отправьте его куда угодно</span></p>
     <p class="geo-say" id="geoSay"></p>
     <p class="geo-score" id="geoScore"></p>
@@ -434,6 +444,9 @@
     <div class="why-text" id="whyText"></div>
   </div>
 </div>
+
+<!-- подсказка «листайте вниз» посреди фильма: появляется, если несколько секунд никто не листает (js/new/main.js) -->
+<p class="cue cue-idle" id="cue" aria-hidden="true"><i></i><b><span lang="en">Scroll down</span><span lang="ru">Листайте вниз</span></b></p>
 
 <div id="scrollSpace" aria-hidden="true"></div>
 
