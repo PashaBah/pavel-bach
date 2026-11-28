@@ -6,7 +6,7 @@
 // Загаданная вещь не уникальна (просьба Павла): есть такие же в других цветах и точно такая же в дальнем углу,
 // куда цепочка взгляда никак не доходит. Загаданная вещь в каждом варианте в своём месте стола (очки — ниже и правее центра,
 // часы — выше, телефон — слева посередине). Раскладки подбирает и проверяет build/trick_layouts.py.
-// Финал: «нажмите на Павла» → он медленно тянет руку и сжимает кулак → все вещи, кроме загаданной, сминаются, как жестяная банка, и исчезают.
+// Финал: «нажмите на Павла» → он красиво щёлкает пальцами (видео) → всё, кроме загаданной вещи, рассыпается в пепел.
 // Картинки: вещи — одна карта 8×5 (media/trick_items.jpg + маска trick_items_a.jpg), ведущий — позы media/trick_p*.jpg + маски.
 // Позы — настоящие кадры Павла из видео с родинкой, переодетые в смокинг (gen/trick/presenter_v2): лицо не перерисовано.
 // JPEG + маска весят в 5 раз меньше PNG; прозрачность браузер собирает сам (canvas).
@@ -76,51 +76,51 @@ const TX = RU ? {
   label: 'Фокус сквозь экран', step: (n) => `Шаг ${n} из 4`, last: 'Последний шаг',
   intro: ['Павел угадает, что вы сделаете', 'На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом.'],
   tap: ['Запомнили? Теперь нажмите на Павла', 'И не сводите глаз со своей вещи.'],
-  start: 'Начать', next: 'Дальше →', back: '← Назад', host: 'Павел: нажмите, чтобы он сжал кулак',
+  start: 'Начать', next: 'Дальше →', back: '← Назад', host: 'Павел: нажмите, чтобы он щёлкнул пальцами',
   v: {
     glasses: { steps: [
       ['Выберите взглядом любые часы', 'Любые. Никому не говорите какие.'],
       ['Теперь переведите взгляд на ближайший кошелёк', 'Самый близкий к вашим часам.'],
       ['С него — на ближайшее кольцо', 'Самое близкое к кошельку.'],
       ['И последнее — на ближайшую красную вещь', 'Запомните её.'],
-    ], reveal: ['Красные очки?', 'Всё остальное исчезло. Осталась только ваша вещь. Представьте, что будет вживую.'] },
+    ], reveal: ['Красные очки?', 'Всё остальное рассыпалось в пепел. Осталась только ваша вещь. Представьте, что будет вживую.'] },
     awatch: { steps: [
       ['Выберите взглядом любое кольцо', 'Любое. Никому не говорите какое.'],
       ['Теперь переведите взгляд на ближайший кошелёк', 'Самый близкий к вашему кольцу.'],
       ['С него — на ближайший телефон', 'Самый близкий к кошельку.'],
       ['И последнее — на ближайшие часы', 'Запомните их.'],
-    ], reveal: ['Apple Watch?', 'Всё остальное исчезло. Остались только ваши часы. Представьте, что будет вживую.'] },
+    ], reveal: ['Apple Watch?', 'Всё остальное рассыпалось в пепел. Остались только ваши часы. Представьте, что будет вживую.'] },
     wphone: { steps: [
       ['Выберите взглядом любой кошелёк', 'Любой. Никому не говорите какой.'],
       ['Теперь переведите взгляд на ближайшие часы', 'Самые близкие к вашему кошельку.'],
       ['С них — на ближайшее кольцо', 'Самое близкое к часам.'],
       ['И последнее — на ближайший телефон', 'Запомните его.'],
-    ], reveal: ['Белый телефон?', 'Всё остальное исчезло. Остался только ваш телефон. Представьте, что будет вживую.'] },
+    ], reveal: ['Белый телефон?', 'Всё остальное рассыпалось в пепел. Остался только ваш телефон. Представьте, что будет вживую.'] },
   },
 } : {
   label: 'A trick through the screen', step: (n) => `Step ${n} of 4`, last: 'Last step',
   intro: ['Pavel will guess what you are about to do', 'On the table: the things guests hide first when Pavel walks in. You will choose with your eyes only.'],
   tap: ['Got it? Now tap Pavel', 'And keep your eyes on your thing.'],
-  start: 'Start', next: 'Next →', back: '← Back', host: 'Pavel: tap to make him clench his fist',
+  start: 'Start', next: 'Next →', back: '← Back', host: 'Pavel: tap to make him snap his fingers',
   v: {
     glasses: { steps: [
       ['Pick any watch with your eyes', 'Any one. Don’t tell anyone which.'],
       ['Now move your eyes to the nearest wallet', 'The one closest to your watch.'],
       ['From there, to the nearest ring', 'The one closest to that wallet.'],
       ['And last: the nearest red thing', 'Remember it.'],
-    ], reveal: ['The red sunglasses?', 'Everything else is gone. Only your thing is left. Imagine it live.'] },
+    ], reveal: ['The red sunglasses?', 'Everything else has turned to ash. Only your thing is left. Imagine it live.'] },
     awatch: { steps: [
       ['Pick any ring with your eyes', 'Any one. Don’t tell anyone which.'],
       ['Now move your eyes to the nearest wallet', 'The one closest to your ring.'],
       ['From there, to the nearest phone', 'The one closest to that wallet.'],
       ['And last: the nearest watch', 'Remember it.'],
-    ], reveal: ['The Apple Watch?', 'Everything else is gone. Only your watch is left. Imagine it live.'] },
+    ], reveal: ['The Apple Watch?', 'Everything else has turned to ash. Only your watch is left. Imagine it live.'] },
     wphone: { steps: [
       ['Pick any wallet with your eyes', 'Any one. Don’t tell anyone which.'],
       ['Now move your eyes to the nearest watch', 'The one closest to your wallet.'],
       ['From there, to the nearest ring', 'The one closest to that watch.'],
       ['And last: the nearest phone', 'Remember it.'],
-    ], reveal: ['The white phone?', 'Everything else is gone. Only your phone is left. Imagine it live.'] },
+    ], reveal: ['The white phone?', 'Everything else has turned to ash. Only your phone is left. Imagine it live.'] },
   },
 };
 const STEP_MS = 7000; // каждый шаг идёт сам (Павел попросил на 30 % медленнее); «Дальше» — для быстрых, «Назад» — если не успели
@@ -160,67 +160,185 @@ function atlas() { // карта вещей собирается один раз
   }).catch(() => {});
   return atlasP;
 }
-// позы — настоящие кадры Павла: p0 — смотрит в камеру, p1 — пальцы сведены, p2 — ладонь к зрителю, p3 — тянется к столу, p4 — руки в стороны
-// (все жесты — в левую сторону кадра, поэтому на компьютере Павел стоит справа от стола и показывает на него)
-const POSES = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'p6']; // p5 — пальцы сжимаются, p6 — кулак (те же кадры, лицо вклеено из p2)
+// ведущий — сцены целиком, не вырезка (Павел, 28.11: «вырезанная фигура с обрезанной рукой — не эстетично; сделай вокруг меня
+// свэговую люксовую обстановку»): VIP-зона клуба, трон из красного бархата с золотом, люстра, шампанское, золотой леопард.
+// Кадры — его настоящие позы из видео с родинкой (gen/trick/presenter_v4), фон заменён, лицо вклеено из прежних кадров (tools/paste_face.py).
+// s0 — сидит, смотрит в камеру; s1 — рука поднята для щелчка; s2 — ладонь к зрителю; s3 — тянется к столу; s4 — руки в стороны.
+const POSES = ['s0', 's1', 's2', 's3', 's4'];
 const poseUrl = {};
 let posesP = null;
 function poses() {
-  if (!posesP) posesP = Promise.all(POSES.map((p) => alphaUrl(`media/trick_${p}.jpg`, `media/trick_${p}_a.jpg`).then((u) => { poseUrl[p] = u; }).catch(() => {})));
+  if (!posesP) posesP = Promise.all(POSES.map((p) => load(V(`media/trick_${p}.jpg`)).then(() => { poseUrl[p] = V(`media/trick_${p}.jpg`); }).catch(() => {})));
   return posesP;
 }
-// стол в кадре фильма: картинки начинают собираться, когда страница уже показана
+// щелчок — короткое видео (Seedance по кадрам s1 → s4): рука поднята, щелчок, руки в стороны. В миг щелчка начинается пепел.
+const SNAP = { src: 'media/trick_snap.mp4', at: 1.76, hand: [0.2, 0.3] }; // секунда щелчка и где пальцы (доли кадра 9:16)
 // картинки фокуса начинают собираться, когда страница уже показана (в кадре фильма — Павел, который зовёт на фокус)
 if (document.getElementById('trickGo')) {
   const warm = () => setTimeout(() => { atlas(); poses(); }, 1500);
   if (document.readyState === 'complete') warm(); else window.addEventListener('load', warm, { once: true });
 }
 
-// ── финал: звук собирается кодом (файл не нужен); играет только после нажатия ──
-// напряжение (низкий гул нарастает, пока сжимается кулак) → хруст сминаемой жести → глухой удар
+// ── щелчок: звук собирается кодом (файл не нужен); играет только после нажатия ──
 let actx = null;
-function crushSound(at, hit) {
+function snapSound(at) {
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === 'suspended') actx.resume();
-    const t = actx.currentTime + at, th = t + hit, sr = actx.sampleRate;
-    const noise = (sec) => {
+    const t = actx.currentTime + at, sr = actx.sampleRate;
+    const noise = (sec, shape) => {
       const n = Math.floor(sr * sec), b = actx.createBuffer(1, n, sr), d = b.getChannelData(0);
-      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * shape(i / n);
       const s = actx.createBufferSource(); s.buffer = b; return s;
     };
-    const o = actx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(48, t); o.frequency.exponentialRampToValueAtTime(92, th);
-    const g = actx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.28, th - 0.05); g.gain.exponentialRampToValueAtTime(0.0001, th + 0.08);
-    o.connect(g).connect(actx.destination); o.start(t); o.stop(th + 0.1);
-    const h = noise(hit + 0.1), hf = actx.createBiquadFilter(); hf.type = 'bandpass'; hf.Q.value = 2;
-    hf.frequency.setValueAtTime(300, t); hf.frequency.exponentialRampToValueAtTime(1400, th);
-    const hg = actx.createGain(); hg.gain.setValueAtTime(0.0001, t); hg.gain.exponentialRampToValueAtTime(0.06, th - 0.05); hg.gain.exponentialRampToValueAtTime(0.0001, th + 0.05);
-    h.connect(hf).connect(hg).connect(actx.destination); h.start(t);
-    for (let i = 0; i < 9; i++) { // хруст: короткие щелчки жести вразнобой
-      const ti = th + Math.random() * 0.28, c = noise(0.05), f = actx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1500 + Math.random() * 3000; f.Q.value = 3;
-      const cg = actx.createGain(); cg.gain.setValueAtTime(0.0001, ti); cg.gain.exponentialRampToValueAtTime(0.5 + Math.random() * 0.4, ti + 0.004); cg.gain.exponentialRampToValueAtTime(0.0001, ti + 0.045);
-      c.connect(f).connect(cg).connect(actx.destination); c.start(ti);
-    }
-    const k = actx.createOscillator(); k.type = 'sine'; k.frequency.setValueAtTime(120, th + 0.18); k.frequency.exponentialRampToValueAtTime(38, th + 0.6);
-    const kg = actx.createGain(); kg.gain.setValueAtTime(0.0001, th + 0.18); kg.gain.exponentialRampToValueAtTime(0.6, th + 0.21); kg.gain.exponentialRampToValueAtTime(0.0001, th + 0.75);
-    k.connect(kg).connect(actx.destination); k.start(th + 0.18); k.stop(th + 0.8);
+    // щелчок: короткий треск в высокой полосе + щелчок пониже — так звучат пальцы
+    const s1 = noise(0.07, (k) => (1 - k) ** 7);
+    const f1 = actx.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 2600; f1.Q.value = 1.2;
+    const g1 = actx.createGain(); g1.gain.value = 0.9;
+    s1.connect(f1).connect(g1).connect(actx.destination); s1.start(t);
+    const s2 = noise(0.03, (k) => (1 - k) ** 4);
+    const f2 = actx.createBiquadFilter(); f2.type = 'lowpass'; f2.frequency.value = 900;
+    const g2 = actx.createGain(); g2.gain.value = 0.5;
+    s2.connect(f2).connect(g2).connect(actx.destination); s2.start(t);
+    // пепел: шелест, который нарастает и уходит вверх
+    const s3 = noise(2.8, () => 1);
+    const f3 = actx.createBiquadFilter(); f3.type = 'bandpass'; f3.Q.value = 0.8;
+    f3.frequency.setValueAtTime(700, t + 0.15); f3.frequency.exponentialRampToValueAtTime(3800, t + 2.9);
+    const g3 = actx.createGain(); g3.gain.setValueAtTime(0.0001, t + 0.15); g3.gain.exponentialRampToValueAtTime(0.13, t + 0.8); g3.gain.exponentialRampToValueAtTime(0.0001, t + 2.95);
+    s3.connect(f3).connect(g3).connect(actx.destination); s3.start(t + 0.15);
   } catch (e) { /* без звука фокус тоже работает */ }
 }
 
-// ── смятие: все вещи, кроме загаданной, дрожат, пока Павел сжимает кулак, и в один миг сминаются, как жестяная банка, и исчезают ──
-// Только CSS-анимация по каждой вещи (своя задержка и поворот), холстов не нужно.
-function tenseBoard(board) {
-  board.querySelectorAll('.titem:not(.kt)').forEach((el) => {
-    el.style.setProperty('--dl', `${(Math.random() * 0.09).toFixed(3)}s`);
-    el.style.setProperty('--spin', `${Math.round((Math.random() - 0.5) * 90)}deg`);
-    el.style.setProperty('--sq', (0.25 + Math.random() * 0.3).toFixed(2));
+// ── пепел: каждая вещь (кроме загаданной) — свой холст на месте картинки; крупинки отрываются волной от Павла,
+// вспыхивают, остывают до серого пепла и улетают. Пыль — один холст поверх окна.
+// Тяжёлая часть (разобрать картинки на крупинки) — prepAsh, пока зритель читает «нажмите на Павла»; в момент щелчка — только запуск.
+function prepAsh(board) {
+  if (!atlasImg) return null;
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const bw = board.clientWidth, bh = board.clientHeight, u = bw / 100;
+  const cw = atlasImg.naturalWidth / 8, ch = atlasImg.naturalHeight / 5;
+  const Sd = Math.max(2.5, bw / 230) * dpr; // шаг крупинок в точках холста
+  const sc = document.createElement('canvas'), sx = sc.getContext('2d', { willReadFrequently: true });
+  const items = [...board.querySelectorAll('.titem:not(.kt)')].map((el) => {
+    const [x, y, r, , , cell] = ITEMS[+el.dataset.i];
+    const w = el.offsetWidth, h = el.offsetHeight, a = (r * Math.PI) / 180, cs = Math.cos(a), sn = Math.sin(a), pad = 3 * u;
+    const BW = Math.abs(w * cs) + Math.abs(h * sn) + pad * 2, BH = Math.abs(w * sn) + Math.abs(h * cs) + pad * 2;
+    const it = { el, cx: (x / 300) * bw, cy: (y / 400) * bh, BW, BH, W: Math.ceil(BW * dpr), H: Math.ceil(BH * dpr), pts: [],
+      draw(g) { g.setTransform(dpr, 0, 0, dpr, (BW / 2) * dpr, (BH / 2) * dpr); g.rotate(a); g.drawImage(atlasImg, (cell % 8) * cw, Math.floor(cell / 8) * ch, cw, ch, -w / 2, -h / 2, w, h); g.setTransform(1, 0, 0, 1, 0, 0); } };
+    sc.width = it.W; sc.height = it.H;
+    it.draw(sx);
+    const px = sx.getImageData(0, 0, it.W, it.H).data;
+    for (let yy = Sd / 2; yy < it.H; yy += Sd) {
+      for (let xx = Sd / 2; xx < it.W; xx += Sd) {
+        const i = ((yy | 0) * it.W + (xx | 0)) * 4;
+        if (px[i + 3] >= 10) it.pts.push(xx, yy, px[i], px[i + 1], px[i + 2], px[i + 3]); // и полупрозрачные края: иначе от вещи остаётся контур
+      }
+    }
+    return it;
   });
-  board.classList.add('tense');
+  return { bw, bh, u, dpr, Sd, items };
 }
-function crushBoard(board) { board.classList.remove('tense'); board.classList.add('crush'); }
+function ashBoard(board, layer, from, onReveal, prep) {
+  const els = [...board.querySelectorAll('.titem:not(.kt)')];
+  if (!atlasImg || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    els.forEach((el) => el.classList.add('gone'));
+    const tm = setTimeout(onReveal, 900);
+    return () => clearTimeout(tm);
+  }
+  if (!prep || Math.abs(prep.bw - board.clientWidth) > 1) prep = prepAsh(board); // окно меняли — разбираем заново
+  const { bw, u, dpr, Sd } = prep;
+  const br = board.getBoundingClientRect(), lr = layer.getBoundingClientRect();
+  const ox = br.left - lr.left, oy = br.top - lr.top; // стол внутри слоя пыли
+  // откуда идёт волна: от пальцев Павла
+  const fx = from[0] - ox, fy = from[1] - oy;
+  const maxD = prep.items.reduce((m, it) => Math.max(m, Math.hypot(it.cx - fx, it.cy - fy)), 1);
+  const P = []; // крупинки: [x, y, r, g, b, t0, vx, vy, life, ph, вещь, lx, ly (угол клетки), серый, прозрачность]
+  const CS = Math.ceil(Sd) + 2; // клетка, которую стираем с картинки вещи: целые точки, иначе остаются тонкие полоски
+  const items = prep.items.map((it, k) => {
+    const { el, cx, cy, BW, BH } = it;
+    const c = document.createElement('canvas'); c.className = 'tcan';
+    c.width = it.W; c.height = it.H;
+    c.style.cssText = `left:${cx - BW / 2}px;top:${cy - BH / 2}px;width:${BW}px;height:${BH}px`;
+    const x = c.getContext('2d');
+    it.draw(x); // без тени: тень не стиралась бы вместе с вещью и оставляла тёмный силуэт
+    el.after(c); el.style.visibility = 'hidden';
+    // волна: чем дальше от Павла, тем позже; внутри вещи — от ближнего к Павлу края к дальнему
+    const d = Math.hypot(cx - fx, cy - fy), dirX = (cx - fx) / (d || 1), dirY = (cy - fy) / (d || 1);
+    const start = 0.06 + 1.15 * (d / maxD) + Math.random() * 0.16;
+    let end = start;
+    const half = Math.max(BW, BH) / 2, pts = it.pts;
+    for (let j = 0; j < pts.length; j += 6) {
+      const hx = cx - BW / 2 + pts[j] / dpr, hy = cy - BH / 2 + pts[j + 1] / dpr;
+      const proj = ((hx - cx) * dirX + (hy - cy) * dirY) / half; // −1…1
+      const t0 = start + 0.62 * ((proj + 1) / 2) + Math.random() * 0.22;
+      if (t0 > end) end = t0;
+      const sp = bw * (0.16 + Math.random() * 0.34);
+      // серый: у большинства крупинок — пепел, у каждой восьмой — долгая искра
+      const spark = Math.random() < 0.13;
+      P.push([ox + hx, oy + hy, pts[j + 2], pts[j + 3], pts[j + 4], t0,
+        dirX * sp + (Math.random() - 0.5) * 0.1 * bw, dirY * sp * 0.4 - bw * (0.08 + Math.random() * 0.16),
+        0.9 + Math.random() * 0.9, Math.random() * 6.28, k, Math.floor(pts[j] - Sd / 2) - 1, Math.floor(pts[j + 1] - Sd / 2) - 1,
+        spark ? 1000 : 105 + Math.random() * 85, pts[j + 5] / 255]);
+    }
+    return { c, x, end, gone: false };
+  });
+  // пыль
+  const dust = document.createElement('canvas'); dust.className = 'tdust';
+  // чёткость пыли: на телефоне — в 2 раза мельче точки, на большом экране — 1:1 (не больше ~1,6 млн точек, чтобы не тормозило)
+  const ds = Math.max(1, Math.min(2, window.devicePixelRatio || 1, Math.sqrt(1.6e6 / Math.max(1, lr.width * lr.height))));
+  const DW = Math.max(1, Math.round(lr.width * ds)), DH = Math.max(1, Math.round(lr.height * ds));
+  dust.width = DW; dust.height = DH; layer.appendChild(dust);
+  const dx = dust.getContext('2d'), img = dx.createImageData(DW, DH), buf = new Uint32Array(img.data.buffer);
+  const rise = bw * 0.12;
+  const revealAt = items.reduce((m, it) => Math.max(m, it.end), 0) + 0.25;
+  let raf = 0, revealed = false, pb = [DW, DH, -1, -1];
+  const t0 = performance.now();
+  function frame(now) {
+    const t = (now - t0) / 1000;
+    if (pb[2] >= pb[0]) buf.fill(0, pb[1] * DW, Math.min(DH, pb[3] + 2) * DW); // стираем прошлый кадр
+    let alive = 0, x0 = DW, y0 = DH, x1 = -1, y1 = -1;
+    for (let n = 0; n < P.length; n++) {
+      const p = P[n], age = t - p[5];
+      if (age < 0) { alive++; continue; }
+      if (p[13] > 0) { // отрыв: вырезаем крупинку из картинки вещи
+        items[p[10]].x.clearRect(p[11], p[12], CS, CS);
+        p[13] = -p[13];
+      }
+      if (age > p[8]) continue;
+      alive++;
+      const k = age / p[8];
+      const go = age + age * age; // ветер подхватывает: сначала медленно, потом быстрее
+      const xx = ((p[0] + p[6] * go + Math.sin(age * 5 + p[9]) * u * 1.6 * age) * ds) | 0;
+      const yy = ((p[1] + p[7] * go - rise * age * age) * ds) | 0;
+      if (xx < 0 || yy < 0 || xx >= DW - 1 || yy >= DH - 1) continue;
+      // цвет: своя краска → вспышка углём → серый пепел
+      let r, g, b;
+      const ash = -p[13];
+      if (age < 0.06) { const m = age / 0.06; r = p[2] + (255 - p[2]) * m; g = p[3] + (165 - p[3]) * m; b = p[4] + (70 - p[4]) * m; }
+      else if (ash === 1000) { const m = Math.min(1, (age - 0.06) / 1.2); r = 255; g = 165 - 75 * m; b = 70 - 40 * m; } // искра тлеет
+      else { const m = Math.min(1, (age - 0.06) / 0.26); r = 255 + (ash - 255) * m; g = 165 + (ash * 0.93 - 165) * m; b = 70 + (ash * 0.88 - 70) * m; }
+      const al = (k < 0.4 ? 255 : 255 * (1 - (k - 0.4) / 0.6)) * p[14];
+      const v = ((al & 255) << 24 | (b & 255) << 16 | (g & 255) << 8 | (r & 255)) >>> 0;
+      const o = yy * DW + xx;
+      buf[o] = v; buf[o + 1] = v; buf[o + DW] = v; buf[o + DW + 1] = v;
+      if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy;
+    }
+    // вещь, от которой ничего не осталось, гасим (вместе с тенью)
+    for (const it of items) if (!it.gone && t > it.end + 0.05) { it.gone = true; it.c.style.opacity = '0'; }
+    // на холст — только та часть, где была или есть пыль
+    const ux0 = Math.min(x0, pb[0]), uy0 = Math.min(y0, pb[1]), ux1 = Math.max(x1, pb[2]), uy1 = Math.max(y1, pb[3]);
+    if (ux1 >= ux0 && uy1 >= uy0) dx.putImageData(img, 0, 0, ux0, uy0, ux1 - ux0 + 2, uy1 - uy0 + 2);
+    pb = x1 >= 0 ? [x0, y0, x1, y1] : [DW, DH, -1, -1];
+    if (!revealed && t > revealAt) { revealed = true; onReveal(); }
+    if (alive) raf = requestAnimationFrame(frame); else dust.remove();
+  }
+  raf = requestAnimationFrame(frame);
+  return () => { cancelAnimationFrame(raf); dust.remove(); };
+}
 function resetBoard(board) {
-  board.querySelectorAll('.titem').forEach((el) => { el.classList.remove('chosen'); });
-  board.classList.remove('lit', 'tense', 'crush');
+  board.querySelectorAll('.tcan').forEach((c) => c.remove());
+  board.querySelectorAll('.titem').forEach((el) => { el.style.visibility = ''; el.classList.remove('gone', 'chosen'); });
+  board.classList.remove('lit');
 }
 
 // ── окно с фокусом ──
@@ -238,8 +356,9 @@ if (box && go) {
   const nextBtn = document.getElementById('trickNext'), backBtn = document.getElementById('trickBack');
   const againBtn = document.getElementById('trickAgain'), ends = document.getElementById('trickEnds');
   const host = document.getElementById('trickHost'), layers = [...host.querySelectorAll('.pl')], bar = document.getElementById('trickBar');
+  const snapV = host.querySelector('.snapv');
   const board = document.getElementById('trickBoard'), table = box.querySelector('.trick-table');
-  let step = -1, timer = 0, want = 'p0', later = [], front = 0;
+  let step = -1, timer = 0, want = 's0', later = [], front = 0, prep = null, stopAsh = () => {};
   const V2 = () => TX.v[VARIANTS[vi].key];
   const track = (detail) => window.dispatchEvent(new CustomEvent('pb:trick', { detail }));
   const after = (ms, fn) => later.push(setTimeout(fn, ms));
@@ -274,59 +393,75 @@ if (box && go) {
     backBtn.hidden = !(n >= 2 && n <= 5);
     if (n !== 5) tappable(false);
     if (n === 0) {
-      say(TX.label, TX.intro); pose('p0');
+      say(TX.label, TX.intro); pose('s0');
       nextBtn.textContent = TX.start; nextBtn.hidden = false; ends.hidden = true;
       return;
     }
     if (n <= 4) {
-      say(TX.step(n), V2().steps[n - 1]); pose(['p3', 'p2', 'p3', 'p2'][n - 1]);
+      say(TX.step(n), V2().steps[n - 1]); pose(['s3', 's2', 's3', 's2'][n - 1]);
       nextBtn.textContent = TX.next; nextBtn.hidden = false;
       bar.style.setProperty('--t', `${STEP_MS}ms`); bar.classList.add('run');
       timer = setTimeout(() => setStep(n + 1), STEP_MS);
       return;
     }
     if (n === 5) { // «нажмите на Павла»: ждём нажатия, сам шаг не уходит
-      say(TX.last, TX.tap); pose('p0');
+      say(TX.last, TX.tap); pose('s0');
       nextBtn.hidden = true; tappable(true);
+      // заранее: разобрать вещи на крупинки (тяжело) и подгрузить видео щелчка, чтобы по нажатию всё началось сразу
+      prep = null; after(150, () => { if (step === 5) atlas().then(() => { if (step === 5) prep = prepAsh(board); }); });
+      if (snapV && !snapV.getAttribute('src')) { snapV.src = V(SNAP.src); snapV.load(); }
       return;
     }
-    // финал: Павел медленно тянет к столу раскрытую ладонь и сжимает кулак (ладонь → полусжатая → кулак);
-    // пока сжимает, вещи дрожат; в миг, когда кулак сжат, они сминаются и исчезают. Остаётся одна — загаданная.
+    // финал: Павел поднимает руку и красиво щёлкает пальцами (видео), в миг щелчка всё, кроме загаданной вещи, рассыпается в пепел
     backBtn.hidden = true;
     stepEl.textContent = ''; sayEl.textContent = ''; subEl.textContent = '';
-    const HIT = 1.35; // с.: когда кулак сжат
-    host.classList.add('slow', 'reach'); pose('p2');
-    crushSound(0.05, HIT);
-    after(250, () => tenseBoard(board));
-    after(720, () => pose('p5'));
-    after(HIT * 1000 - 80, () => pose('p6'));
-    after(HIT * 1000, () => {
-      crushBoard(board);
+    pose('s1');
+    const go2 = () => {
+      host.classList.add('snapping');
+      try { snapV.currentTime = 0; } catch (e) { /* ещё не загружено */ }
+      const pl = snapV.play(); if (pl && pl.catch) pl.catch(() => {});
+    };
+    if (snapV && snapV.readyState >= 2) go2(); else if (snapV) { snapV.addEventListener('canplay', go2, { once: true }); after(1500, () => { if (!host.classList.contains('snapping')) go2(); }); }
+    const t0 = performance.now();
+    snapSound(SNAP.at);
+    // ждём щелчка по времени видео (если видео не играет — по часам)
+    const waitSnap = () => {
+      const tv = snapV && !snapV.paused ? snapV.currentTime : (performance.now() - t0) / 1000 - 0.15;
+      if (tv < SNAP.at) { later.push(setTimeout(waitSnap, 30)); return; }
       table.classList.remove('shake'); void table.offsetWidth; table.classList.add('shake');
-      try { navigator.vibrate && navigator.vibrate([20, 30, 40]); } catch (e) { /* нет вибрации */ }
-    });
-    after(HIT * 1000 + 520, () => {
-      const t = board.querySelector('.titem.kt');
-      board.style.setProperty('--tx', t.style.left); board.style.setProperty('--ty', t.style.top);
-      board.classList.add('lit'); t.classList.add('chosen');
-    });
-    after(HIT * 1000 + 950, () => {
-      host.classList.remove('reach'); pose('p3'); say(TX.label, V2().reveal);
-      ends.hidden = false; box.classList.add('done');
-      saveV(vi + 1); // в следующий раз — другой вариант
-      track({ step: 'done', variant: VARIANTS[vi].key });
-    });
-    after(HIT * 1000 + 1600, () => host.classList.remove('slow'));
+      try { navigator.vibrate && navigator.vibrate(18); } catch (e) { /* нет вибрации */ }
+      stopAsh = ashBoard(board, box, handPoint(), () => {
+        const t = board.querySelector('.titem.kt');
+        board.style.setProperty('--tx', t.style.left); board.style.setProperty('--ty', t.style.top);
+        board.classList.add('lit'); t.classList.add('chosen');
+        after(350, () => {
+          say(TX.label, V2().reveal);
+          ends.hidden = false; box.classList.add('done');
+          saveV(vi + 1); // в следующий раз — другой вариант
+          track({ step: 'done', variant: VARIANTS[vi].key });
+        });
+      }, prep);
+    };
+    after(200, waitSnap);
+    // когда видео кончилось — на место встаёт кадр «руки в стороны» (последний кадр видео — он же)
+    if (snapV) snapV.onended = () => { pose('s4'); after(60, () => host.classList.remove('snapping')); };
+  }
+  // где пальцы в кадре щелчка (видео 9:16 вписано в окно ведущего «cover»)
+  function handPoint() {
+    const hr = host.getBoundingClientRect(), lr = box.getBoundingClientRect();
+    const k = Math.max(hr.width / 9, hr.height / 16), dw = 9 * k, dh = 16 * k;
+    const x = hr.left + (hr.width - dw) / 2 + SNAP.hand[0] * dw, y = hr.top + (hr.height - dh) * 0.2 + SNAP.hand[1] * dh;
+    return [x - lr.left, y - lr.top];
   }
   function fire() {
     if (step !== 5) return;
-    track({ step: 'fist' });
+    track({ step: 'snap' });
     setStep(6);
   }
   function reset() {
-    clearLater();
-    resetBoard(board); box.classList.remove('done'); tappable(false); ends.hidden = true;
-    host.classList.remove('slow', 'reach');
+    clearLater(); stopAsh(); stopAsh = () => {};
+    resetBoard(board); box.classList.remove('done'); tappable(false); ends.hidden = true; prep = null;
+    host.classList.remove('snapping'); if (snapV) { snapV.pause(); snapV.onended = null; }
   }
   function open() {
     box.hidden = false;
@@ -359,7 +494,7 @@ if (box && go) {
   box.addEventListener('touchmove', hold, { passive: false });
 }
 
-// ── фокус с родинкой (на экране заявки): ролик с подписями по времени, в конце вопрос «Есть?» ──
+// ── фокус с родинкой (на экране заявки): ролик с подписями по времени (v5: красная комната, кончается уверенным броском), в конце — «А теперь проверьте» ──
 const mole = document.getElementById('mole'), moleGo = document.getElementById('moleGo');
 if (mole && moleGo) {
   const vid = document.getElementById('moleVideo'), cap = document.getElementById('moleCap'), ask = document.getElementById('moleAsk');
@@ -367,16 +502,16 @@ if (mole && moleGo) {
   const yn = document.getElementById('moleYN'), end = document.getElementById('moleEnd');
   // подписи привязаны к движениям в ролике (секунды)
   const CAPS = RU ? [
-    [0, 'Секунду…'], [1.8, 'Видите родинку у меня на руке?'], [4.2, 'Снимаю её…'], [6.0, '…и отправляю вам'], [8.2, 'Посмотрите на свою левую руку. На то же место'],
+    [0, 'Секунду…'], [1.9, 'Видите родинку у меня на руке?'], [3.8, 'Снимаю её…'], [5.6, '…и отправляю вам'],
   ] : [
-    [0, 'One second…'], [1.8, 'See this mole on my arm?'], [4.2, 'I take it off…'], [6.0, '…and send it to you'], [8.2, 'Now look at your left arm. Same spot'],
+    [0, 'One second…'], [1.9, 'See this mole on my arm?'], [3.8, 'I take it off…'], [5.6, '…and send it to you'],
   ];
   const T2 = RU ? {
-    q: ['Ну что, есть?', 'На левой руке, там же, где у Павла.'],
+    q: ['А теперь проверьте', 'У вас на левой руке, на том же месте, появилась родинка?'],
     yes: ['Ну как, не в шоке?', 'Вам только что показал фокус сайт. Представьте, что будет вживую.'],
     no: ['Взрослый человек, а в сказки верите? 😉', 'Настоящая магия — только вживую.'],
   } : {
-    q: ['So, is it there?', 'On your left arm, in the same spot as Pavel’s.'],
+    q: ['Now check', 'Has a mole appeared on your left arm, in the same spot?'],
     yes: ['Not shocked yet?', 'A website just did a trick on you. Imagine it live.'],
     no: ['A grown-up who believes in fairy tales? 😉', 'Real magic only happens live.'],
   };

@@ -46,10 +46,10 @@
        черновик 480p, растянут до 1280×720 (gen/hook/v4_real/). Клип: 0–40 % — показ, 40–50 % — стоп-кадр под надпись, 50–100 % — щелчок и полёт карты. -->
   <div class="shot phonk" data-scenes="hook" data-src="media/new_hook.mp4" data-tr="flash" data-cx="48.06%" data-cy="48.6%" data-ramp="0:0,0.3:0.4,0.56:0.5,1:1" data-mx="36%" data-mx2="45%" data-pan="0.56,0.96"></div>
 
-  <!-- «Фокус сквозь экран»: в кадре фильма — Павел, который зовёт на фокус (Павел: «стол сразу показывать не надо — лучше меня, который приглашает»).
+  <!-- «Фокус сквозь экран»: в кадре фильма — Павел на троне в VIP-зоне зовёт на фокус (Павел: «стол сразу показывать не надо»; «обрезанная фигура — не эстетично»).
        Сам фокус идёт в окне #trick (там страница не листается). Логика и раскладки — js/new/trick.js. Пока сцена не утверждена, она есть только по ссылке с ?trick. -->
   <div class="shot phonk trickshot" data-scenes="trick" data-tr="flash" data-cx="48.06%" data-cy="48.6%">
-    <div class="tinvite" aria-hidden="true"><img src="media/trick_invite.webp" srcset="media/trick_invite_m.webp 342w, media/trick_invite.webp 570w" sizes="(max-aspect-ratio: 3/4) 46vw, 30vw" width="570" height="960" alt="" loading="lazy" decoding="async"></div>
+    <div class="tinvite" aria-hidden="true"><img src="media/trick_invite.jpg" srcset="media/trick_invite_m.jpg 540w, media/trick_invite.jpg 900w" sizes="(max-aspect-ratio: 3/4) 100vw, 50vh" width="900" height="1600" alt="" loading="lazy" decoding="async"></div>
   </div>
 
   <div class="shot trip" data-scenes="formats" data-tr="wash" data-fade="0.32" data-cx="48.06%" data-cy="48.6%">
@@ -418,8 +418,8 @@
     <div class="trick-table">
       <div class="tboard" id="trickBoard"></div>
     </div>
-    <!-- ведущий: справа от стола (все его жесты — в сторону стола); позы сменяются наплывом, на телефоне — бюст справа над столом -->
-    <div class="trick-host" id="trickHost" aria-hidden="true"><i class="pl"></i><i class="pl"></i></div>
+    <!-- ведущий: сцена целиком (VIP-зона, трон, люстра) справа от стола; позы сменяются наплывом, щелчок — видео; на телефоне — окно справа от текста -->
+    <div class="trick-host" id="trickHost" aria-hidden="true"><i class="pl"></i><i class="pl"></i><video class="snapv" muted playsinline preload="none" disablepictureinpicture></video></div>
   </div>
 </div>
 
