@@ -244,9 +244,9 @@
 
   <!-- ВАШ ХОД: фокус через экран -->
   <section class="chapter left trick-head" id="trickHead" data-scene="trick" data-in="0.1" data-out="0.9">
-    <p class="tag"><span lang="en">Your Move</span><span lang="ru">Фокус для вас</span></p>
-    <h2><span lang="en">Pavel will guess what you are about to do</span><span lang="ru">Павел попробует угадать, что вы сделаете</span></h2>
-    <p class="body"><span lang="en">On the table: the things guests hide first when Pavel walks in. You choose with your eyes only, then Pavel snaps his fingers. It takes a minute</span><span lang="ru">На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом, а потом Павел щёлкнет пальцами. Займёт минуту</span></p>
+    <p class="tag"><span lang="en">Through the Screen</span><span lang="ru">Фокус сквозь экран</span></p>
+    <h2><span lang="en">Pavel will guess what you are about to do</span><span lang="ru">Павел угадает, что вы сделаете</span></h2>
+    <p class="body"><span lang="en">On the table: the things guests hide first when Pavel walks in. You choose with your eyes only. It takes a minute</span><span lang="ru">На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом. Займёт минуту</span></p>
     <p class="trick-go"><button class="btn" type="button" id="trickGo"><span lang="en">Try the trick</span><span lang="ru">Попробовать фокус</span></button></p>
     <p class="tap-hint"><span lang="en">or keep scrolling to the formats</span><span lang="ru">или листайте дальше, к форматам</span></p>
   </section>
@@ -410,18 +410,19 @@
       <p class="trick-say" id="trickSay" aria-live="polite"></p>
       <p class="trick-sub" id="trickSub"></p>
       <i class="trick-bar" id="trickBar" aria-hidden="true"></i>
-      <p class="trick-btns"><button class="btn ghost" type="button" id="trickNext"></button></p>
+      <p class="trick-btns"><button class="btn ghost back" type="button" id="trickBack" hidden></button><button class="btn ghost" type="button" id="trickNext"></button></p>
       <p class="trick-btns" id="trickEnds" hidden>
         <a class="btn" href="#booking" data-jump="booking"><span lang="en">Check availability</span><span lang="ru">Проверить дату</span></a>
         <a class="btn ghost" href="#formats" data-goto="formats" data-at="0.1"><span lang="en">Keep watching</span><span lang="ru">Смотреть дальше</span></a>
         <button class="btn ghost" type="button" id="trickAgain"><span lang="en">Once more</span><span lang="ru">Ещё раз</span></button>
       </p>
-      <div class="trick-host" id="trickHost" aria-hidden="true"></div>
-      <i class="snapfx" id="trickSnap" aria-hidden="true"></i>
     </div>
     <div class="trick-table">
       <div class="tboard" id="trickBoard"></div>
+      <i class="tsweep" id="trickSweep" aria-hidden="true"></i>
     </div>
+    <!-- ведущий: справа от стола (все его жесты — в сторону стола); позы сменяются наплывом, на телефоне — бюст справа над столом -->
+    <div class="trick-host" id="trickHost" aria-hidden="true"><i class="pl"></i><i class="pl"></i></div>
   </div>
 </div>
 

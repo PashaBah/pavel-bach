@@ -1,29 +1,67 @@
-// Фокус «Ваш ход» (3-я редакция, 28.11.2026): вещи, которые гости прячут, когда входит Павел.
-// Взглядом: любые часы → ближайший кошелёк → ближайшее кольцо → ближайшая красная вещь = красные очки.
-// Принцип — как в AGT (мячи → слоны → ангелы → красное): стол плотный, часы, кольца и красные вещи — по всему столу,
-// кошельки — широкой полосой по середине; из любых часов цепочка приходит к красным очкам (худшее соотношение расстояний 0.58).
-// Очки, а не помада: на столе есть ещё чёрные и черепаховые очки, так что «красные очки» не бросаются в глаза.
-// Финал (по просьбе Павла): никакого конверта. «Нажмите на Павла» → он щёлкает пальцами → всё, кроме очков, рассыпается в пепел.
-// Раскладку подбирает и проверяет build/trick_items_layout.py. Доска 300×400 условных единиц.
+// Фокус «Ваш ход» (4-я редакция, 28.11.2026): вещи, которые гости прячут, когда входит Павел.
+// Три варианта по очереди (следующий — при «Ещё раз» и при новом открытии; номер помнит браузер):
+//   1) любые часы → ближайший кошелёк → ближайшее кольцо → ближайшая красная вещь = красные очки;
+//   2) любое кольцо → кошелёк → телефон → часы = Apple Watch;
+//   3) любой кошелёк → часы → кольцо → телефон = белый телефон.
+// Загаданная вещь не уникальна (просьба Павла): есть такие же в других цветах и точно такая же в дальнем углу,
+// куда цепочка взгляда никак не доходит. Раскладки подбирает и проверяет build/trick_layouts.py (худшее соотношение 0.54–0.64).
+// Финал: «нажмите на Павла» → пафосный взмах рукой → всё, кроме загаданной вещи, рассыпается в пепел. Конверта нет.
 // Картинки: вещи — одна карта 8×5 (media/trick_items.jpg + маска trick_items_a.jpg), ведущий — позы media/trick_p*.jpg + маски.
 // Позы — настоящие кадры Павла из видео с родинкой, переодетые в смокинг (gen/trick/presenter_v2): лицо не перерисовано.
 // JPEG + маска весят в 5 раз меньше PNG; прозрачность браузер собирает сам (canvas).
-// [x, y, наклон°, масштаб, вид, клетка карты]; вид: t — красные очки (загаданная вещь), w — часы, l — кошелёк, r — кольцо, x — красное, o — прочее
-const ITEMS = [
-  [208.1, 227.9, -19, 1.0, 't', 28], [207.8, 302.4, 2, 1.0, 'w', 0], [147.6, 365.5, 4, 0.93, 'w', 1], [281.1, 71.0, 21, 0.97, 'w', 2],
-  [64.7, 326.2, -12, 0.88, 'w', 3], [23.1, 212.1, -2, 1.0, 'w', 4], [83.5, 146.0, 1, 0.94, 'w', 6], [20.1, 83.0, 27, 1.0, 'w', 7],
-  [100.5, 64.6, 11, 0.91, 'w', 0], [163.4, 185.4, -26, 0.93, 'w', 1], [127.8, 258.9, -8, 0.87, 'w', 2], [215.1, 122.4, -17, 1.02, 'w', 3],
-  [279.9, 309.3, -1, 0.95, 'w', 4], [198.0, 377.3, 19, 1.15, 'l', 8], [181.6, 272.6, 7, 1.11, 'l', 9], [264.2, 238.9, 0, 1.05, 'l', 10],
-  [105.1, 321.9, 13, 1.06, 'l', 11], [117.2, 180.2, 11, 1.11, 'l', 14], [273.5, 370.7, 17, 1.13, 'l', 15], [244.1, 290.1, 23, 0.58, 'r', 16],
-  [142.3, 223.9, 15, 0.55, 'r', 17], [263.0, 171.1, -26, 0.61, 'r', 18], [52.2, 108.3, 6, 0.54, 'r', 19], [154.4, 61.2, -6, 0.62, 'r', 20],
-  [266.1, 26.9, -23, 0.53, 'r', 21], [88.2, 26.3, -12, 0.57, 'r', 16], [252.0, 118.0, 23, 0.55, 'r', 17], [23.9, 36.4, 6, 1.04, 'x', 25],
-  [97.8, 379.9, 22, 0.91, 'x', 26], [229.0, 25.5, 16, 0.96, 'x', 27], [142.5, 106.7, -1, 1.03, 'x', 24], [22.0, 161.1, 21, 0.94, 'x', 29],
-  [30.0, 276.7, -23, 0.94, 'x', 31], [135.9, 21.0, 16, 0.8, 'x', 26], [99.9, 225.8, -8, 0.68, 'o', 22], [63.8, 59.8, 25, 0.99, 'o', 32],
-  [179.9, 102.8, 19, 0.94, 'o', 33], [192.8, 33.8, 22, 1.02, 'o', 34], [165.5, 315.5, 12, 0.93, 'o', 35], [73.8, 195.0, -28, 1.0, 'o', 36],
-  [38.8, 368.1, 27, 0.88, 'o', 37], [233.4, 341.2, -4, 0.98, 'o', 38], [238.2, 202.2, 12, 0.73, 'o', 22], [77.7, 287.6, 25, 0.97, 'o', 32],
-  [70.5, 250.6, 9, 0.88, 'o', 33], [126.5, 142.8, -21, 0.94, 'o', 34], [21.2, 316.4, 13, 0.99, 'o', 35], [194.7, 156.4, -1, 0.93, 'o', 36],
-  [105.3, 102.2, 3, 0.93, 'o', 37], [231.0, 71.9, 6, 0.88, 'o', 38],
+// Вещь: [x, y, наклон°, масштаб, вид, клетка карты]; вид: t — загаданная, w — часы, l — кошелёк, r — кольцо, x — красное, p — телефон, o — прочее
+const VARIANTS = [
+  { key: 'glasses', items: [
+    [133.7, 276.4, 8, 1.06, 't', 28], [276.1, 31.2, 9, 0.93, 'x', 28], [273.8, 234.4, 24, 1.03, 'x', 24], [96.7, 78.9, 19, 1.07, 'x', 25],
+    [237.7, 90.9, 8, 1.0, 'x', 26], [268.8, 372.2, 22, 0.94, 'x', 27], [18.6, 374.5, -5, 1.02, 'x', 29], [196.1, 373.8, 28, 0.94, 'x', 31],
+    [92.4, 295.6, -17, 0.75, 'r', 16], [110.0, 212.9, -14, 0.76, 'r', 17], [178.4, 279.9, -24, 0.74, 'r', 18], [128.8, 28.4, 6, 0.75, 'r', 19],
+    [279.1, 163.7, 4, 0.86, 'r', 20], [64.4, 60.1, 15, 0.74, 'r', 21], [280.9, 335.0, 25, 0.78, 'r', 16], [276.4, 93.2, -15, 0.78, 'r', 17],
+    [212.3, 39.4, -8, 0.77, 'r', 18], [37.2, 190.9, -5, 1.15, 'l', 8], [19.8, 294.7, 4, 1.13, 'l', 11], [107.6, 168.9, -12, 1.1, 'l', 14],
+    [171.6, 335.0, -26, 1.01, 'l', 9], [70.6, 256.0, 4, 1.08, 'l', 12], [169.1, 186.0, -26, 1.15, 'l', 15], [138.7, 64.7, -22, 1.06, 'w', 0],
+    [21.9, 94.9, 20, 1.0, 'w', 1], [206.1, 321.5, 27, 1.03, 'w', 2], [256.0, 194.7, 7, 0.98, 'w', 3], [242.2, 271.8, -3, 1.07, 'w', 4],
+    [77.3, 22.3, 20, 0.97, 'w', 6], [142.8, 156.6, -1, 1.03, 'w', 7], [27.0, 335.3, -3, 1.01, 'w', 0], [175.5, 223.2, 14, 1.02, 'w', 1],
+    [70.0, 163.5, -5, 1.02, 'w', 2], [135.1, 323.3, -20, 0.99, 'w', 3], [23.8, 247.3, -11, 1.02, 'w', 4], [66.8, 109.0, 17, 0.93, 'o', 22],
+    [70.9, 214.9, 20, 0.88, 'o', 32], [56.0, 307.4, 15, 1.03, 'o', 33], [203.6, 113.0, -2, 0.93, 'o', 34], [259.0, 305.1, 26, 1.01, 'o', 35],
+    [152.7, 371.5, -27, 0.94, 'o', 36], [61.8, 374.5, -15, 1.01, 'o', 37], [37.3, 24.7, -6, 0.91, 'o', 38], [176.1, 51.9, 12, 1.02, 'o', 35],
+    [165.8, 113.4, 9, 0.88, 'o', 36], [204.2, 248.8, -18, 0.99, 'o', 32], [34.2, 141.6, -2, 1.0, 'o', 33], [87.3, 337.7, -16, 0.95, 'o', 34],
+    [124.9, 115.1, 18, 0.99, 'o', 37], [212.8, 151.7, 15, 0.96, 'o', 38], [113.9, 378.3, 21, 0.95, 'o', 22], [238.6, 350.9, 20, 0.88, 'o', 32],
+    [214.7, 205.8, 6, 0.9, 'o', 33], [251.0, 138.8, -16, 0.94, 'o', 34],
+  ] },
+  { key: 'awatch', items: [
+    [113.9, 288.8, -13, 0.95, 't', 2], [272.6, 22.5, 1, 1.01, 'w', 2], [224.8, 223.2, -25, 1.04, 'w', 0], [251.9, 367.4, 17, 1.02, 'w', 1],
+    [183.4, 85.2, -8, 0.96, 'w', 3], [61.9, 27.5, -17, 1.0, 'w', 4], [128.7, 142.8, -26, 1.07, 'w', 6], [272.3, 164.8, 21, 0.93, 'w', 7],
+    [120.4, 239.6, 13, 0.9, 'p', 32], [156.1, 307.3, 2, 0.95, 'p', 25], [71.0, 316.8, -18, 0.89, 'p', 33], [146.8, 79.2, -13, 0.9, 'p', 32],
+    [236.6, 33.9, 21, 0.93, 'p', 25], [69.4, 66.9, -8, 1.02, 'p', 33], [281.1, 107.1, -27, 1.01, 'p', 32], [207.3, 125.8, -12, 0.99, 'p', 25],
+    [189.4, 369.6, -17, 1.13, 'l', 8], [78.6, 269.5, 0, 1.13, 'l', 11], [18.5, 221.4, -17, 1.19, 'l', 14], [30.1, 373.9, -21, 1.15, 'l', 9],
+    [255.6, 280.1, 15, 1.06, 'l', 12], [179.4, 227.4, -12, 1.16, 'l', 15], [155.9, 27.7, -1, 0.76, 'r', 16], [106.4, 178.8, -15, 0.85, 'r', 17],
+    [33.1, 94.8, -26, 0.77, 'r', 18], [93.0, 375.2, 4, 0.83, 'r', 19], [154.8, 259.3, 19, 0.74, 'r', 20], [106.9, 112.1, -10, 0.75, 'r', 21],
+    [245.5, 118.6, -14, 0.76, 'r', 16], [271.1, 60.3, 20, 0.82, 'r', 17], [42.1, 260.6, 27, 0.8, 'r', 18], [32.7, 175.1, 23, 0.83, 'r', 19],
+    [262.5, 234.2, 8, 0.82, 'r', 20], [276.8, 330.8, 0, 0.74, 'r', 21], [189.0, 163.8, 23, 0.96, 'o', 22], [198.7, 260.3, 0, 1.02, 'o', 24],
+    [189.6, 43.9, -10, 0.95, 'o', 26], [152.9, 180.4, 19, 0.97, 'o', 27], [23.4, 314.7, -20, 0.93, 'o', 28], [225.2, 171.7, -12, 0.88, 'o', 29],
+    [18.9, 37.8, 22, 0.94, 'o', 31], [224.5, 84.9, 18, 0.96, 'o', 34], [65.2, 139.1, -14, 0.98, 'o', 35], [117.2, 34.6, -19, 1.02, 'o', 36],
+    [107.6, 332.3, 3, 0.99, 'o', 37], [165.0, 130.4, -11, 0.92, 'o', 38], [211.9, 328.6, 5, 0.91, 'o', 28], [141.6, 361.0, 9, 0.91, 'o', 35],
+    [71.8, 192.9, 6, 0.97, 'o', 22], [26.1, 136.9, -21, 0.92, 'o', 22], [83.2, 228.9, 16, 0.9, 'o', 24],
+  ] },
+  { key: 'wphone', items: [
+    [101.6, 267.3, 18, 0.9, 't', 33], [279.8, 29.7, 18, 1.02, 'p', 33], [199.0, 131.6, 7, 0.92, 'p', 32], [156.2, 20.4, -25, 1.01, 'p', 25],
+    [280.3, 182.6, -2, 0.92, 'p', 32], [251.2, 284.5, -18, 0.91, 'p', 25], [42.2, 56.7, 2, 0.9, 'p', 32], [251.6, 377.0, 23, 1.02, 'p', 25],
+    [100.8, 316.1, -10, 0.78, 'r', 16], [153.6, 245.9, -12, 0.8, 'r', 17], [42.5, 230.2, -22, 0.78, 'r', 18], [154.9, 65.0, 12, 0.82, 'r', 19],
+    [75.4, 38.3, 17, 0.82, 'r', 20], [266.9, 70.7, -21, 0.82, 'r', 21], [80.8, 113.3, 2, 0.84, 'r', 16], [21.0, 369.7, 14, 0.86, 'r', 17],
+    [37.8, 187.5, -5, 0.97, 'w', 0], [196.6, 313.1, -4, 1.05, 'w', 3], [224.0, 224.3, 14, 1.03, 'w', 7], [104.8, 357.0, 2, 0.96, 'w', 2],
+    [114.2, 231.0, 1, 1.02, 'w', 6], [35.5, 273.9, -19, 1.01, 'w', 1], [202.6, 68.9, 2, 1.09, 'l', 8], [27.6, 327.6, 24, 1.17, 'l', 9],
+    [25.0, 22.2, -2, 1.04, 'l', 10], [115.3, 78.1, -21, 1.03, 'l', 11], [269.3, 142.1, 23, 1.05, 'l', 12], [137.5, 375.9, -17, 1.17, 'l', 13],
+    [145.4, 292.4, -24, 1.1, 'l', 14], [25.4, 145.7, -24, 1.07, 'l', 15], [177.6, 168.0, 18, 1.05, 'l', 8], [82.4, 187.8, -25, 1.06, 'l', 9],
+    [259.4, 237.6, 3, 1.12, 'l', 10], [259.6, 339.9, 14, 1.08, 'l', 11], [210.2, 369.8, 24, 0.97, 'o', 22], [65.9, 331.1, 16, 0.9, 'o', 24],
+    [226.2, 36.3, -3, 0.93, 'o', 26], [149.6, 119.9, -25, 0.9, 'o', 27], [194.9, 248.4, -18, 0.91, 'o', 28], [149.3, 199.9, -6, 0.91, 'o', 29],
+    [124.0, 165.8, -9, 0.96, 'o', 31], [112.5, 35.7, -10, 1.02, 'o', 34], [140.0, 335.8, -14, 0.99, 'o', 35], [233.8, 169.9, 3, 0.92, 'o', 36],
+    [79.1, 150.5, -6, 1.01, 'o', 37], [172.2, 354.3, -14, 0.97, 'o', 38], [188.1, 207.9, -12, 0.9, 'o', 28], [60.6, 370.1, -11, 0.94, 'o', 37],
+    [233.1, 95.9, -6, 0.95, 'o', 22], [29.3, 101.3, 13, 0.93, 'o', 22],
+  ] },
 ];
+const VKEY = 'pb_trick_v';
+let vi = 0;
+try { vi = (parseInt(localStorage.getItem(VKEY), 10) || 0) % VARIANTS.length; } catch (e) { /* без памяти — с первого */ }
+let ITEMS = VARIANTS[vi].items;
 
 const html = document.documentElement;
 const RU = html.lang === 'ru';
@@ -32,31 +70,57 @@ const ROOT = html.dataset.root || '';
 const V = (u) => `${ROOT}${u}${VER ? `?v=${VER}` : ''}`;
 
 const TX = RU ? {
-  label: 'Фокус для вас', step: (n) => `Шаг ${n} из 4`, last: 'Последний шаг',
-  intro: ['Павел попробует угадать, что вы сделаете', 'На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом.'],
-  steps: [
-    ['Выберите взглядом любые часы', 'Любые. Никому не говорите какие.'],
-    ['Теперь переведите взгляд на ближайший кошелёк', 'Самый близкий к вашим часам.'],
-    ['С него — на ближайшее кольцо', 'Самое близкое к кошельку.'],
-    ['И последнее — на ближайшую красную вещь', 'Запомните её.'],
-  ],
+  label: 'Фокус сквозь экран', step: (n) => `Шаг ${n} из 4`, last: 'Последний шаг',
+  intro: ['Павел угадает, что вы сделаете', 'На столе — вещи, которые гости прячут первыми, когда в зал входит Павел. Выбирать будете только взглядом.'],
   tap: ['Запомнили? Теперь нажмите на Павла', 'И не сводите глаз со своей вещи.'],
-  reveal: ['Красные очки?', 'Всё остальное рассыпалось в пепел. Осталась только ваша вещь. Представьте, что будет вживую.'],
-  start: 'Начать', next: 'Дальше →', host: 'Павел: нажмите, чтобы он щёлкнул пальцами',
+  start: 'Начать', next: 'Дальше →', back: '← Назад', host: 'Павел: нажмите, чтобы он взмахнул рукой',
+  v: {
+    glasses: { steps: [
+      ['Выберите взглядом любые часы', 'Любые. Никому не говорите какие.'],
+      ['Теперь переведите взгляд на ближайший кошелёк', 'Самый близкий к вашим часам.'],
+      ['С него — на ближайшее кольцо', 'Самое близкое к кошельку.'],
+      ['И последнее — на ближайшую красную вещь', 'Запомните её.'],
+    ], reveal: ['Красные очки?', 'Всё остальное рассыпалось в пепел. Осталась только ваша вещь. Представьте, что будет вживую.'] },
+    awatch: { steps: [
+      ['Выберите взглядом любое кольцо', 'Любое. Никому не говорите какое.'],
+      ['Теперь переведите взгляд на ближайший кошелёк', 'Самый близкий к вашему кольцу.'],
+      ['С него — на ближайший телефон', 'Самый близкий к кошельку.'],
+      ['И последнее — на ближайшие часы', 'Запомните их.'],
+    ], reveal: ['Apple Watch?', 'Всё остальное рассыпалось в пепел. Остались только ваши часы. Представьте, что будет вживую.'] },
+    wphone: { steps: [
+      ['Выберите взглядом любой кошелёк', 'Любой. Никому не говорите какой.'],
+      ['Теперь переведите взгляд на ближайшие часы', 'Самые близкие к вашему кошельку.'],
+      ['С них — на ближайшее кольцо', 'Самое близкое к часам.'],
+      ['И последнее — на ближайший телефон', 'Запомните его.'],
+    ], reveal: ['Белый телефон?', 'Всё остальное рассыпалось в пепел. Остался только ваш телефон. Представьте, что будет вживую.'] },
+  },
 } : {
-  label: 'Your move', step: (n) => `Step ${n} of 4`, last: 'Last step',
+  label: 'A trick through the screen', step: (n) => `Step ${n} of 4`, last: 'Last step',
   intro: ['Pavel will guess what you are about to do', 'On the table: the things guests hide first when Pavel walks in. You will choose with your eyes only.'],
-  steps: [
-    ['Pick any watch with your eyes', 'Any one. Don’t tell anyone which.'],
-    ['Now move your eyes to the nearest wallet', 'The one closest to your watch.'],
-    ['From there, to the nearest ring', 'The one closest to that wallet.'],
-    ['And last: the nearest red thing', 'Remember it.'],
-  ],
   tap: ['Got it? Now tap Pavel', 'And keep your eyes on your thing.'],
-  reveal: ['The red sunglasses?', 'Everything else has turned to ash. Only your thing is left. Imagine it live.'],
-  start: 'Start', next: 'Next →', host: 'Pavel: tap to make him snap his fingers',
+  start: 'Start', next: 'Next →', back: '← Back', host: 'Pavel: tap to make him wave his hand',
+  v: {
+    glasses: { steps: [
+      ['Pick any watch with your eyes', 'Any one. Don’t tell anyone which.'],
+      ['Now move your eyes to the nearest wallet', 'The one closest to your watch.'],
+      ['From there, to the nearest ring', 'The one closest to that wallet.'],
+      ['And last: the nearest red thing', 'Remember it.'],
+    ], reveal: ['The red sunglasses?', 'Everything else has turned to ash. Only your thing is left. Imagine it live.'] },
+    awatch: { steps: [
+      ['Pick any ring with your eyes', 'Any one. Don’t tell anyone which.'],
+      ['Now move your eyes to the nearest wallet', 'The one closest to your ring.'],
+      ['From there, to the nearest phone', 'The one closest to that wallet.'],
+      ['And last: the nearest watch', 'Remember it.'],
+    ], reveal: ['The Apple Watch?', 'Everything else has turned to ash. Only your watch is left. Imagine it live.'] },
+    wphone: { steps: [
+      ['Pick any wallet with your eyes', 'Any one. Don’t tell anyone which.'],
+      ['Now move your eyes to the nearest watch', 'The one closest to your wallet.'],
+      ['From there, to the nearest ring', 'The one closest to that watch.'],
+      ['And last: the nearest phone', 'Remember it.'],
+    ], reveal: ['The white phone?', 'Everything else has turned to ash. Only your phone is left. Imagine it live.'] },
+  },
 };
-const STEP_MS = 5200; // каждый шаг идёт сам; кнопка «Дальше» — для тех, кто быстрее
+const STEP_MS = 7000; // каждый шаг идёт сам (Павел попросил на 30 % медленнее); «Дальше» — для быстрых, «Назад» — если не успели
 
 // ── картинка с прозрачностью из JPEG + маски (маска — яркость) ──
 const load = (src) => new Promise((ok, no) => { const i = new Image(); i.decoding = 'async'; i.onload = () => ok(i); i.onerror = no; i.src = src; });
@@ -93,9 +157,9 @@ function atlas() { // карта вещей собирается один раз
   }).catch(() => {});
   return atlasP;
 }
-// позы — настоящие кадры Павла: p0 — смотрит в камеру, p1 — щелчок пальцами, p2 — ладонь к зрителю, p3 — тянется к столу, p4 — руки в стороны
+// позы — настоящие кадры Павла: p0 — смотрит в камеру, p1 — пальцы сведены, p2 — ладонь к зрителю, p3 — тянется к столу, p4 — руки в стороны
+// (все жесты — в левую сторону кадра, поэтому на компьютере Павел стоит справа от стола и показывает на него)
 const POSES = ['p0', 'p1', 'p2', 'p3', 'p4'];
-const SNAP_AT = [0.31, 0.335]; // где сведены пальцы на позе p1 (доли кадра 570×960)
 const poseUrl = {};
 let posesP = null;
 function poses() {
@@ -109,33 +173,34 @@ if (teaser) {
   if (document.readyState === 'complete') warm(); else window.addEventListener('load', warm, { once: true });
 }
 
-// ── щелчок: звук собирается кодом (файл не нужен); играет только после нажатия ──
+// ── взмах: звук собирается кодом (файл не нужен); играет только после нажатия ──
 let actx = null;
-function snapSound(at) {
+function waveSound(at) {
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     if (actx.state === 'suspended') actx.resume();
     const t = actx.currentTime + at, sr = actx.sampleRate;
-    const noise = (sec, shape) => {
+    const noise = (sec) => {
       const n = Math.floor(sr * sec), b = actx.createBuffer(1, n, sr), d = b.getChannelData(0);
-      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * shape(i / n);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
       const s = actx.createBufferSource(); s.buffer = b; return s;
     };
-    // щелчок: короткий треск в высокой полосе + щелчок пониже — так звучат пальцы
-    const s1 = noise(0.07, (k) => (1 - k) ** 7);
-    const f1 = actx.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 2600; f1.Q.value = 1.2;
-    const g1 = actx.createGain(); g1.gain.value = 0.9;
+    // свист взмаха: шум, полоса которого быстро уходит вверх и обратно
+    const s1 = noise(0.6);
+    const f1 = actx.createBiquadFilter(); f1.type = 'bandpass'; f1.Q.value = 1.6;
+    f1.frequency.setValueAtTime(260, t); f1.frequency.exponentialRampToValueAtTime(2400, t + 0.22); f1.frequency.exponentialRampToValueAtTime(500, t + 0.55);
+    const g1 = actx.createGain(); g1.gain.setValueAtTime(0.0001, t); g1.gain.exponentialRampToValueAtTime(0.75, t + 0.16); g1.gain.exponentialRampToValueAtTime(0.0001, t + 0.58);
     s1.connect(f1).connect(g1).connect(actx.destination); s1.start(t);
-    const s2 = noise(0.03, (k) => (1 - k) ** 4);
-    const f2 = actx.createBiquadFilter(); f2.type = 'lowpass'; f2.frequency.value = 900;
-    const g2 = actx.createGain(); g2.gain.value = 0.5;
-    s2.connect(f2).connect(g2).connect(actx.destination); s2.start(t);
+    // низкий удар под конец взмаха
+    const o = actx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(110, t + 0.18); o.frequency.exponentialRampToValueAtTime(42, t + 0.7);
+    const g2 = actx.createGain(); g2.gain.setValueAtTime(0.0001, t + 0.18); g2.gain.exponentialRampToValueAtTime(0.5, t + 0.22); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+    o.connect(g2).connect(actx.destination); o.start(t + 0.18); o.stop(t + 0.85);
     // пепел: шелест, который нарастает и уходит вверх
-    const s3 = noise(2.8, () => 1);
+    const s3 = noise(2.8);
     const f3 = actx.createBiquadFilter(); f3.type = 'bandpass'; f3.Q.value = 0.8;
-    f3.frequency.setValueAtTime(700, t + 0.15); f3.frequency.exponentialRampToValueAtTime(3800, t + 2.9);
-    const g3 = actx.createGain(); g3.gain.setValueAtTime(0.0001, t + 0.15); g3.gain.exponentialRampToValueAtTime(0.13, t + 0.8); g3.gain.exponentialRampToValueAtTime(0.0001, t + 2.95);
-    s3.connect(f3).connect(g3).connect(actx.destination); s3.start(t + 0.15);
+    f3.frequency.setValueAtTime(700, t + 0.3); f3.frequency.exponentialRampToValueAtTime(3800, t + 3.0);
+    const g3 = actx.createGain(); g3.gain.setValueAtTime(0.0001, t + 0.3); g3.gain.exponentialRampToValueAtTime(0.13, t + 0.9); g3.gain.exponentialRampToValueAtTime(0.0001, t + 3.05);
+    s3.connect(f3).connect(g3).connect(actx.destination); s3.start(t + 0.3);
   } catch (e) { /* без звука фокус тоже работает */ }
 }
 
@@ -274,38 +339,48 @@ function resetBoard(board) {
 // ── окно с фокусом ──
 const box = document.getElementById('trick');
 const go = document.getElementById('trickGo');
+function useVariant(i) { // раскладка на всех столах (и в заставке фильма) — того варианта, который будет сыгран
+  vi = ((i % VARIANTS.length) + VARIANTS.length) % VARIANTS.length;
+  ITEMS = VARIANTS[vi].items;
+  boards.forEach(fillBoard);
+}
+const savedV = () => { try { return (parseInt(localStorage.getItem(VKEY), 10) || 0) % VARIANTS.length; } catch (e) { return vi; } };
+const saveV = (i) => { try { localStorage.setItem(VKEY, String(i % VARIANTS.length)); } catch (e) { /* без памяти */ } };
 if (box && go) {
   const stepEl = document.getElementById('trickStep'), sayEl = document.getElementById('trickSay'), subEl = document.getElementById('trickSub');
-  const nextBtn = document.getElementById('trickNext'), againBtn = document.getElementById('trickAgain'), ends = document.getElementById('trickEnds');
-  const host = document.getElementById('trickHost'), bar = document.getElementById('trickBar'), board = document.getElementById('trickBoard');
-  const fx = document.getElementById('trickSnap'), table = box.querySelector('.trick-table');
-  let step = -1, timer = 0, want = 'p0', stopAsh = () => {}, later = [], prep = null;
+  const nextBtn = document.getElementById('trickNext'), backBtn = document.getElementById('trickBack');
+  const againBtn = document.getElementById('trickAgain'), ends = document.getElementById('trickEnds');
+  const host = document.getElementById('trickHost'), layers = [...host.querySelectorAll('.pl')], bar = document.getElementById('trickBar');
+  const board = document.getElementById('trickBoard'), sweep = document.getElementById('trickSweep'), table = box.querySelector('.trick-table');
+  let step = -1, timer = 0, want = 'p0', stopAsh = () => {}, later = [], prep = null, front = 0;
+  const V2 = () => TX.v[VARIANTS[vi].key];
   const track = (detail) => window.dispatchEvent(new CustomEvent('pb:trick', { detail }));
   const after = (ms, fn) => later.push(setTimeout(fn, ms));
   const clearLater = () => { later.forEach(clearTimeout); later = []; };
 
-  // ведущий: поза меняется рывком, как в стоп-моушене
+  // ведущий: позы сменяются наплывом (две картинки друг над другом), в паузах он чуть «дышит» (CSS)
   function pose(p) {
     want = p;
     const u = poseUrl[p];
-    if (!u) { host.style.backgroundImage = ''; return; }
-    host.style.backgroundImage = `url(${u})`;
+    if (!u || host.dataset.pose === p) return;
     host.dataset.pose = p;
-    host.classList.remove('jump'); void host.offsetWidth; host.classList.add('jump');
+    front ^= 1;
+    const a = layers[front], b = layers[front ^ 1];
+    a.style.setProperty('--img', `url(${u})`);
+    a.classList.remove('on'); void a.offsetWidth; a.classList.add('on');
+    b.classList.remove('on');
   }
   const say = (label, [a, b]) => {
     stepEl.textContent = label; sayEl.textContent = a; subEl.textContent = b;
     sayEl.classList.remove('pop'); void sayEl.offsetWidth; sayEl.classList.add('pop');
   };
-  // где на экране сведены пальцы (для вспышки и начала волны)
-  function snapPoint() {
-    const IW = 570, IH = 960, w = host.clientWidth, h = host.clientHeight, cs = getComputedStyle(host);
-    let dw, dh;
-    if (cs.backgroundSize === 'contain') { const k = Math.min(w / IW, h / IH); dw = IW * k; dh = IH * k; } else { dw = (w * parseFloat(cs.backgroundSize)) / 100; dh = (dw * IH) / IW; }
-    const [px, py] = cs.backgroundPosition.split(' ').map((v) => parseFloat(v) / 100);
-    const x = (w - dw) * px + SNAP_AT[0] * dw, y = (h - dh) * py + SNAP_AT[1] * dh;
-    const r = host.getBoundingClientRect(), lr = box.getBoundingClientRect();
-    return { side: [host.offsetLeft + x, host.offsetTop + y], screen: [r.left - lr.left + x, r.top - lr.top + y] };
+  // откуда идёт волна пепла: точка Павла, ближайшая к середине стола (на компьютере — его левый край, на телефоне — низ слева)
+  function waveFrom() {
+    const hr = host.getBoundingClientRect(), br = board.getBoundingClientRect(), lr = box.getBoundingClientRect();
+    const cx = br.left + br.width / 2, cy = br.top + br.height / 2;
+    const x = Math.min(Math.max(cx, hr.left + hr.width * 0.12), hr.right - hr.width * 0.12);
+    const y = Math.min(Math.max(cy, hr.top + hr.height * 0.3), hr.bottom - hr.height * 0.3);
+    return [x - lr.left, y - lr.top];
   }
   const tappable = (on) => {
     host.classList.toggle('tap', on);
@@ -317,13 +392,15 @@ if (box && go) {
     clearTimeout(timer);
     box.dataset.step = n;
     bar.classList.remove('run'); void bar.offsetWidth;
+    backBtn.hidden = !(n >= 2 && n <= 5);
+    if (n !== 5) tappable(false);
     if (n === 0) {
       say(TX.label, TX.intro); pose('p0');
       nextBtn.textContent = TX.start; nextBtn.hidden = false; ends.hidden = true;
       return;
     }
     if (n <= 4) {
-      say(TX.step(n), TX.steps[n - 1]); pose(['p3', 'p2', 'p3', 'p2'][n - 1]);
+      say(TX.step(n), V2().steps[n - 1]); pose(['p3', 'p2', 'p3', 'p2'][n - 1]);
       nextBtn.textContent = TX.next; nextBtn.hidden = false;
       bar.style.setProperty('--t', `${STEP_MS}ms`); bar.classList.add('run');
       timer = setTimeout(() => setStep(n + 1), STEP_MS);
@@ -335,47 +412,49 @@ if (box && go) {
       prep = null; after(150, () => { if (step === 5) atlas().then(() => { if (step === 5) prep = prepAsh(board); }); });
       return;
     }
-    // щелчок
-    tappable(false);
+    // пафосный взмах: замах (ладонь вверх) → руки в стороны, по столу проходит полоса света, за ней — волна пепла
+    backBtn.hidden = true;
     stepEl.textContent = ''; sayEl.textContent = ''; subEl.textContent = '';
-    pose('p1');
-    const pt = snapPoint();
-    snapSound(0.22);
-    after(220, () => {
-      fx.style.left = `${pt.side[0]}px`; fx.style.top = `${pt.side[1]}px`;
-      fx.classList.remove('go'); void fx.offsetWidth; fx.classList.add('go');
+    pose('p2'); host.classList.add('windup');
+    waveSound(0.28);
+    after(290, () => {
+      pose('p4'); host.classList.remove('windup'); host.classList.add('swing');
+      sweep.classList.remove('go'); void sweep.offsetWidth; sweep.classList.add('go');
       table.classList.remove('shake'); void table.offsetWidth; table.classList.add('shake');
-      try { navigator.vibrate && navigator.vibrate(18); } catch (e) { /* нет вибрации */ }
+      try { navigator.vibrate && navigator.vibrate([12, 40, 22]); } catch (e) { /* нет вибрации */ }
     });
-    after(330, () => {
-      stopAsh = ashBoard(board, box, pt.screen, () => {
+    after(400, () => {
+      stopAsh = ashBoard(board, box, waveFrom(), () => {
         const t = board.querySelector('.titem.kt');
         board.style.setProperty('--tx', t.style.left); board.style.setProperty('--ty', t.style.top);
         board.classList.add('lit'); t.classList.add('chosen');
         after(350, () => {
-          pose('p4'); say(TX.label, TX.reveal);
+          host.classList.remove('swing'); pose('p3'); say(TX.label, V2().reveal);
           ends.hidden = false; box.classList.add('done');
-          track({ step: 'done' });
+          saveV(vi + 1); // в следующий раз — другой вариант
+          track({ step: 'done', variant: VARIANTS[vi].key });
         });
       }, prep);
     });
   }
   function fire() {
     if (step !== 5) return;
-    track({ step: 'snap' });
+    track({ step: 'wave' });
     setStep(6);
   }
   function reset() {
     clearLater(); stopAsh(); stopAsh = () => {};
-    resetBoard(board); box.classList.remove('done'); tappable(false); fx.classList.remove('go'); ends.hidden = true;
+    resetBoard(board); box.classList.remove('done'); tappable(false); ends.hidden = true;
+    host.classList.remove('windup', 'swing'); sweep.classList.remove('go'); prep = null;
   }
   function open() {
     box.hidden = false;
     reset();
-    atlas(); poses().then(() => { if (!box.hidden) pose(want); });
+    if (savedV() !== vi) useVariant(savedV());
+    atlas(); poses().then(() => { if (!box.hidden) { host.dataset.pose = ''; pose(want); } });
     setStep(0);
     nextBtn.focus({ preventScroll: true });
-    track({ step: 'open' });
+    track({ step: 'open', variant: VARIANTS[vi].key });
   }
   function close() {
     if (box.hidden) return;
@@ -385,9 +464,11 @@ if (box && go) {
   go.addEventListener('click', open);
   document.getElementById('trickClose').addEventListener('click', close);
   nextBtn.addEventListener('click', () => { if (step === 0) track({ step: 'start' }); if (step >= 0 && step <= 4) setStep(step + 1); });
+  backBtn.addEventListener('click', () => { if (step >= 2 && step <= 5) setStep(step - 1); });
+  backBtn.textContent = TX.back;
   host.addEventListener('click', fire);
   host.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
-  againBtn.addEventListener('click', () => { reset(); setStep(1); });
+  againBtn.addEventListener('click', () => { reset(); useVariant(vi + 1); setStep(1); });
   ends.querySelectorAll('a').forEach((a) => a.addEventListener('click', close)); // «Проверить дату» и «Смотреть дальше» ведут по фильму (js/main.js)
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   // пока фокус открыт, фильм под ним стоит
