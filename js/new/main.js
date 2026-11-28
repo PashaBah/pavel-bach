@@ -14,7 +14,7 @@ const SCENES = [
   { id: 'titles',  len: 2.2, base: '04:36:00.000', span: 40,  name: { en: 'Credits',         ru: 'Регалии' },           loc: { en: 'On the record',    ru: 'Для протокола' } },
   { id: 'geo',     len: 2.8, base: '04:38:00.000', span: 60,  name: { en: 'Map',             ru: 'География' },         loc: { en: 'On tour',          ru: 'В дороге' } },
   { id: 'reviews', len: 3.6, base: '04:40:00.000', span: 90,  name: { en: 'Reviews',         ru: 'Отзывы' },            loc: { en: 'Shout-outs',       ru: 'Респект' } },
-  { id: 'wine',    len: 3.4, base: '05:01:00.000', span: 160, name: { en: 'The ultimate flex', ru: 'Главный козырь' },     loc: { en: 'Last call',        ru: 'Последний тост' } },
+  { id: 'wine',    len: 3.4, base: '05:01:00.000', span: 160, name: { en: 'Your date', ru: 'Ваша дата' },     loc: { en: 'Last call',        ru: 'Последний тост' }, rail: false },
   { id: 'booking', len: 2.2, base: '05:01:11.000', span: 60,  name: { en: 'Your date',       ru: 'Ваша дата' },         loc: { en: 'After the show',   ru: 'После шоу' } },
 ];
 // «Ваш ход» — фокус через экран (js/trick.js), сцена между обложкой и форматами.
